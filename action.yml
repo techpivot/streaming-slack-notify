@@ -1,4 +1,4 @@
-name: 'action-slacker'
+name: 'streaming-slack-notify'
 description: 'Send slack messages with attachments, auto username, branch and other actions'
 branding:
   icon: 'bell'

@@ -1,5 +1,5 @@
 {
-  "name": "action-slacker",
+  "name": "streaming-slack-notify",
   "version": "1.0.0",
   "description": "send slack notification with advanced message format",
   "main": "index.js",
@@ -10,16 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cemkiy/action-slacker.git"
+    "url": "git+https://github.com/techpivot/streaming-slack-notify.git"
   },
   "keywords": [
     "GitHub",
     "Actions",
     "Slack"
   ],
-  "author": "GitHub",
+  "author": "TechPivot",
   "license": "MIT",
-  "homepage": "https://github.com/cemkiy/action-slacker#readme",
+  "homepage": "https://github.com/techpivot/streaming-slack-notifyr#readme",
   "dependencies": {
     "@actions/core": "^1.1.1",
     "slack-notify": "^0.1.7"
