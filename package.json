@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint index.js",
-    "package": "ncc build index.js -o dist",
-    "test": "eslint index.js && jest"
+    "package": "ncc build --minify --out dist index.js",
+    "format": "prettier --check **/*.js",
+    "format:write": "prettier **/*.js"
   },
   "repository": {
     "type": "git",
@@ -15,18 +16,26 @@
   "keywords": [
     "GitHub",
     "Actions",
-    "Slack"
+    "Slack",
+    "Notify",
+    "Streaming"
   ],
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": true,
+    "singleQuote": true
+  },
   "author": "TechPivot",
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notifyr#readme",
   "dependencies": {
-    "@actions/core": "^1.1.1",
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1",
     "slack-notify": "^0.1.7"
   },
   "devDependencies": {
-    "@zeit/ncc": "^0.20.5",
+    "@zeit/ncc": "^0.22.1",
     "eslint": "^6.3.0",
-    "jest": "^24.9.0"
+    "prettier": "^2.0.5"
   }
 }
