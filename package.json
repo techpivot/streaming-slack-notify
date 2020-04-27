@@ -2,12 +2,12 @@
   "name": "streaming-slack-notify",
   "version": "1.0.0",
   "description": "send slack notification with advanced message format",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "lint": "eslint index.js",
     "package": "ncc build --minify --out dist index.js",
-    "format": "prettier --check **/*.js",
-    "format:write": "prettier **/*.js"
+    "format": "prettier --check **/*.js *.json",
+    "format:write": "prettier --write -l **/*.js *.json"
   },
   "repository": {
     "type": "git",

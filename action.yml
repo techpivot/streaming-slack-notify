@@ -1,5 +1,8 @@
 name: 'streaming-slack-notify'
 description: 'Send slack messages with attachments, auto username, branch and other actions'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
 branding:
   icon: 'bell'
   color: 'purple'
@@ -61,6 +64,4 @@ inputs:
 outputs:
   time: # output will be available to future steps
     description: 'The message to output'
-runs:
-  using: 'node12'
-  main: 'dist/index.js'
+
