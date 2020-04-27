@@ -1,0 +1,66 @@
+name: 'action-slacker'
+description: 'Send slack messages with attachments, auto username, branch and other actions'
+branding:
+  icon: 'bell'
+  color: 'purple'
+env:
+  SLACK_WEBHOOK:
+    description: 'required'
+    required: true
+inputs:
+  fallback:
+    description: 'Required plain-text summary of the attachment.'
+    required: false
+  color":
+    description: 'tag color'
+    required: false
+    default: '#36a64f'
+  pretext":
+    description: 'Optional text that appears above the attachment block'
+    required: false
+  author_name":
+    description: 'sender name'
+    required: false
+  author_link":
+    description: 'sender profile link'
+    required: false
+  author_icon":
+    description: 'sender icon'
+    required: false
+  title":
+    description: 'message title'
+    required: false
+  title_link":
+    description: 'message title link'
+    required: false
+  text":
+    description: 'message text'
+    required: false
+  image_url":
+    description: 'image url'
+    required: false
+  thumb_url":
+    description: 'thumb url'
+    required: false
+    default: '1000'
+  footer":
+    description: 'footer text'
+    required: false
+  footer_icon":
+    description: 'footer icon'
+    required: false
+  channel":
+    description: 'slack channel name with #'
+    required: true
+  icon_url":
+    description: 'slack user icon'
+    required: true
+  username":
+    description: 'slack username'
+    required: true
+outputs:
+  time: # output will be available to future steps
+    description: 'The message to output'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
