@@ -6,6 +6,7 @@ import {
   saveSlackArtifact,
 } from './utils';
 import { getDividerBlock, getCommitBlocks } from './ui';
+import * as github from '@actions/github';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -15,9 +16,6 @@ async function run() {
     }
 
     let { channel, ts } = await getSlackArtifact();
-
-    console.log('>channel', channel);
-    console.log('>ts', ts);
 
     if (!channel) {
       channel = getInput('channel', { required: true });
@@ -35,12 +33,14 @@ async function run() {
     }
     */
 
+    console.log(github.context);
+
     let blocks = [];
     blocks.push(getDividerBlock());
     blocks = blocks.concat(getCommitBlocks());
     blocks.push(getDividerBlock());
 
-    // Build the payload
+
     const payload = {
       channel,
       attachments: [
@@ -58,15 +58,19 @@ async function run() {
       // Add other required fields for the first post.
       payload.text = 'replaceme';
 
-      // Optional
-      payload.username = getInput('username');
-      //#payload.icon_url = getInput('icon_url');
-      payload.icon_emoji = 'thumbsup';
+      // Optional fields (These are only applicable for the first post)
+      ['username', 'username', 'username'].forEach((k) => {
+        const inputValue = getInput(k);
+        if (!!inputValue) {
+          payload[k] = inputValue;
+        }
+        payload.username = getInput('username');
+        payload.icon_url = getInput('icon_url');
+        payload.icon_emoji = getInput('icon_emoji');
+      })
+
     }
 
-    // Build attachments
-
-    // Footer
 
     /*
     let attachment = {};

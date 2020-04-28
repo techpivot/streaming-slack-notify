@@ -1,3 +1,5 @@
+import * as github from '@actions/github';
+
 export const getCommitBlocks = () => {
   return [
     {
@@ -13,20 +15,20 @@ export const getCommitBlocks = () => {
       elements: [
         {
           type: 'image',
-          image_url: 'https://github.com/virgofx.png',
-          alt_text: 'virgofx',
+          image_url: `https://github.com/${process.env.GITHUB_ACTOR}.png`,
+          alt_text: process.env.GITHUB_ACTOR,
         },
         {
           type: 'mrkdwn',
-          text: '*<https://github.com/virgofx|virgofx>*',
+          text: '*<https://github.com/${process.env.GITHUB_ACTOR}|${process.env.GITHUB_ACTOR}>*',
         },
         {
           type: 'mrkdwn',
-          text: '*Branch*: master',
+          text: `*Branch*: ${github.ref}`,
         },
         {
           type: 'mrkdwn',
-          text: '*Event*: push',
+          text: `*Event*: ${github.context.event_name}`,
         },
         {
           type: 'mrkdwn',
