@@ -56,8 +56,8 @@ async function run() {
       required: true,
     });
 
-    console.log('>>>', process.env);
-    console.log(github.context);
+    //console.log('>>>', process.env);
+    //console.log(github.context);
     const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK;
     console.log('>>> SLACK_WEBHOOK', SLACK_WEBHOOK);
 
