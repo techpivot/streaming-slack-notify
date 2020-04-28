@@ -27,6 +27,7 @@ async function run() {
 
 
 
+    return;
     // Build the attachment.
     /*const attachment = {
       title: `${process.env.GITHUB_REPOSITORY}`,
@@ -44,7 +45,7 @@ async function run() {
 
     // Build the payload
     const payload = {
-      channel: getInput('channel', { required: true }),
+      channel,
       attachments: [
         {
           color: '#000000',
