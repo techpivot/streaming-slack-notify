@@ -43,8 +43,10 @@ const doRequest = (options, data) => {
 
           if (json.ok) {
             resolve(json);
+          } else if (json.error) {
+            reject(`Slack Error: ${json.error}`);
           } else {
-            reject(json.error || `Unable to post message: ${body}`);
+            reject(`Unable to post message: ${body}`);
           }
         } catch (e) {
           reject(`Unable to parse response body as JSON: ${body}`);
@@ -71,7 +73,7 @@ export const postSlackMessage = async (payload) => {
 
   console.log(data);
 
-  const endpoint = url.parse('https://slack.com/api/chat.postMessage');
+  const endpoint = url.parse(`https://slack.com/api/chat.postMessage?token=${process.env.SLACK_ACCESS_TOKEN}`);
   const options = {
     hostname: endpoint.hostname,
     port: endpoint.port,
@@ -82,6 +84,8 @@ export const postSlackMessage = async (payload) => {
       'Content-Length': data.length,
     },
   };
+
+  console.log(options);
 
   return await doRequest(options, data);
 };
