@@ -121,7 +121,10 @@ export const getSlackArtifact = async () => {
     // Note: We call this every load and thus the very first time, there may not exist
     // an artifact yet. This allows us to write simpler Github actions without having
     // to proxy input/output inbetween all other steps.
-    await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
+    await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp')
+      .catch((error2) => {
+        console.log('okerr1', error2);
+      });
 
     return {
       channel: fs.readFileSync('/tmp/channel.txt', {
