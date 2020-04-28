@@ -14,13 +14,13 @@ inputs:
   channel":
     description: 'slack channel name with #'
     required: true
-  icon_url":
-    description: 'slack user icon'
-    required: true
+
   username":
     description: 'slack username'
     required: false
-
+  icon_url":
+    description: 'slack user icon'
+    required: true
   fallback:
     description: 'Required plain-text summary of the attachment.'
     required: false

@@ -1,6 +1,18 @@
 import https from 'https';
 import url from 'url';
 
+export function getInput(name, options = {}) {
+  const val = (
+    process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
+  ).trim();
+
+  if (options && options.required && val.length === 0) {
+    throw new Error(`Input required and not supplied: ${name}`);
+  }
+
+  return val;
+}
+
 export function printHttpError(
   response = null,
   body = null,
@@ -31,7 +43,7 @@ export function postSlackMessage(payload) {
     path: endpoint.pathname,
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'Content-Length': data.length,
     },
   };

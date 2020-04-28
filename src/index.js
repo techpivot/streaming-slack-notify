@@ -1,8 +1,4 @@
-import { postSlackMessage } from './utils';
-import * as core from '@actions/core';
-import * as github from '@actions/github';
-
-const notRequired = { required: false };
+import { getInput, postSlackMessage } from './utils';
 
 async function run() {
   try {
@@ -19,12 +15,12 @@ No SLACK_ACCESS_TOKEN secret defined.
 
     // Build the payload
     const payload = {
-      // By default, the channel, username, icon_url are required in the Slack Webhook URL.
-      // Any values specified by the user just override the defaults.
-      channel: core.getInput('channel', notRequired),
-      username: core.getInput('username', notRequired),
-      icon_url: core.getInput('icon_url', notRequired),
+      // Required
+      channel: getInput('channel', { required: true }),
       text: 'replaceme',
+      // Optional
+      username: getInput('username'),
+      icon_url: getInput('icon_url'),
     };
 
     /*
