@@ -83,8 +83,6 @@ async function run() {
     };
 
     const request = https.request(options, (response) => {
-      console.debug('Response received');
-      console.debug(`Status Code: ${response.statusCode}`);
 
       let buffer = '';
 
@@ -93,6 +91,9 @@ async function run() {
       });
 
       response.on('end', () => {
+        console.debug('Response received');
+        console.debug(`Status Code: ${response.statusCode}`);
+
         if (response.statusCode !== 200) {
           console.error(`ERROR: Unable to post message to Slack: ${buffer}`);
           console.error('1', request);
