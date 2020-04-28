@@ -81,40 +81,29 @@ async function run() {
       },
     };
 
-    /*
+
     const request = https.request(options, (res) => {
       console.log(`statusCode: ${res.statusCode}`);
+      let buffer = '';
 
-      res.on('data', (d) => {
-        process.stdout.write(d);
+      res.on('data', (chunk) => {
+        buffer += chunk;
+        console.log('chunk', chunk);
+      });
+
+      // The whole response has been received.
+      response.on('end', () => {
+        console.log('end', JSON.parse(buffer));
       });
     });
 
     request.on('error', (error) => {
-      console.error(error);
+      console.error('error1', error);
     });
-
     request.write(data);
     request.end();
-*/
 
-    https
-      .request(options, (response) => {
-        let buffer = '';
 
-        // A chunk of data has been recieved.
-        response.on('data', (chunk) => {
-          buffer += chunk;
-        });
-
-        // The whole response has been received.
-        response.on('end', () => {
-          console.log(JSON.parse(buffer));
-        });
-      })
-      .on('error', (err) => {
-        console.log('Error1: ' + err.message);
-      });
 
     /*
     https.post(
