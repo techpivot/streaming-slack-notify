@@ -6,11 +6,10 @@ import slackNotify from 'slack-notify';
 const notRequired = { required: false };
 
 
-// most @actions toolkit packages have async methods
 async function run() {
   try {
     if (!process.env.SLACK_WEBHOOK) {
-      throw 'No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret';
+      throw new Error('No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret');
     }
 
     const slack = slackNotify(process.env.SLACK_WEBHOOK);
