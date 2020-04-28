@@ -1,13 +1,18 @@
 import * as github from '@actions/github';
 
 export const getCommitBlocks = () => {
+  const { eventName, sha, ref } = github.context;
+
+  // workflow: 'Main',
+  // organization: // https://avatars1.githubusercontent.com/u/8423420?v=4
+
   return [
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
         text:
-          '*<https://github.com/techpivot/streaming-slack-notify/commit/f17563b10f6e0d84e8429b5a1154a0424e12f2f6|f17563b>*: Fixed a bunch of issues regarding SSL, SAML, and OAUTH2. Good to go.',
+          `*<https://github.com/techpivot/streaming-slack-notify/commit/${sha}|${sha.substring(0, 7)}>*: Fixed a bunch of issues regarding SSL, SAML, and OAUTH2. Good to go.`,
       },
     },
     {
@@ -20,15 +25,15 @@ export const getCommitBlocks = () => {
         },
         {
           type: 'mrkdwn',
-          text: '*<https://github.com/${process.env.GITHUB_ACTOR}|${process.env.GITHUB_ACTOR}>*',
+          text: `*<https://github.com/${process.env.GITHUB_ACTOR}|${process.env.GITHUB_ACTOR}>*`,
         },
         {
           type: 'mrkdwn',
-          text: `*Branch*: ${github.ref}`,
+          text: `*Branch*: ${ref.replace('/ref/heads/', '')}`,
         },
         {
           type: 'mrkdwn',
-          text: `*Event*: ${github.context.event_name}`,
+          text: `*Event*: ${eventName}`,
         },
         {
           type: 'mrkdwn',
