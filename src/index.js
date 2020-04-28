@@ -71,7 +71,7 @@ No SLACK_ACCESS_TOKEN secret defined.
 
     const response = postSlackMessage(payload);
 
-    console.log('response', response);
+    console.log('response: ', response);
 
     /*
     slack.onError = (err) => {

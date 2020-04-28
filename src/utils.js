@@ -13,21 +13,46 @@ export function getInput(name, options = {}) {
   return val;
 }
 
-export function printHttpError(
-  errorMessage,
-  statusCode = null,
-  body = null
-) {
+export function printHttpError(errorMessage, statusCode = null, body = null) {
   console.error(
     `ERROR: Unable to post message to Slack${
       errorMessage !== null ? ': ' + errorMessage : ''
     }\n`
   );
-  console.error(`Response Code: ${response ? response.statusCode : null}`);
+  console.error(`Response Code: ${statusCode}`);
   console.error(`Response Body: ${body}`);
 }
 
-export function postSlackMessage(payload) {
+const doRequest = (options, data) => {
+  return new Promise((resolve, reject) => {
+    const request = https.request(options, (response) => {
+      let body = '';
+
+      response.on('data', (chunk) => {
+        body += chunk;
+      });
+
+      response.on('end', () => {
+        if (response.statusCode !== 200) {
+          printHttpError(body, response.statusCode, body);
+          process.exit(1);
+        }
+
+        resolve(JSON.parse(body));
+      });
+    });
+
+    request.on('error', (error) => {
+      printHttpError(error.message || error);
+      reject(error.message || error);
+      process.exit(1);
+    });
+    request.write(data);
+    request.end();
+  });
+};
+
+export const postSlackMessage = async (payload) => {
   const data = JSON.stringify(
     Object.assign(payload, {
       token: process.env.SLACK_ACCESS_TOKEN,
@@ -48,30 +73,5 @@ export function postSlackMessage(payload) {
     },
   };
 
-  const request = https.request(options, (response) => {
-    let buffer = '';
-
-    response.on('data', (chunk) => {
-      buffer += chunk;
-    });
-
-    response.on('end', () => {
-      console.log('status code', response.statusCode);
-      if (response.statusCode !== 200) {
-
-        printHttpError(buffer, response.statusCode, buffer);
-        process.exit(1);
-      }
-
-      console.log('end', buffer);
-      //JSON.parse(buffer));
-    });
-  });
-
-  request.on('error', (error) => {
-    printHttpError(error.message);
-    process.exit(1);
-  });
-  request.write(data);
-  request.end();
-}
+  return await doRequest(options, data);
+};
