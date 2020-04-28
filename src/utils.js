@@ -38,6 +38,8 @@ const doRequest = (method, payload) => {
     },
   };
 
+  console.debug('payload', payload);
+
   return new Promise((resolve, reject) => {
     const request = https.request(options, (response) => {
       let body = '';
