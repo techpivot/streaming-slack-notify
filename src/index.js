@@ -15,27 +15,24 @@ No SLACK_ACCESS_TOKEN secret defined.
 
     const channel = getInput('channel', { required: true });
     const ts = getInput('ts');
-
     const method = !ts ? 'chat.postMessage' : 'chat.update';
-
-    console.log('channel: ' + channel);
-    console.log('ts: ' + ts);
 
 
     // Build the payload
     const payload = {
       // Required
       channel: getInput('channel', { required: true }),
-      text: 'replaceme',
-      // Optional
-      username: getInput('username'),
-      icon_url: getInput('icon_url'),
     };
 
     if (ts) {
       payload.text = 'REPLACEME NEW';
     } else {
       // Add other required fields for the first post.
+      payload.text = 'replaceme';
+
+      // Optional
+      payload.username = getInput('username');
+      payload.icon_url = getInput('icon_url');
     }
 
     // Build attachments
@@ -94,13 +91,14 @@ No SLACK_ACCESS_TOKEN secret defined.
       .then((json) => {
         console.log(`::set-output name=channel::${json.channel}`);
         console.log(`::set-output name=ts::${json.ts}`);
-        console.log(`'Successfully sent "${method}" payload for channel: ${channel}`)
+        console.log(
+          `'Successfully sent "${method}" payload for channel: ${channel}`
+        );
       })
       .catch((error) => {
         console.error(error);
         process.exit(1);
       });
-
 
     /*
 
