@@ -1,5 +1,4 @@
 export function printHttpError(
-  request,
   response = null,
   body = null,
   errorMessage = null
@@ -9,6 +8,6 @@ export function printHttpError(
       errorMessage !== null ? ': ' + errorMessage : ''
     }\n`
   );
-  console.error(`\nResponse Code: ${response ? response.statusCode : null}`);
+  console.error(`Response Code: ${response ? response.statusCode : null}`);
   console.error(`Response Body: ${body}`);
 }

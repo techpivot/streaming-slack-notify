@@ -90,11 +90,8 @@ async function run() {
       });
 
       response.on('end', () => {
-        console.debug('Response received');
-        console.debug(`Status Code: ${response.statusCode}`);
-
         if (response.statusCode !== 200) {
-          printHttpError(request, response, buffer, buffer);
+          printHttpError(response, buffer, buffer);
           process.exit(1);
         }
 
@@ -104,7 +101,7 @@ async function run() {
     });
 
     request.on('error', (error) => {
-      printHttpError(request, null, null, error.message);
+      printHttpError(null, null, error.message);
       process.exit(1);
     });
     request.write(data);
