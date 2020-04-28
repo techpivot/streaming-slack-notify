@@ -17,10 +17,9 @@ export function printHttpError(
 
 export function postSlackMessage(payload) {
   const data = JSON.stringify(
-    {
+    Object.assign(payload, {
       token: process.env.SLACK_ACCESS_TOKEN,
-    },
-    ...payload
+    })
   );
 
   console.log(data);
