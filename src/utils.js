@@ -58,8 +58,11 @@ const doRequest = (method, payload) => {
           if (json.ok) {
             resolve(json);
           } else if (json.error) {
-            console.debug(json);
-            reject(`Slack Error: ${json.error}`);
+            let error = json.error;
+            if (json.response_metadata && json.response_metadata.messages) {
+              error += `: ${json.response_metadata.messages[0]}`;
+            }
+            reject(`Slack Error: ${error}`);
           } else {
             reject(`Unable to post message: ${body}`);
           }
