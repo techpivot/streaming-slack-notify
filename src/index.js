@@ -33,7 +33,7 @@ async function run() {
     }
     */
 
-    console.log(github.context.commits);
+    console.dir(github.context.repos);
 
     let blocks = [];
     blocks.push(getDividerBlock());

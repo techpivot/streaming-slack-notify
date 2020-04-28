@@ -29,7 +29,7 @@ export const getCommitBlocks = () => {
         },
         {
           type: 'mrkdwn',
-          text: `*Branch*: ${ref.replace('/ref/heads/', '')}`,
+          text: `*Branch*: ${ref.trim('/').replace('ref/heads/', '')}`,
         },
         {
           type: 'mrkdwn',
