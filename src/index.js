@@ -25,8 +25,6 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-
-
     // Build the attachment.
     /*const attachment = {
       title: `${process.env.GITHUB_REPOSITORY}`,
@@ -121,8 +119,6 @@ async function run() {
     await postSlackMessage(method, payload)
       .then((json) => {
         responseJson = json;
-        console.log(`::set-output name=channel::${json.channel}`);
-        console.log(`::set-output name=ts::${json.ts}`);
         console.log(
           `Successfully sent "${method}" payload for channel: ${channel}`
         );
@@ -134,7 +130,7 @@ async function run() {
 
     // Create an artifact
     if (!ts) {
-      await saveSlackArtifact(channel, responseJson.ts);
+      await saveSlackArtifact(responseJson.channel, responseJson.ts);
     }
     /*
 

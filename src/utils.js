@@ -101,7 +101,11 @@ export const saveSlackArtifact = async (channel, timestamp) => {
     fs.writeFileSync('/tmp/ts.txt', timestamp);
     const artifactClient = create();
 
-    await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/channel.txt','/tmp/ts.txt'], '/tmp');
+    await artifactClient.uploadArtifact(
+      ARTIFACT_NAME,
+      ['/tmp/channel.txt', '/tmp/ts.txt'],
+      '/tmp'
+    );
   } finally {
     console.timeEnd('Upload artifact');
   }
