@@ -1,4 +1,4 @@
-import request from 'request';
+import https from 'https';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
@@ -69,7 +69,26 @@ async function run() {
 
     console.log('payload2', payload);
 
-    request.post(
+    https
+      .post(process.env.SLACK_WEBHOOK, (response) => {
+        let data = '';
+
+        // A chunk of data has been recieved.
+        response.on('data', (chunk) => {
+          data += chunk;
+        });
+
+        // The whole response has been received.
+        response.on('end', () => {
+          console.log(JSON.parse(data).explanation);
+        });
+      })
+      .on('error', (err) => {
+        console.log('Error1: ' + err.message);
+      });
+
+    /*
+    https.post(
       process.env.SLACK_WEBHOOK,
       {
         form: {
@@ -92,7 +111,7 @@ async function run() {
 
         console.log('good', response);
       }
-    );
+    ); */
 
     /*
     slack.onError = (err) => {
