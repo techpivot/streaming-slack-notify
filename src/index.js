@@ -1,18 +1,26 @@
+import request from 'request';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import slackNotify from 'slack-notify';
 
-
 const notRequired = { required: false };
-
 
 async function run() {
   try {
     if (!process.env.SLACK_WEBHOOK) {
-      throw new Error('No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret');
+      throw new Error(
+        'No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret'
+      );
     }
 
-    const slack = slackNotify(process.env.SLACK_WEBHOOK);
+    // Build the payload
+    const payload = {
+      // By default, the channel, username, icon_url are required in the Slack Webhook URL.
+      // Any values specified by the user just override the defaults.
+      channel: core.getInput('channel', notRequired),
+      username: core.getInput('username', notRequired),
+      icon_url: core.getInput('icon_url', notRequired),
+    };
 
     /*
     let attachment = {};
@@ -60,18 +68,34 @@ async function run() {
     console.log('context', github.context);
     */
 
+    core.debug('payload');
+    console.log('payload2', payload);
 
+    request.post(
+      process.env.SLACK_WEBHOOK,
+      {
+        form: {
+          payload: JSON.stringify(payload),
+        },
+      },
+      (err, response) => {
+        if (err) {
+          throw new Error(err);
+        }
+        if (response.body !== 'ok') {
+          throw new Error(response.body);
+        }
+
+        console.log('good', response);
+      }
+    );
+
+    /*
     slack.onError = (err) => {
       core.error(`ERROR: ${err}  Action may still succeed though`);
     };
 
     const response = slack.send({
-      // By default, the channel, username, icon_url are required in the Slack Webhook URL.
-      // Any values specified by the user just override the defaults.
-      channel: core.getInput('channel', notRequired),
-      username: core.getInput('username', notRequired),
-      icon_url: core.getInput('icon_url', notRequired),
-
       text: `Github action (${process.env.GITHUB_WORKFLOW}) triggered\n`,
       attachments: [
         {
@@ -82,16 +106,14 @@ async function run() {
           author_link: `https://github.com/${process.env.GITHUB_ACTOR}`,
           author_icon: `https://github.com/${process.env.GITHUB_ACTOR}.png`,
 
-         // color: attachment.color,
+          // color: attachment.color,
           text: `${process.env.GITHUB_REF}`,
           footer: `action -> ${process.env.GITHUB_EVENT_NAME}`,
           thumb_url:
             'https://avatars0.githubusercontent.com/u/44036562?s=200&v=4',
-        }
+        },
       ],
-    });
-
-    console.log('>> ', response);
+    }); */
   } catch (error) {
     core.setFailed(error.message);
   }
