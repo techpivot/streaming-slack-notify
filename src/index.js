@@ -14,6 +14,7 @@ async function run() {
 
     const slack = slackNotify(process.env.SLACK_WEBHOOK);
 
+    /*
     let attachment = {};
     attachment.fallback = core.getInput('fallback', {
       required: false,
@@ -55,32 +56,26 @@ async function run() {
       required: false,
     });
 
-    const channel = core.getInput('channel', {
-      required: true,
-    });
-    const icon_url = core.getInput('icon_url', {
-      required: true,
-    });
-
     //console.log('>>>', process.env);
     console.log('context', github.context);
+    */
 
 
-    slack.onError = function (err) {
-      core.error(`Error ${err}, action may still succeed though`);
+    slack.onError = (err) => {
+      core.error(`ERROR: ${err}  Action may still succeed though`);
     };
 
-
-    slack.send({
-      channel: channel,
-      // It's OKAY if not set. Will use the default webhook username specified
+    const response = slack.send({
+      // By default, the channel, username, icon_url are required in the Slack Webhook URL.
+      // Any values specified by the user just override the defaults.
+      channel: core.getInput('channel', notRequired),
       username: core.getInput('username', notRequired),
-
-      icon_url: icon_url,
+      icon_url: core.getInput('icon_url', notRequired),
 
       text: `Github action (${process.env.GITHUB_WORKFLOW}) triggered\n`,
       attachments: [
         {
+          // Opinionated attachment / status
           title: `${process.env.GITHUB_REPOSITORY}`,
           title_link: `https://github.com/${process.env.GITHUB_REPOSITORY}`,
           author_name: `${process.env.GITHUB_ACTOR}`,
@@ -96,8 +91,10 @@ async function run() {
         attachment,
       ],
     });
+
+    console.log('>> ', response);
   } catch (error) {
-    core.setFailed("FAILED: " +error.message);
+    core.setFailed(error.message);
   }
 }
 
