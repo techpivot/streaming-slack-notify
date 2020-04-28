@@ -1,5 +1,6 @@
 import https from 'https';
 import url from 'url';
+import { printDebugError } from './utils';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
@@ -94,6 +95,8 @@ async function run() {
       response.on('end', () => {
         if (response.statusCode !== 200) {
           console.error(`ERROR: Unable to post message to Slack: ${buffer}`);
+          console.error('1', request);
+          console.error('2', response);
           process.exit(1);
         }
 
