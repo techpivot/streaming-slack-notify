@@ -132,12 +132,30 @@ async function run() {
         await artifactClient.uploadArtifact(
           'slack-message-ts',
           ['/tmp/slack-message-ts.txt'],
-          '/tmp/',
-          {
-            continueOnError: true
-          }
+          '/tmp'
         );
         console.timeEnd('upload');
+      } else {
+
+        // Download artifact
+        console.time('download');
+
+        const artifactClient = create();
+        await artifactClient.downloadArtifact(
+          'slack-message-ts',
+          '/tmp'
+        );
+        console.timeEnd('download');
+        console.time('list');
+        fs.readdir('/tmp', function(err, items) {
+          console.log(items);
+
+          for (var i=0; i<items.length; i++) {
+              console.log(items[i]);
+          }
+        });
+        console.timeEnd('list');
+
       }
     /*
 
