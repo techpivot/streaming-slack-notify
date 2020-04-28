@@ -1,5 +1,6 @@
 import { NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
 import { getInput, postSlackMessage } from './utils';
+import { getDividerBlock, getCommitBlocks } from './ui';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -12,10 +13,29 @@ async function run() {
     const ts = getInput('ts');
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
+    // Build the attachment.
+    /*const attachment = {
+      title: `${process.env.GITHUB_REPOSITORY}`,
+      title_link: `https://github.com/${process.env.GITHUB_REPOSITORY}`,
+      author_name: `${process.env.GITHUB_ACTOR}`,
+      author_link: `https://github.com/${process.env.GITHUB_ACTOR}`,
+      author_icon: `https://github.com/${process.env.GITHUB_ACTOR}.png`,
+    }
+    */
+
+    let blocks = [];
+    blocks.push(getDividerBlock());
+    blocks = blocks.concat(getCommitBlocks());
+
     // Build the payload
     const payload = {
-      // Required
       channel: getInput('channel', { required: true }),
+      attachments: [
+        {
+          color: '#000000',
+          blocks: blocks,
+        },
+      ],
     };
 
     if (ts) {
@@ -24,13 +44,6 @@ async function run() {
     } else {
       // Add other required fields for the first post.
       payload.text = 'replaceme';
-
-      // We ensure the title is the author of the commit push/pull request
-      payload.title = `${process.env.GITHUB_REPOSITORY}`;
-      payload.title_link = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
-      payload.author_name = `${process.env.GITHUB_ACTOR}`;
-      payload.author_link = `https://github.com/${process.env.GITHUB_ACTOR}`;
-      payload.author_icon = `https://github.com/${process.env.GITHUB_ACTOR}.png`;
 
       // Optional
       payload.username = getInput('username');
@@ -97,6 +110,11 @@ async function run() {
         console.log(
           `Successfully sent "${method}" payload for channel: ${channel}`
         );
+
+        // Create an artifact
+        if (!ts) {
+          console.log('create artificat');
+        }
       })
       .catch((error) => {
         console.error(error);

@@ -33,7 +33,6 @@ jobs:
           channel: ${{steps.slack.outputs.channel}}
           ts: ${{steps.slack.outputs.ts}}
 
-
       - name: Slack notification failure
         if: failure()
         env:
