@@ -82,11 +82,11 @@ async function run() {
     };
 
 
-    const request = https.request(options, (res) => {
-      console.log(`statusCode: ${res.statusCode}`);
+    const request = https.request(options, (response) => {
+      console.log(`statusCode: ${response.statusCode}`);
       let buffer = '';
 
-      res.on('data', (chunk) => {
+      response.on('data', (chunk) => {
         buffer += chunk;
         console.log('chunk', chunk);
       });
