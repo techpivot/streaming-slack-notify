@@ -16,8 +16,15 @@ export function printHttpError(
 }
 
 export function postSlackMessage(payload) {
-  const data = JSON.stringify(payload);
-  const endpoint = url.parse(process.env.SLACK_WEBHOOK);
+  const data = JSON.stringify({
+    token: process.env.SLACK_ACCESS_TOKEN,
+  }, payload);
+
+  console.log(payload);
+  console.log(data);
+
+
+  const endpoint = url.parse('https://slack.com/api/chat.postMessage');
   const options = {
     hostname: endpoint.hostname,
     port: endpoint.port,

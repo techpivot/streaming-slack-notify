@@ -7,7 +7,7 @@ branding:
   icon: 'bell'
   color: 'purple'
 env:
-  SLACK_WEBHOOK:
+  SLACK_ACCESS_TOKEN:
     description: 'required'
     required: true
 inputs:

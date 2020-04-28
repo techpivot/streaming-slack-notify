@@ -6,9 +6,9 @@ const notRequired = { required: false };
 
 async function run() {
   try {
-    if (!process.env.SLACK_WEBHOOK) {
+    if (!process.env.SLACK_ACCESS_TOKEN) {
       throw new Error(
-        'No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret'
+        'No SLACK_ACCESS_TOKEN secret defined. Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret'
       );
     }
 
