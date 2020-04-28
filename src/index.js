@@ -23,7 +23,6 @@ async function run() {
       payload.text = 'REPLACEME NEW';
     } else {
       // Add other required fields for the first post.
-      payload.as_user = false;
       payload.text = 'replaceme';
 
       // We ensure the title is the author of the commit push/pull request
