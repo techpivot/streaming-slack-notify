@@ -69,8 +69,7 @@ async function run() {
     console.log('context', github.context);
     */
 
-    console.log('payload2', payload);
-
+    const data = JSON.stringify(payload);
     const endpoint = url.parse(process.env.SLACK_WEBHOOK);
     console.log('>> endpoint', endpoint);
 
@@ -81,7 +80,7 @@ async function run() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': payload.length,
+        'Content-Length': data.length,
       },
     };
 
