@@ -68,7 +68,6 @@ async function run() {
     console.log('context', github.context);
     */
 
-    core.debug('payload');
     console.log('payload2', payload);
 
     request.post(
