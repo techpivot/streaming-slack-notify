@@ -61,6 +61,8 @@ const doRequest = (method, payload) => {
             let error = json.error;
             if (json.response_metadata && json.response_metadata.messages) {
               error += `: ${json.response_metadata.messages[0]}`;
+            } else {
+              error += ` ${JSON.stringify(json)}`;
             }
             console.error('debugerror', json);
             reject(`Slack Error: ${error}`);
