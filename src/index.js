@@ -23,8 +23,9 @@ async function run() {
       channel = getInput('channel', { required: true });
     }
 
-    //const ts = getInput('ts');
     const method = !ts ? 'chat.postMessage' : 'chat.update';
+
+
 
     // Build the attachment.
     /*const attachment = {
