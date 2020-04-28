@@ -1,8 +1,8 @@
-import { NO_SLACK_ACCESS_TOKEN } from './errors';
+import { NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
 import { getInput, postSlackMessage } from './utils';
 
 async function run() {
-  console.time('runtime');
+  console.time(TIMING_EXECUTION_LABEL);
   try {
     if (!process.env.SLACK_ACCESS_TOKEN) {
       throw new Error(NO_SLACK_ACCESS_TOKEN);
@@ -82,7 +82,7 @@ async function run() {
 
     // initial
 
-    postSlackMessage(method, payload)
+    await postSlackMessage(method, payload)
       .then((json) => {
         console.log(`::set-output name=channel::${json.channel}`);
         console.log(`::set-output name=ts::${json.ts}`);
@@ -93,6 +93,9 @@ async function run() {
       .catch((error) => {
         console.error(error);
         process.exit(1);
+      })
+      .then(() => {
+        console.log('lastfinish');
       });
 
     /*
@@ -120,7 +123,7 @@ async function run() {
     console.error(error.message || error);
     process.exit(1);
   } finally {
-    console.debug(`Streaming slack notify finished in ${console.timeEnd('runtime')}`);
+    console.timeEnd(TIMING_EXECUTION_LABEL);
   }
 }
 

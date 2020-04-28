@@ -6,3 +6,5 @@ No SLACK_ACCESS_TOKEN secret defined.
       env:
         SLACK_ACCESS_TOKEN: \${{ secrets.SLACK_ACCESS_TOKEN }}
 `;
+
+export const TIMING_EXECUTION_LABEL = 'Execution runtime';
