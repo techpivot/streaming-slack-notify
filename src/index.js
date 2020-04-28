@@ -1,6 +1,6 @@
 import https from 'https';
 import url from 'url';
-import { printHttpError } from './utils';
+import { printHttpError, postSlackMessage } from './utils';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
@@ -21,6 +21,7 @@ async function run() {
       channel: core.getInput('channel', notRequired),
       username: core.getInput('username', notRequired),
       icon_url: core.getInput('icon_url', notRequired),
+      text: 'replaceme',
     };
 
     /*
@@ -69,69 +70,10 @@ async function run() {
     console.log('context', github.context);
     */
 
-    const data = JSON.stringify(payload);
-    const endpoint = url.parse(process.env.SLACK_WEBHOOK);
-    const options = {
-      hostname: endpoint.hostname,
-      port: endpoint.port,
-      path: endpoint.pathname,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': data.length,
-      },
-    };
 
-    const request = https.request(options, (response) => {
-      let buffer = '';
+    const response = postSlackMessage(payload);
 
-      response.on('data', (chunk) => {
-        buffer += chunk;
-      });
-
-      response.on('end', () => {
-        if (response.statusCode !== 200) {
-          printHttpError(response, buffer, buffer);
-          process.exit(1);
-        }
-
-        console.log('end', buffer);
-        //JSON.parse(buffer));
-      });
-    });
-
-    request.on('error', (error) => {
-      printHttpError(null, null, error.message);
-      process.exit(1);
-    });
-    request.write(data);
-    request.end();
-
-    /*
-    https.post(
-      process.env.SLACK_WEBHOOK,
-      {
-        form: {
-          payload: JSON.stringify(payload),
-        },
-      },
-      (err, response) => {
-        if (err) {
-          console.log('---------error22--------A');
-          console.log(err);
-          console.log('---------error22--------E');
-          throw new Error(err);
-        }
-        if (response.body !== 'ok') {
-          console.log('---------error333--------A');
-          console.log(err);
-          console.log('---------error333--------E');
-          throw new Error(response.body);
-        }
-
-        console.log('good', response);
-      }
-    ); */
+    console.log('response', response);
 
     /*
     slack.onError = (err) => {
