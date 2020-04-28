@@ -33,7 +33,6 @@ async function run() {
     }
     */
 
-
     console.dir(github.context);
     console.dir(process.env);
 
@@ -41,7 +40,6 @@ async function run() {
     blocks.push(getDividerBlock());
     blocks = blocks.concat(getCommitBlocks());
     blocks.push(getDividerBlock());
-
 
     const payload = {
       channel,
@@ -69,10 +67,8 @@ async function run() {
         payload.username = getInput('username');
         payload.icon_url = getInput('icon_url');
         payload.icon_emoji = getInput('icon_emoji');
-      })
-
+      });
     }
-
 
     /*
     let attachment = {};

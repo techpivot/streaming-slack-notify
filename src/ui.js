@@ -1,7 +1,21 @@
 import * as github from '@actions/github';
+import * as Webhooks from '@octokit/webhooks'
 
 export const getCommitBlocks = () => {
-  const { GITHUB_ACTOR, GITHUB_EVENT_NAME , GITHUB_SHA , GITHUB_REF, GITHUB_REPOSITORY } = process.env;
+  const {
+    GITHUB_ACTOR,
+    GITHUB_EVENT_NAME,
+    GITHUB_SHA,
+    GITHUB_REF,
+    GITHUB_REPOSITORY,
+  } = process.env;
+
+  if (github.context.eventName === 'push') {
+    const pushPayload = github.context.payload;
+    console.log('pushpayload', pushPayload);
+    console.log('commits', pushPayload.commits);
+  }
+
 
   // workflow: 'Main',
   // organization: // https://avatars1.githubusercontent.com/u/8423420?v=4
@@ -11,8 +25,10 @@ export const getCommitBlocks = () => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text:
-          `*<https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${GITHUB_SHA.substring(0, 7)}>*: Fixed a bunch of issues regarding SSL, SAML, and OAUTH2. Good to go.`,
+        text: `*<https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${GITHUB_SHA.substring(
+          0,
+          7
+        )}>*: Fixed a bunch of issues regarding SSL, SAML, and OAUTH2. Good to go.`,
       },
     },
     {
@@ -29,7 +45,7 @@ export const getCommitBlocks = () => {
         },
         {
           type: 'mrkdwn',
-          text: `*Branch*: ${GITHUB_REF.trim('/').replace('ref/heads/', '')}`,
+          text: `*Branch*: ${GITHUB_REF.trim('/').replace('refs/heads/', '')}`,
         },
         {
           type: 'mrkdwn',
