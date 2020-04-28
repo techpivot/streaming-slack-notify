@@ -79,11 +79,12 @@ async function run() {
         {
           title: `${process.env.GITHUB_REPOSITORY}`,
           title_link: `https://github.com/${process.env.GITHUB_REPOSITORY}`,
-          color: attachment.color,
-          text: `${process.env.GITHUB_REF}`,
           author_name: `${process.env.GITHUB_ACTOR}`,
           author_link: `https://github.com/${process.env.GITHUB_ACTOR}`,
           author_icon: `https://github.com/${process.env.GITHUB_ACTOR}.png`,
+
+          color: attachment.color,
+          text: `${process.env.GITHUB_REF}`,
           footer: `action -> ${process.env.GITHUB_EVENT_NAME}`,
           thumb_url:
             'https://avatars0.githubusercontent.com/u/44036562?s=200&v=4',
