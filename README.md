@@ -1,6 +1,5 @@
 [![Actions Status](https://github.com/cemkiy/action-slacker/workflows/Main/badge.svg?branch=master)](https://github.com/cemkiy/action-slacker/actions)
 
-
 # Slack - Github Action
 
 A [Github Action](https://github.com/features/actions) to send a message to a Slack channel that supports attachments like images.
@@ -19,35 +18,35 @@ name: Notification on push
 on:
   push:
     branches:
-    - master
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Slack notification
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      uses: cemkiy/action-slacker@master
-      with:
-        # requirements fields for slack
-        channel: '#channel-name'
-        icon_url: 'slack user icon url'
-        username: 'slack username'
-        # attachment fields(not required)
-        fallback: 'Required plain-text summary of the attachment.'
-        color: '#36a64f'
-        pretext: 'Optional text that appears above the attachment block'
-        author_name: 'John Doe'
-        author_link: 'http://jdoe.com/me/'
-        author_icon: 'http://imageurl.com/icons/icon.jpg'
-        title: 'Slack API Documentation'
-        title_link: 'https://api.slack.com/'
-        text: 'Optional text that appears within the attachment'
-        image_url: 'http://my-website.com/path/to/image.jpg'
-        thumb_url: 'http://example.com/path/to/thumb.png'
-        footer: 'Slack API'
-        footer_icon: 'https://platform.slack-edge.com/img/default_application_icon.png'
+      - name: Slack notification
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        uses: cemkiy/action-slacker@master
+        with:
+          # requirements fields for slack
+          channel: '#channel-name'
+          icon_url: 'slack user icon url'
+          username: 'slack username'
+          # attachment fields(not required)
+          fallback: 'Required plain-text summary of the attachment.'
+          color: '#36a64f'
+          pretext: 'Optional text that appears above the attachment block'
+          author_name: 'John Doe'
+          author_link: 'http://jdoe.com/me/'
+          author_icon: 'http://imageurl.com/icons/icon.jpg'
+          title: 'Slack API Documentation'
+          title_link: 'https://api.slack.com/'
+          text: 'Optional text that appears within the attachment'
+          image_url: 'http://my-website.com/path/to/image.jpg'
+          thumb_url: 'http://example.com/path/to/thumb.png'
+          footer: 'Slack API'
+          footer_icon: 'https://platform.slack-edge.com/img/default_application_icon.png'
 ```
 
 ## Output

@@ -4,10 +4,10 @@
   "description": "send slack notification with advanced message format",
   "main": "src/index.js",
   "scripts": {
-    "lint": "eslint index.js",
-    "package": "ncc build --minify --out dist src/index.js",
-    "format": "prettier --check **/*.js *.json",
-    "format:write": "prettier --write -l **/*.js *.json"
+    "lint": "eslint src/**/*.js",
+    "build": "ncc build --minify --out dist src/index.js",
+    "format": "prettier --check **/*.{js,json,yml,md}",
+    "format:write": "prettier --write -l **/*.{js,json,yml,md}"
   },
   "repository": {
     "type": "git",

@@ -11,6 +11,17 @@ env:
     description: 'required'
     required: true
 inputs:
+  channel":
+    description: 'slack channel name with #'
+    required: true
+  icon_url":
+    description: 'slack user icon'
+    required: true
+  username":
+    description: 'slack username'
+    required: true
+
+
   fallback:
     description: 'Required plain-text summary of the attachment.'
     required: false
@@ -52,15 +63,6 @@ inputs:
   footer_icon":
     description: 'footer icon'
     required: false
-  channel":
-    description: 'slack channel name with #'
-    required: true
-  icon_url":
-    description: 'slack user icon'
-    required: true
-  username":
-    description: 'slack username'
-    required: true
 outputs:
   time: # output will be available to future steps
     description: 'The message to output'

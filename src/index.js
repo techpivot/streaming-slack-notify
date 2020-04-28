@@ -1,7 +1,6 @@
 import * as core from '@actions/core';
-import slackNotify from 'slack-notify'
-
-
+import * as github from '@actions/github';
+import slackNotify from 'slack-notify';
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -57,17 +56,18 @@ async function run() {
       required: true,
     });
 
-
     console.log('>>>', process.env);
+    console.log(github.context);
+    const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK;
     console.log('>>> SLACK_WEBHOOK', SLACK_WEBHOOK);
 
-    const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK;
+
+
     const slack = slackNotify(SLACK_WEBHOOK);
 
     slack.onError = function (err) {
       core.error(`Error ${err}, action may still succeed though`);
     };
-
 
     return;
     slack.send({
