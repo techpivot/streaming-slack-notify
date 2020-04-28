@@ -97,8 +97,17 @@ export const saveSlackMessageTimestamp = async (timestamp) => {
   console.time('Upload timestamp artifact');
   fs.writeFileSync('/tmp/ts.txt', timestamp);
   const artifactClient = create();
-  await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/ts.txt'], '/tmp');
-  console.timeEnd('Upload timestamp artifact');
+
+  try {
+    await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/ts.txt'], '/tmp');
+
+    return fs.readFileSync('/tmp/ts.txt', {encoding:'utf8', flag:'r'});
+  } catch (error) {
+    console.error('herr', error);
+    return null;
+  } finally {
+    console.timeEnd('Upload timestamp artifact');
+  }
 };
 
 /**
