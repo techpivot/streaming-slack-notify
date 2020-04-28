@@ -73,11 +73,11 @@ export const postSlackMessage = async (payload) => {
 
   console.log(data);
 
-  const endpoint = url.parse(`https://slack.com/api/chat.postMessage?token=${process.env.SLACK_ACCESS_TOKEN}`);
+  //const endpoint = url.parse(`https://);
   const options = {
-    hostname: endpoint.hostname,
-    port: endpoint.port,
-    path: endpoint.pathname,
+    hostname: 'slack.com',
+    port: 443,
+    path: `/api/chat.postMessage?token=${process.env.SLACK_ACCESS_TOKEN}`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
