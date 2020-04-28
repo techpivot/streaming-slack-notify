@@ -97,6 +97,7 @@ export const saveSlackArtifact = async (channel, timestamp) => {
   console.time('Upload artifact');
 
   try {
+    console.log('>');
     fs.writeFileSync('/tmp/channel.txt', channel);
     fs.writeFileSync('/tmp/ts.txt', timestamp);
     const artifactClient = create();
@@ -121,10 +122,7 @@ export const getSlackArtifact = async () => {
     // Note: We call this every load and thus the very first time, there may not exist
     // an artifact yet. This allows us to write simpler Github actions without having
     // to proxy input/output inbetween all other steps.
-    await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp')
-      .catch((error2) => {
-        console.log('okerr1', error2);
-      });
+    await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
 
     return {
       channel: fs.readFileSync('/tmp/channel.txt', {
@@ -134,7 +132,6 @@ export const getSlackArtifact = async () => {
       ts: fs.readFileSync('/tmp/ts.txt', { encoding: 'utf8', flag: 'r' }),
     };
   } catch (error) {
-    console.log('GOT HERE  err', error);
     // This is okay. error = "Unable to find any artifacts for the associated workflow"
     return {
       channel: null,

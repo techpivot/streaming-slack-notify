@@ -27,7 +27,6 @@ async function run() {
 
 
 
-    return;
     // Build the attachment.
     /*const attachment = {
       title: `${process.env.GITHUB_REPOSITORY}`,
