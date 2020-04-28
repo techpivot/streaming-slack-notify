@@ -105,9 +105,10 @@ async function run() {
     */
 
     // initial
-
+    let responseJson;
     await postSlackMessage(method, payload)
       .then((json) => {
+        responseJson = json;
         console.log(`::set-output name=channel::${json.channel}`);
         console.log(`::set-output name=ts::${json.ts}`);
         console.log(
@@ -115,7 +116,7 @@ async function run() {
         );
       })
       .catch((error) => {
-        console.error(error);
+        console.error(`\u001b[31;1mERROR: ${error}\u001b[0m`);
         process.exit(1);
       });
 
@@ -124,7 +125,7 @@ async function run() {
       if (!ts) {
         console.time('writefile');
         console.log('create artificat');
-        fs.writeFileSync('/tmp/ts.txt', json.ts);
+        fs.writeFileSync('/tmp/ts.txt', responseJson.ts);
         console.timeEnd('writefile');
         console.time('upload');
         const artifactClient = create();
