@@ -99,7 +99,7 @@ async function run() {
 */
 
     https
-      .post(options, (response) => {
+      .request(options, (response) => {
         let data = '';
 
         // A chunk of data has been recieved.
