@@ -13,7 +13,7 @@ async function run() {
       throw 'No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret';
     }
 
-    slack = slackNotify(process.env.SLACK_WEBHOOK);
+    const slack = slackNotify(process.env.SLACK_WEBHOOK);
 
     let attachment = {};
     attachment.fallback = core.getInput('fallback', {
