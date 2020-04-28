@@ -2,13 +2,18 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import slackNotify from 'slack-notify';
 
-const slack = slackNotify(process.env.SLACK_WEBHOOK);
+
 const notRequired = { required: false };
 
 
 // most @actions toolkit packages have async methods
 async function run() {
   try {
+    if (!process.env.SLACK_WEBHOOK) {
+      throw Error('No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret');
+    }
+
+    slack = slackNotify(process.env.SLACK_WEBHOOK);
 
     let attachment = {};
     attachment.fallback = core.getInput('fallback', {
@@ -57,7 +62,6 @@ async function run() {
     const icon_url = core.getInput('icon_url', {
       required: true,
     });
-    const username = );
 
     //console.log('>>>', process.env);
     console.log('context', github.context);
@@ -70,8 +74,8 @@ async function run() {
 
     slack.send({
       channel: channel,
-      // It's okay if not set. Will use the default webhook username specified
-      username: core.getInput('username', { required: false},
+      // It's OKAY if not set. Will use the default webhook username specified
+      username: core.getInput('username', notRequired),
 
       icon_url: icon_url,
 
