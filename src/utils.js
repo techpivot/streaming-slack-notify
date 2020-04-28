@@ -38,7 +38,17 @@ const doRequest = (options, data) => {
           process.exit(1);
         }
 
-        resolve(JSON.parse(body));
+        try {
+          const json = JSON.parse(body);
+
+          if (json.ok) {
+            resolve(json);
+          } else {
+            reject(json.error || `Unable to post message: ${body}`);
+          }
+        } catch (e) {
+          reject(`Unable to parse response body as JSON: ${body}`);
+        }
       });
     });
 
