@@ -20,10 +20,9 @@ export function postSlackMessage(payload) {
     {
       token: process.env.SLACK_ACCESS_TOKEN,
     },
-    payload
+    ...payload
   );
 
-  console.log(payload);
   console.log(data);
 
   const endpoint = url.parse('https://slack.com/api/chat.postMessage');
