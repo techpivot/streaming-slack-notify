@@ -8,12 +8,12 @@ async function run() {
   try {
     if (!process.env.SLACK_ACCESS_TOKEN) {
       throw new Error(`
-        No SLACK_ACCESS_TOKEN secret defined.
+No SLACK_ACCESS_TOKEN secret defined.
 
-         1) Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret
-         2) Update Github workflow with .github/workflows/main.yml to include:
-              env:
-                SLACK_ACCESS_TOKEN: \${{ secrets.SLACK_ACCESS_TOKEN }}
+  1) Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret
+  2) Update Github workflow file (e.g.  ./github/workflows/main.yml) to include:
+      env:
+        SLACK_ACCESS_TOKEN: \${{ secrets.SLACK_ACCESS_TOKEN }}
       `);
     }
 
@@ -72,7 +72,6 @@ async function run() {
     //console.log('>>>', process.env);
     console.log('context', github.context);
     */
-
 
     const response = postSlackMessage(payload);
 
