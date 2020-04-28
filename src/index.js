@@ -93,7 +93,8 @@ async function run() {
 
       // The whole response has been received.
       response.on('end', () => {
-        console.log('end', JSON.parse(buffer));
+        console.log('end', buffer);
+        //JSON.parse(buffer));
       });
     });
 
