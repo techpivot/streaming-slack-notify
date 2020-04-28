@@ -87,8 +87,7 @@ async function run() {
           footer: `action -> ${process.env.GITHUB_EVENT_NAME}`,
           thumb_url:
             'https://avatars0.githubusercontent.com/u/44036562?s=200&v=4',
-        },
-        attachment,
+        }
       ],
     });
 
