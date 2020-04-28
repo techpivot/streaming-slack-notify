@@ -34,6 +34,8 @@ No SLACK_ACCESS_TOKEN secret defined.
 
     if (ts) {
       payload.text = 'REPLACEME NEW';
+    } else {
+      // Add other required fields for the first post.
     }
 
     // Build attachments

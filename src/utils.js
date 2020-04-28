@@ -79,6 +79,6 @@ const doRequest = (method, payload) => {
 };
 
 export const postSlackMessage = async (method, payload) => {
-  return await doRequest(method, data);
+  return await doRequest(method, payload);
 };
 
