@@ -1,4 +1,5 @@
 import https from 'https';
+import url from 'url';
 
 export function printHttpError(
   response = null,

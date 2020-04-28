@@ -1,6 +1,4 @@
-import https from 'https';
-import url from 'url';
-import { printHttpError, postSlackMessage } from './utils';
+import { postSlackMessage } from './utils';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
@@ -100,10 +98,7 @@ async function run() {
       ],
     }); */
   } catch (error) {
-    console.log('---------error--------A');
     console.error(error.message || error);
-    console.log('---------error--------E');
-
     process.exit(1);
   }
 }
