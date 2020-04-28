@@ -125,14 +125,14 @@ async function run() {
       if (!ts) {
         console.time('writefile');
         console.log('create artificat');
-        fs.writeFileSync('~/slack-message-ts.txt', responseJson.ts);
+        fs.writeFileSync('/tmp/slack-message-ts.txt', responseJson.ts);
         console.timeEnd('writefile');
         console.time('upload');
         const artifactClient = create();
         await artifactClient.uploadArtifact(
           'slack-message-ts',
           'slack-message-ts.txt',
-          '~/',
+          '/tmp/',
           {
             continueOnError: true
           }
