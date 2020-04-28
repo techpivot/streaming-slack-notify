@@ -33,7 +33,9 @@ async function run() {
     }
     */
 
-    console.dir(github.context.repos);
+
+    console.dir(github.context);
+    console.dir(process.env);
 
     let blocks = [];
     blocks.push(getDividerBlock());

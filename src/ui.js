@@ -1,7 +1,7 @@
 import * as github from '@actions/github';
 
 export const getCommitBlocks = () => {
-  const { eventName, sha, ref } = github.context;
+  const { GITHUB_ACTOR, GITHUB_EVENT_NAME , GITHUB_SHA , GITHUB_REF, GITHUB_REPOSITORY } = process.env;
 
   // workflow: 'Main',
   // organization: // https://avatars1.githubusercontent.com/u/8423420?v=4
@@ -12,7 +12,7 @@ export const getCommitBlocks = () => {
       text: {
         type: 'mrkdwn',
         text:
-          `*<https://github.com/techpivot/streaming-slack-notify/commit/${sha}|${sha.substring(0, 7)}>*: Fixed a bunch of issues regarding SSL, SAML, and OAUTH2. Good to go.`,
+          `*<https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${GITHUB_SHA.substring(0, 7)}>*: Fixed a bunch of issues regarding SSL, SAML, and OAUTH2. Good to go.`,
       },
     },
     {
@@ -20,20 +20,20 @@ export const getCommitBlocks = () => {
       elements: [
         {
           type: 'image',
-          image_url: `https://github.com/${process.env.GITHUB_ACTOR}.png`,
-          alt_text: process.env.GITHUB_ACTOR,
+          image_url: `https://github.com/${GITHUB_ACTOR}.png`,
+          alt_text: GITHUB_ACTOR,
         },
         {
           type: 'mrkdwn',
-          text: `*<https://github.com/${process.env.GITHUB_ACTOR}|${process.env.GITHUB_ACTOR}>*`,
+          text: `*<https://github.com/${GITHUB_ACTOR}|${GITHUB_ACTOR}>*`,
         },
         {
           type: 'mrkdwn',
-          text: `*Branch*: ${ref.trim('/').replace('ref/heads/', '')}`,
+          text: `*Branch*: ${GITHUB_REF.trim('/').replace('ref/heads/', '')}`,
         },
         {
           type: 'mrkdwn',
-          text: `*Event*: ${eventName}`,
+          text: `*Event*: ${GITHUB_EVENT_NAME}`,
         },
         {
           type: 'mrkdwn',
