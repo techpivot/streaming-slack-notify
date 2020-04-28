@@ -1,6 +1,8 @@
+import fs from 'fs';
 import { NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
 import { getInput, postSlackMessage } from './utils';
 import { getDividerBlock, getCommitBlocks } from './ui';
+import {create, UploadOptions} from '@actions/artifact'
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -26,6 +28,7 @@ async function run() {
     let blocks = [];
     blocks.push(getDividerBlock());
     blocks = blocks.concat(getCommitBlocks());
+    blocks.push(getDividerBlock());
 
     // Build the payload
     const payload = {
@@ -110,17 +113,31 @@ async function run() {
         console.log(
           `Successfully sent "${method}" payload for channel: ${channel}`
         );
-
-        // Create an artifact
-        if (!ts) {
-          console.log('create artificat');
-        }
       })
       .catch((error) => {
         console.error(error);
         process.exit(1);
       });
 
+
+      // Create an artifact
+      if (!ts) {
+        console.time('writefile');
+        console.log('create artificat');
+        fs.writeFileSync('/tmp/ts.txt', json.ts);
+        console.timeEnd('writefile');
+        console.time('upload');
+        const artifactClient = create();
+        await artifactClient.uploadArtifact(
+          'slack-artifact',
+          'ts.txt',
+          '/tmp',
+          {
+            continueOnError: true
+          }
+        );
+        console.timeEnd('upload');
+      }
     /*
 
     const response = slack.send({

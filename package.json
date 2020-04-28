@@ -29,7 +29,9 @@
   "author": "TechPivot",
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notifyr#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@actions/artifact": "^0.3.1"
+  },
   "devDependencies": {
     "@zeit/ncc": "^0.22.1",
     "eslint": "6.8.0",
