@@ -56,7 +56,7 @@ async function run() {
       required: true,
     });
     const username = core.getInput('username', {
-      required: true,
+      required: false,
     });
 
     //console.log('>>>', process.env);
