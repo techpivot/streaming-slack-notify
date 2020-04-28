@@ -1,22 +1,16 @@
+import { NO_SLACK_ACCESS_TOKEN } from './errors';
 import { getInput, postSlackMessage } from './utils';
 
 async function run() {
+  console.time('runtime');
   try {
     if (!process.env.SLACK_ACCESS_TOKEN) {
-      throw new Error(`
-No SLACK_ACCESS_TOKEN secret defined.
-
-  1) Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret
-  2) Update Github workflow file (e.g.  ./github/workflows/main.yml) to include:
-      env:
-        SLACK_ACCESS_TOKEN: \${{ secrets.SLACK_ACCESS_TOKEN }}
-      `);
+      throw new Error(NO_SLACK_ACCESS_TOKEN);
     }
 
     const channel = getInput('channel', { required: true });
     const ts = getInput('ts');
     const method = !ts ? 'chat.postMessage' : 'chat.update';
-
 
     // Build the payload
     const payload = {
@@ -125,6 +119,8 @@ No SLACK_ACCESS_TOKEN secret defined.
   } catch (error) {
     console.error(error.message || error);
     process.exit(1);
+  } finally {
+    console.debug(`Streaming slack notify finished in ${console.timeEnd('runtime')}`);
   }
 }
 
