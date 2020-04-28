@@ -160,7 +160,7 @@ async function run() {
       ],
     }); */
   } catch (error) {
-    console.error(`u001b[31m${error.message || error}\u001b[0m`);
+    console.error(`\u001b[1m\u001b[31m${error.message || error}\u001b[0m`);
     process.exit(1);
   } finally {
     console.timeEnd(TIMING_EXECUTION_LABEL);
