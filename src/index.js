@@ -82,7 +82,7 @@ async function run() {
           author_link: `https://github.com/${process.env.GITHUB_ACTOR}`,
           author_icon: `https://github.com/${process.env.GITHUB_ACTOR}.png`,
 
-          color: attachment.color,
+         // color: attachment.color,
           text: `${process.env.GITHUB_REF}`,
           footer: `action -> ${process.env.GITHUB_EVENT_NAME}`,
           thumb_url:
