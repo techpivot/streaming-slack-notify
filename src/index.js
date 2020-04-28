@@ -131,7 +131,7 @@ async function run() {
         const artifactClient = create();
         await artifactClient.uploadArtifact(
           'slack-message-ts',
-          'slack-message-ts.txt',
+          ['/tmp/slack-message-ts.txt'],
           '/tmp/',
           {
             continueOnError: true
