@@ -69,9 +69,12 @@ No SLACK_ACCESS_TOKEN secret defined.
     console.log('context', github.context);
     */
 
-    const response = postSlackMessage(payload);
+    postSlackMessage(payload)
+      .then((json) => {
+        console.log('response: ', json);
+      });
 
-    console.log('response: ', response);
+
 
     /*
     slack.onError = (err) => {
