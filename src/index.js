@@ -1,6 +1,5 @@
 import https from 'https';
 import url from 'url';
-
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
@@ -71,8 +70,6 @@ async function run() {
 
     const data = JSON.stringify(payload);
     const endpoint = url.parse(process.env.SLACK_WEBHOOK);
-    console.log('>> endpoint', endpoint);
-
     const options = {
       hostname: endpoint.hostname,
       port: endpoint.port,
@@ -84,7 +81,8 @@ async function run() {
       },
     };
 
-    const req = https.request(options, (res) => {
+    /*
+    const request = https.request(options, (res) => {
       console.log(`statusCode: ${res.statusCode}`);
 
       res.on('data', (d) => {
@@ -92,17 +90,16 @@ async function run() {
       });
     });
 
-    req.on('error', (error) => {
+    request.on('error', (error) => {
       console.error(error);
     });
 
-    req.write(data);
-    req.end();
-
-    /*
+    request.write(data);
+    request.end();
+*/
 
     https
-      .post(process.env.SLACK_WEBHOOK, (response) => {
+      .post(options, (response) => {
         let data = '';
 
         // A chunk of data has been recieved.
@@ -118,7 +115,7 @@ async function run() {
       .on('error', (err) => {
         console.log('Error1: ' + err.message);
       });
-*/
+
     /*
     https.post(
       process.env.SLACK_WEBHOOK,
