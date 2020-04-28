@@ -1,6 +1,6 @@
 import https from 'https';
 import url from 'url';
-import { printDebugError } from './utils';
+import { printHttpError } from './utils';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 
@@ -83,7 +83,6 @@ async function run() {
     };
 
     const request = https.request(options, (response) => {
-
       let buffer = '';
 
       response.on('data', (chunk) => {
@@ -95,9 +94,7 @@ async function run() {
         console.debug(`Status Code: ${response.statusCode}`);
 
         if (response.statusCode !== 200) {
-          console.error(`ERROR: Unable to post message to Slack: ${buffer}`);
-          console.error('1', request);
-          console.error('2', response);
+          printHttpError(request, response, buffer, buffer);
           process.exit(1);
         }
 
@@ -107,7 +104,8 @@ async function run() {
     });
 
     request.on('error', (error) => {
-      console.error('error1', error);
+      printHttpError(request, null, null, error.message);
+      process.exit(1);
     });
     request.write(data);
     request.end();
