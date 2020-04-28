@@ -95,7 +95,7 @@ async function run() {
         console.log(`::set-output name=channel::${json.channel}`);
         console.log(`::set-output name=ts::${json.ts}`);
         console.log(
-          `'Successfully sent "${method}" payload for channel: ${channel}`
+          `Successfully sent "${method}" payload for channel: ${channel}`
         );
       })
       .catch((error) => {
