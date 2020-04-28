@@ -3,6 +3,8 @@ import * as github from '@actions/github';
 import slackNotify from 'slack-notify';
 
 const slack = slackNotify(process.env.SLACK_WEBHOOK);
+const notRequired = { required: false };
+
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -55,9 +57,7 @@ async function run() {
     const icon_url = core.getInput('icon_url', {
       required: true,
     });
-    const username = core.getInput('username', {
-      required: false,
-    });
+    const username = );
 
     //console.log('>>>', process.env);
     console.log('context', github.context);
@@ -70,7 +70,8 @@ async function run() {
 
     slack.send({
       channel: channel,
-      username: username,
+      // It's okay if not set. Will use the default webhook username specified
+      username: core.getInput('username', { required: false},
 
       icon_url: icon_url,
 
