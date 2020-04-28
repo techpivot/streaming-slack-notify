@@ -100,11 +100,6 @@ export const saveSlackMessageTimestamp = async (timestamp) => {
 
   try {
     await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/ts.txt'], '/tmp');
-
-    return fs.readFileSync('/tmp/ts.txt', {encoding:'utf8', flag:'r'});
-  } catch (error) {
-    console.error('herr', error);
-    return null;
   } finally {
     console.timeEnd('Upload timestamp artifact');
   }
@@ -119,14 +114,17 @@ export const getSlackMessageTimestamp = async () => {
   console.time('Download timestamp artifact');
 
   const artifactClient = create();
-  await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
+  try {
+    // Note: We call this every load and thus the very first time, there may not exist
+    // an artifact yet. This allows us to write simpler Github actions without having
+    // to proxy input/output inbetween all other steps.
+    await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
 
-  fs.readdir('/tmp', function (err, items) {
-    console.log(items);
-
-    for (var i = 0; i < items.length; i++) {
-      console.log(items[i]);
-    }
-  });
-  console.timeEnd('Download timestamp artifact');
+    return fs.readFileSync('/tmp/ts.txt', {encoding:'utf8', flag:'r'});
+  } catch (error) {
+    console.error('herr', error);
+    return null;
+  } finally {
+    console.timeEnd('Download timestamp artifact');
+  }
 };
