@@ -1,5 +1,4 @@
 import * as github from '@actions/github';
-import * as Webhooks from '@octokit/webhooks'
 
 export const getCommitBlocks = () => {
   const {
