@@ -93,38 +93,50 @@ export const postSlackMessage = async (method, payload) => {
   return await doRequest(method, payload);
 };
 
-export const saveSlackMessageTimestamp = async (timestamp) => {
-  console.time('Upload timestamp artifact');
-  fs.writeFileSync('/tmp/ts.txt', timestamp);
-  const artifactClient = create();
+export const saveSlackArtifact = async (channel, timestamp) => {
+  console.time('Upload artifact');
 
   try {
+    fs.writeFileSync('/tmp/channel.txt', channel);
+    fs.writeFileSync('/tmp/ts.txt', timestamp);
+    const artifactClient = create();
+
     await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/ts.txt'], '/tmp');
   } finally {
-    console.timeEnd('Upload timestamp artifact');
+    console.timeEnd('Upload artifact');
   }
 };
 
 /**
  * Returns the string timestamp or null.
  *
- * @return The slack message for this workflow or null if one has not yet been created
+ * @return object { ts, channel } The values are null if not specified
  */
-export const getSlackMessageTimestamp = async () => {
-  console.time('Download timestamp artifact');
+export const getSlackArtifact = async () => {
+  console.time('Download artifact');
 
-  const artifactClient = create();
   try {
+    const artifactClient = create();
+
     // Note: We call this every load and thus the very first time, there may not exist
     // an artifact yet. This allows us to write simpler Github actions without having
     // to proxy input/output inbetween all other steps.
     await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
 
-    return fs.readFileSync('/tmp/ts.txt', {encoding:'utf8', flag:'r'});
-  } catch (error) {
-    console.error('herr', error);
-    return null;
+    return {
+      channel: fs.readFileSync('/tmp/channel.txt', {
+        encoding: 'utf8',
+        flag: 'r',
+      }),
+      ts: fs.readFileSync('/tmp/ts.txt', { encoding: 'utf8', flag: 'r' }),
+    };
+  } catch {
+    // This is okay. error = "Unable to find any artifacts for the associated workflow"
+    return {
+      channel: null,
+      ts: null,
+    };
   } finally {
-    console.timeEnd('Download timestamp artifact');
+    console.timeEnd('Download artifact');
   }
 };

@@ -1,10 +1,9 @@
-import fs from 'fs';
 import { NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
 import {
   getInput,
   postSlackMessage,
-  getSlackMessageTimestamp,
-  saveSlackMessageTimestamp,
+  getSlackArtifact,
+  saveSlackArtifact,
 } from './utils';
 import { getDividerBlock, getCommitBlocks } from './ui';
 
@@ -15,10 +14,14 @@ async function run() {
       throw new Error(NO_SLACK_ACCESS_TOKEN);
     }
 
-    const channel = getInput('channel', { required: true });
+    let { channel, ts } = await getSlackArtifact();
 
-    const ts = await getSlackMessageTimestamp();
-    console.log('>>> WOOT', ts);
+    console.log('>channel', channel);
+    console.log('>ts', ts);
+
+    if (!channel) {
+      channel = getInput('channel', { required: true });
+    }
 
     //const ts = getInput('ts');
     const method = !ts ? 'chat.postMessage' : 'chat.update';
@@ -130,7 +133,7 @@ async function run() {
 
     // Create an artifact
     if (!ts) {
-      await saveSlackMessageTimestamp(responseJson.ts);
+      await saveSlackArtifact(channel, responseJson.ts);
     }
     /*
 
