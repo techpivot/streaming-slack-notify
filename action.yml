@@ -20,7 +20,13 @@ inputs:
     required: false
   icon_url":
     description: 'slack user icon'
-    required: true
+    required: false
+  icon_emoji":
+    description: 'slack user icon'
+    required: false
+
+
+
   fallback:
     description: 'Required plain-text summary of the attachment.'
     required: false

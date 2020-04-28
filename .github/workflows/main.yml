@@ -30,6 +30,9 @@ jobs:
           channel: ${{steps.slack.outputs.channel}}
           ts: ${{steps.slack.outputs.ts}}
 
+      - name: Set the value
+        run: sleep 5
+
       - name: Slack notification failure
         if: failure()
         env:

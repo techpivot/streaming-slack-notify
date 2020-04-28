@@ -23,11 +23,20 @@ async function run() {
       payload.text = 'REPLACEME NEW';
     } else {
       // Add other required fields for the first post.
+      payload.as_user = false;
       payload.text = 'replaceme';
+
+      // We ensure the title is the author of the commit push/pull request
+      paylod.title = `${process.env.GITHUB_REPOSITORY}`;
+      paylod.title_link = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+      paylod.author_name = `${process.env.GITHUB_ACTOR}`;
+      paylod.author_link = `https://github.com/${process.env.GITHUB_ACTOR}`;
+      paylod.author_icon = `https://github.com/${process.env.GITHUB_ACTOR}.png`;
 
       // Optional
       payload.username = getInput('username');
-      payload.icon_url = getInput('icon_url');
+      //#payload.icon_url = getInput('icon_url');
+      payload.icon_emoji = 'thumbsup';
     }
 
     // Build attachments
@@ -93,9 +102,6 @@ async function run() {
       .catch((error) => {
         console.error(error);
         process.exit(1);
-      })
-      .then(() => {
-        console.log('lastfinish');
       });
 
     /*
