@@ -1,7 +1,6 @@
 import request from 'request';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import slackNotify from 'slack-notify';
 
 const notRequired = { required: false };
 
@@ -79,6 +78,9 @@ async function run() {
       },
       (err, response) => {
         if (err) {
+          console.log('---------error22--------A');
+          console.log(err);
+          console.log('---------error22--------E');
           throw new Error(err);
         }
         if (response.body !== 'ok') {
@@ -114,6 +116,9 @@ async function run() {
       ],
     }); */
   } catch (error) {
+    console.log('---------error--------A');
+    console.log(error);
+    console.log('---------error--------E');
     core.setFailed(error.message);
   }
 }
