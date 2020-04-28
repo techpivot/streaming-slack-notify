@@ -17,9 +17,9 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         uses: techpivot/streaming-slack-notify@master
         with:
-          channel: '#team-devops'
+          channel: '#builds'
+          username: 'github-actions'
           color: '#00FFAA'
-          username: 'github'
           icon_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
           image_url: 'https://storage.googleapis.com/slack-images-cyclops/ci/It_Compiles_Ship_It.png'
 

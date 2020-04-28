@@ -2,9 +2,12 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import slackNotify from 'slack-notify';
 
+const slack = slackNotify(process.env.SLACK_WEBHOOK);
+
 // most @actions toolkit packages have async methods
 async function run() {
   try {
+
     let attachment = {};
     attachment.fallback = core.getInput('fallback', {
       required: false,
@@ -57,23 +60,20 @@ async function run() {
     });
 
     //console.log('>>>', process.env);
-    //console.log(github.context);
-    const SLACK_WEBHOOK = process.env.SLACK_WEBHOOK;
-    console.log('>>> SLACK_WEBHOOK', SLACK_WEBHOOK);
+    console.log('context', github.context);
 
-
-
-    const slack = slackNotify(SLACK_WEBHOOK);
 
     slack.onError = function (err) {
       core.error(`Error ${err}, action may still succeed though`);
     };
 
-    return;
+
     slack.send({
       channel: channel,
-      icon_url: icon_url,
       username: username,
+
+      icon_url: icon_url,
+
       text: `Github action (${process.env.GITHUB_WORKFLOW}) triggered\n`,
       attachments: [
         {

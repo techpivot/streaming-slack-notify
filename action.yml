@@ -21,7 +21,6 @@ inputs:
     description: 'slack username'
     required: true
 
-
   fallback:
     description: 'Required plain-text summary of the attachment.'
     required: false
@@ -66,4 +65,3 @@ inputs:
 outputs:
   time: # output will be available to future steps
     description: 'The message to output'
-
