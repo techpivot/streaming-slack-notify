@@ -69,9 +69,14 @@ No SLACK_ACCESS_TOKEN secret defined.
     console.log('context', github.context);
     */
 
+    // initial
     postSlackMessage(payload)
       .then((json) => {
-        console.log('response: ', json);
+        console.log(`::set-output name=channel::${json.channel}`);
+        console.log(`::set-output name=ts::${json.ts}`);
+
+        console.log(`Xet-output name=channel::${json.channel}`);
+        console.log(`Xet-output name=ts::${json.ts}`);
       })
       .catch((error) => {
         console.error(error);
@@ -79,9 +84,6 @@ No SLACK_ACCESS_TOKEN secret defined.
       });
 
     /*
-    slack.onError = (err) => {
-      core.error(`ERROR: ${err}  Action may still succeed though`);
-    };
 
     const response = slack.send({
       text: `Github action (${process.env.GITHUB_WORKFLOW}) triggered\n`,

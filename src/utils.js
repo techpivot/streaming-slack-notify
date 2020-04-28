@@ -66,14 +66,6 @@ const doRequest = (options, data) => {
 
 export const postSlackMessage = async (payload) => {
   const data = JSON.stringify(payload);
-  /*
-    Object.assign(payload, {
-      token: process.env.SLACK_ACCESS_TOKEN,
-    })
-  );*/
-
-  console.log(data);
-
   const endpoint = url.parse('https://slack.com//api/chat.postMessage');
   const options = {
     hostname: endpoint.hostname,
@@ -86,8 +78,6 @@ export const postSlackMessage = async (payload) => {
       'Content-Length': data.length,
     },
   };
-
-  console.log(options);
 
   return await doRequest(options, data);
 };

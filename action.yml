@@ -63,5 +63,7 @@ inputs:
     description: 'footer icon'
     required: false
 outputs:
-  time: # output will be available to future steps
+  ts: # output will be available to future steps
+    description: 'The message to output'
+  channel: # output will be available to future steps
     description: 'The message to output'

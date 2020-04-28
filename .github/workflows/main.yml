@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Slack notification success
-        if: success()
+      - name: Slack Notify Init
+        id: slack
         env:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
@@ -21,6 +21,14 @@ jobs:
           color: '#00FFAA'
           icon_url: 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
           image_url: 'https://storage.googleapis.com/slack-images-cyclops/ci/It_Compiles_Ship_It.png'
+
+      - name: Slack Notify
+        env:
+          SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
+        uses: techpivot/streaming-slack-notify@master
+        with:
+          channel: ${{steps.slack.outputs.channel}}
+          ts: ${{steps.slack.outputs.ts}}
 
       - name: Slack notification failure
         if: failure()
