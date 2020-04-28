@@ -93,7 +93,9 @@ async function run() {
         console.debug(`Status Code: ${response.statusCode}`);
 
         if (response.statusCode !== 200) {
-          throw new Error(`ERROR: Unable to post message to Slack: ${buffer}`);
+          //throw new Error(`ERROR: Unable to post message to Slack: ${buffer}`);
+          console.error(`Unable to post message to Slack: ${buffer}`);
+          process.exit(1);
         }
 
         console.log('end', buffer);
