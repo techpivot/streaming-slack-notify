@@ -27,11 +27,11 @@ async function run() {
       payload.text = 'replaceme';
 
       // We ensure the title is the author of the commit push/pull request
-      paylod.title = `${process.env.GITHUB_REPOSITORY}`;
-      paylod.title_link = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
-      paylod.author_name = `${process.env.GITHUB_ACTOR}`;
-      paylod.author_link = `https://github.com/${process.env.GITHUB_ACTOR}`;
-      paylod.author_icon = `https://github.com/${process.env.GITHUB_ACTOR}.png`;
+      payload.title = `${process.env.GITHUB_REPOSITORY}`;
+      payload.title_link = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+      payload.author_name = `${process.env.GITHUB_ACTOR}`;
+      payload.author_link = `https://github.com/${process.env.GITHUB_ACTOR}`;
+      payload.author_icon = `https://github.com/${process.env.GITHUB_ACTOR}.png`;
 
       // Optional
       payload.username = getInput('username');
