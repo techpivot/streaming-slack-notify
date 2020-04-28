@@ -130,7 +130,7 @@ export const getSlackArtifact = async () => {
       }),
       ts: fs.readFileSync('/tmp/ts.txt', { encoding: 'utf8', flag: 'r' }),
     };
-  } catch {
+  } catch (error) {
     // This is okay. error = "Unable to find any artifacts for the associated workflow"
     return {
       channel: null,
