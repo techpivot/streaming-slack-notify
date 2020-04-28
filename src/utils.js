@@ -14,9 +14,9 @@ export function getInput(name, options = {}) {
 }
 
 export function printHttpError(
-  response = null,
-  body = null,
-  errorMessage = null
+  errorMessage,
+  statusCode = null,
+  body = null
 ) {
   console.error(
     `ERROR: Unable to post message to Slack${
@@ -56,8 +56,10 @@ export function postSlackMessage(payload) {
     });
 
     response.on('end', () => {
+      console.log('status code', response.statusCode);
       if (response.statusCode !== 200) {
-        printHttpError(response, buffer, buffer);
+
+        printHttpError(buffer, response.statusCode, buffer);
         process.exit(1);
       }
 
@@ -67,7 +69,7 @@ export function postSlackMessage(payload) {
   });
 
   request.on('error', (error) => {
-    printHttpError(null, null, error.message);
+    printHttpError(error.message);
     process.exit(1);
   });
   request.write(data);
