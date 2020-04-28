@@ -81,18 +81,21 @@ async function run() {
       },
     };
 
-
     const request = https.request(options, (response) => {
-      console.log(`statusCode: ${response.statusCode}`);
       let buffer = '';
 
       response.on('data', (chunk) => {
         buffer += chunk;
-        console.log('chunk', chunk);
       });
 
-      // The whole response has been received.
       response.on('end', () => {
+        console.debug('Response received');
+        console.debug(`Status Code: ${response.statusCode}`);
+
+        if (response.statusCode !== 200) {
+          throw new Error(`ERROR: Unable to post message to Slack: ${buffer}`);
+        }
+
         console.log('end', buffer);
         //JSON.parse(buffer));
       });
@@ -103,8 +106,6 @@ async function run() {
     });
     request.write(data);
     request.end();
-
-
 
     /*
     https.post(
