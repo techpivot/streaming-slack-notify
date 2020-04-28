@@ -19,7 +19,7 @@ inputs:
     required: true
   username":
     description: 'slack username'
-    required: true
+    required: false
 
   fallback:
     description: 'Required plain-text summary of the attachment.'
