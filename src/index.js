@@ -13,6 +13,13 @@ No SLACK_ACCESS_TOKEN secret defined.
       `);
     }
 
+    const channel = getInput('channel', { required: true });
+    const ts = getInput('ts');
+
+    console.log('channel: ' + channel);
+    console.log('ts: ' + ts);
+
+
     // Build the payload
     const payload = {
       // Required
