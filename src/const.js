@@ -8,3 +8,5 @@ No SLACK_ACCESS_TOKEN secret defined.
 `;
 
 export const TIMING_EXECUTION_LABEL = 'Execution runtime';
+
+export const ARTIFACT_NAME = 'techpivot-streaming-slack-notifier.zip';

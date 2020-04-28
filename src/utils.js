@@ -1,5 +1,8 @@
+import fs from 'fs';
 import https from 'https';
 import url from 'url';
+import { create } from '@actions/artifact';
+import { ARTIFACT_NAME } from './const';
 
 export function getInput(name, options = {}) {
   const val = (
@@ -88,4 +91,33 @@ const doRequest = (method, payload) => {
 
 export const postSlackMessage = async (method, payload) => {
   return await doRequest(method, payload);
+};
+
+export const saveSlackMessageTimestamp = async (timestamp) => {
+  console.time('Upload timestamp artifact');
+  fs.writeFileSync('/tmp/ts.txt', timestamp);
+  const artifactClient = create();
+  await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/ts.txt'], '/tmp');
+  console.timeEnd('Upload timestamp artifact');
+};
+
+/**
+ * Returns the string timestamp or null.
+ *
+ * @return The slack message for this workflow or null if one has not yet been created
+ */
+export const getSlackMessageTimestamp = async () => {
+  console.time('Download timestamp artifact');
+
+  const artifactClient = create();
+  await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
+
+  fs.readdir('/tmp', function (err, items) {
+    console.log(items);
+
+    for (var i = 0; i < items.length; i++) {
+      console.log(items[i]);
+    }
+  });
+  console.timeEnd('Download timestamp artifact');
 };

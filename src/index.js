@@ -1,8 +1,12 @@
 import fs from 'fs';
 import { NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
-import { getInput, postSlackMessage } from './utils';
+import {
+  getInput,
+  postSlackMessage,
+  getSlackMessageTimestamp,
+  saveSlackMessageTimestamp,
+} from './utils';
 import { getDividerBlock, getCommitBlocks } from './ui';
-import {create, UploadOptions} from '@actions/artifact'
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -12,7 +16,11 @@ async function run() {
     }
 
     const channel = getInput('channel', { required: true });
-    const ts = getInput('ts');
+
+    const ts = await getSlackMessageTimestamp();
+    console.log('>>> WOOT', ts);
+
+    //const ts = getInput('ts');
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
     // Build the attachment.
@@ -120,43 +128,10 @@ async function run() {
         process.exit(1);
       });
 
-
-      // Create an artifact
-      if (!ts) {
-        console.time('writefile');
-        console.log('create artificat');
-        fs.writeFileSync('/tmp/slack-message-ts.txt', responseJson.ts);
-        console.timeEnd('writefile');
-        console.time('upload');
-        const artifactClient = create();
-        await artifactClient.uploadArtifact(
-          'slack-message-ts',
-          ['/tmp/slack-message-ts.txt'],
-          '/tmp'
-        );
-        console.timeEnd('upload');
-      } else {
-
-        // Download artifact
-        console.time('download');
-
-        const artifactClient = create();
-        await artifactClient.downloadArtifact(
-          'slack-message-ts',
-          '/tmp'
-        );
-        console.timeEnd('download');
-        console.time('list');
-        fs.readdir('/tmp', function(err, items) {
-          console.log(items);
-
-          for (var i=0; i<items.length; i++) {
-              console.log(items[i]);
-          }
-        });
-        console.timeEnd('list');
-
-      }
+    // Create an artifact
+    if (!ts) {
+      await saveSlackMessageTimestamp(responseJson.ts);
+    }
     /*
 
     const response = slack.send({
