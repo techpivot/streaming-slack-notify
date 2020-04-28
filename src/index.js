@@ -100,16 +100,16 @@ async function run() {
 
     https
       .request(options, (response) => {
-        let data = '';
+        let buffer = '';
 
         // A chunk of data has been recieved.
         response.on('data', (chunk) => {
-          data += chunk;
+          buffer += chunk;
         });
 
         // The whole response has been received.
         response.on('end', () => {
-          console.log(JSON.parse(data).explanation);
+          console.log(JSON.parse(buffer));
         });
       })
       .on('error', (err) => {
