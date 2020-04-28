@@ -14,7 +14,7 @@ jobs:
       - name: Slack notification success
         if: success()
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_ACCESS_TOKEN2: ${{ secrets.SLACK_ACCESS_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
         with:
           channel: '#builds'

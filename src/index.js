@@ -7,9 +7,14 @@ const notRequired = { required: false };
 async function run() {
   try {
     if (!process.env.SLACK_ACCESS_TOKEN) {
-      throw new Error(
-        'No SLACK_ACCESS_TOKEN secret defined. Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret'
-      );
+      throw new Error(`
+        No SLACK_ACCESS_TOKEN secret defined.
+
+         1) Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret
+         2) Update Github workflow with .github/workflows/main.yml to include:
+              env:
+                SLACK_ACCESS_TOKEN: \${{ secrets.SLACK_ACCESS_TOKEN }}
+      `);
     }
 
     // Build the payload
