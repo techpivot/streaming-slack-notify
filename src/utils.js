@@ -23,7 +23,21 @@ export function printHttpError(errorMessage, statusCode = null, body = null) {
   console.error(`Response Body: ${body}`);
 }
 
-const doRequest = (options, data) => {
+const doRequest = (method, payload) => {
+  const data = JSON.stringify(payload);
+  const endpoint = url.parse(`https://slack.com//api/${method}`);
+  const options = {
+    hostname: endpoint.hostname,
+    port: endpoint.port,
+    path: endpoint.pathname,
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.SLACK_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Length': data.length,
+    },
+  };
+
   return new Promise((resolve, reject) => {
     const request = https.request(options, (response) => {
       let body = '';
@@ -64,20 +78,7 @@ const doRequest = (options, data) => {
   });
 };
 
-export const postSlackMessage = async (payload) => {
-  const data = JSON.stringify(payload);
-  const endpoint = url.parse('https://slack.com//api/chat.postMessage');
-  const options = {
-    hostname: endpoint.hostname,
-    port: endpoint.port,
-    path: endpoint.pathname,
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.SLACK_ACCESS_TOKEN}`,
-      'Content-Type': 'application/json; charset=utf-8',
-      'Content-Length': data.length,
-    },
-  };
-
-  return await doRequest(options, data);
+export const postSlackMessage = async (method, payload) => {
+  return await doRequest(method, data);
 };
+
