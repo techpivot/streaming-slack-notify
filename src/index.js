@@ -10,8 +10,7 @@ const notRequired = { required: false };
 async function run() {
   try {
     if (!process.env.SLACK_WEBHOOK) {
-      //throw Error('No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret');
-      return;
+      throw 'No SLACK_WEBHOOK secret defined. Navigate to Repository > Settings > Secrets and add SLACK_WEBHOOK secret';
     }
 
     slack = slackNotify(process.env.SLACK_WEBHOOK);
