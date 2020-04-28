@@ -84,6 +84,9 @@ async function run() {
           throw new Error(err);
         }
         if (response.body !== 'ok') {
+          console.log('---------error333--------A');
+          console.log(err);
+          console.log('---------error333--------E');
           throw new Error(response.body);
         }
 
