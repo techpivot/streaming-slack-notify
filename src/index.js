@@ -4,6 +4,7 @@ import {
   postSlackMessage,
   getSlackArtifact,
   saveSlackArtifact,
+  doRequest2,
 } from './utils';
 import {
   getMessageText,
@@ -13,56 +14,6 @@ import {
 } from './ui';
 
 
- const doRequest2 = () => {
-  const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`);
-  const options = {
-    hostname: endpoint.hostname,
-    port: endpoint.port,
-    path: endpoint.pathname,
-    method: 'GET',
-  };
-
-  console.debug('options', options);
-
-  return new Promise((resolve, reject) => {
-    const request = https.request(options, (response) => {
-      let body = '';
-
-      response.on('data', (chunk) => {
-        body += chunk;
-      });
-
-      response.on('end', () => {
-        if (response.statusCode !== 200) {
-          printHttpError(body, response.statusCode, body);
-          process.exit(1);
-        }
-
-        try {
-          const json = JSON.parse(body);
-
-          if (json.ok) {
-            resolve(json);
-          } else if (json.error) {
-            let error = json.error;
-            reject(`Error: ${error}`);
-          } else {
-            reject(`Unable to post message: ${body}`);
-          }
-        } catch (e) {
-          reject(`Unable to parse response body as JSON: ${body}`);
-        }
-      });
-    });
-
-    request.on('error', (error) => {
-      printHttpError(error.message || error);
-      reject(error.message || error);
-      process.exit(1);
-    });
-    request.end();
-  });
-};
 
 
 async function run() {
@@ -88,7 +39,8 @@ async function run() {
     // current JOB:         process.env.GITHUB_JOB     ||  'init'
 
 
-    doRequest2();
+    await doRequest2();
+    console.log('GOOOD');
 
 
 
