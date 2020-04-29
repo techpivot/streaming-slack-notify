@@ -7,6 +7,16 @@ import { ARTIFACT_NAME } from './const';
 import {HttpCodes, HttpClient} from '@actions/http-client'
 import {BearerCredentialHandler} from '@actions/http-client/auth'
 
+
+export const getGithubHttpClient = (token) => {
+  console.log('creating new github client');
+
+  return new HttpClient('action/workflow', [
+    new BearerCredentialHandler(token) //process.env.ACTIONS_RUNTIME_TOKEN)
+  ]);
+
+}
+
 export function getInput(name, options = {}) {
   const val = (
     process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
