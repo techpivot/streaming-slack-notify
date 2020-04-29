@@ -6,7 +6,6 @@ import {
   saveSlackArtifact,
 } from './utils';
 import { getDividerBlock, getHeaderBlocks, getCommitBlocks } from './ui';
-import * as github from '@actions/github';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -36,18 +35,17 @@ async function run() {
    // console.dir(github.context);
    // console.dir(process.env);
 
-    let blocks = [];
-    blocks.push(getHeaderBlocks());
-    blocks.push(getDividerBlock());
-    blocks = blocks.concat(getCommitBlocks());
-    blocks.push(getDividerBlock());
-
     const payload = {
       channel,
       attachments: [
         {
           color: '#000000',
-          blocks: blocks,
+          blocks: [].concat.apply([],
+            getHeaderBlocks(),
+            getDividerBlock(),
+            getCommitBlocks(),
+            getDividerBlock()
+          ),
         },
       ],
     };
