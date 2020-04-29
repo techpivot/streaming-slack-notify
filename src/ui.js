@@ -15,11 +15,11 @@ export const getHeaderBlocks = () => {
 
   const fields = [
     `*Workflow*: <${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>`,
-    `*Event*: ``${eventName}```,
+    '*Event*: `' + eventName + '`',
   ];
 
   if (eventName === 'push') {
-    fields.push(`*Branch*: ${ref.trim('/').replace('refs/heads/', '')}`);
+    fields.push('*Branch*: `' + ref.trim('/').replace('refs/heads/', '') + '`');
   }
 
   return [
