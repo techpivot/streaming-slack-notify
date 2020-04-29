@@ -33,8 +33,8 @@ async function run() {
     }
     */
 
-    console.dir(github.context);
-    console.dir(process.env);
+   // console.dir(github.context);
+   // console.dir(process.env);
 
     let blocks = [];
     blocks.push(getHeaderBlocks());
@@ -70,6 +70,10 @@ async function run() {
         payload.icon_emoji = getInput('icon_emoji');
       });
     }
+
+    console.log(JSON.stringify(payload));
+
+    console.dir(payload);
 
     /*
     let attachment = {};
