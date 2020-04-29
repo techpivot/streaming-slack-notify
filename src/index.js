@@ -43,7 +43,7 @@ async function run() {
 
     const response = await doRequest2(getInput('repo-token'));
 
-    console.log(response);
+    console.log(response.jobs);
   //  const body = response..then(json => {
 //      console.log('inner', json);
     //});
