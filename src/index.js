@@ -48,17 +48,6 @@ async function run() {
     console.log(resp.result.jobs[0].steps);
 
 
-
-    return;
-    const response = await doRequest2(getInput('repo-token'));
-
-    console.log(response.result.jobs);
-    console.log(response.result.jobs[0].steps);
-    //  const body = response..then(json => {
-    //      console.log('inner', json);
-    //});
-    console.log('GOOOD');
-
     const payload = {
       channel,
       text: getMessageText(),
