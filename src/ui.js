@@ -4,7 +4,7 @@ export const getMessageText = () => {
   const { url } = github.context.repository;
   const { GITHUB_REPOSITORY } = process.env;
 
-  return `Main <${url}|${GITHUB_REPOSITORY}>`;
+  return `<${url}|${GITHUB_REPOSITORY}>`;
 };
 
 export const getHeaderBlocks = () => {
@@ -49,7 +49,7 @@ export const getCommitBlocks = () => {
 
   if (eventName === 'push') {
     const maxCommits = 2;
-    const index = 0;
+    let index = 0;
 
     payload.commits.slice(maxCommits).forEach((commit) => {
       index += 1;
@@ -89,19 +89,19 @@ export const getCommitBlocks = () => {
         }
       );
     });
-  }
 
-  if (payload.commits.length > maxCommits) {
-    const extra = payload.commits.length - maxCommits;
-    blocks.push({
-      type: 'context',
-      elements: [
-        {
-          type: 'mrkdwn',
-          text: `Plus *${extra}* more ${extra === 1 ? 'commit' : 'commits'}>`,
-        },
-      ],
-    });
+    if (payload.commits.length > maxCommits) {
+      const extra = payload.commits.length - maxCommits;
+      blocks.push({
+        type: 'context',
+        elements: [
+          {
+            type: 'mrkdwn',
+            text: `Plus *${extra}* more ${extra === 1 ? 'commit' : 'commits'}>`,
+          },
+        ],
+      });
+    }
   }
 
   return blocks;
