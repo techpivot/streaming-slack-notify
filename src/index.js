@@ -31,7 +31,8 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-    console.log(github.context.token);
+    console.log(github.token);
+    console.log(github.context);
     return;
     //console.log(JSON.stringify(github.context));
     //console.dir(process.env);
