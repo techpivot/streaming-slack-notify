@@ -150,13 +150,16 @@ export const getSlackArtifact = async () => {
 
 
 
-export const doRequest2 = () => {
+export const doRequest2 = (token) => {
   const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`);
   const options = {
     hostname: endpoint.hostname,
-    port: endpoint.port,
+    port: 443,
     path: endpoint.pathname,
     method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   };
 
   console.debug('options', options);

@@ -39,7 +39,9 @@ async function run() {
     // current JOB:         process.env.GITHUB_JOB     ||  'init'
 
 
-    await doRequest2();
+    console.log(getInput('repo-token'));
+    console.log(github);
+    await doRequest2(getInput('repo-token'));
     console.log('GOOOD');
 
 

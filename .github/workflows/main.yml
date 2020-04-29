@@ -16,6 +16,7 @@ jobs:
         uses: techpivot/streaming-slack-notify@master
         with:
           channel: '#builds'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     runs-on: ubuntu-latest
