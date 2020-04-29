@@ -4,9 +4,6 @@ import url from 'url';
 import { create } from '@actions/artifact';
 import { ARTIFACT_NAME } from './const';
 
-import {HttpCodes, HttpClient} from '@actions/http-client'
-import {BearerCredentialHandler} from '@actions/http-client/auth'
-
 
 export function getInput(name, options = {}) {
   const val = (
@@ -147,72 +144,4 @@ export const getSlackArtifact = async () => {
   } finally {
     console.timeEnd('Download artifact');
   }
-};
-
-
-
-
-
-
-export const doRequest2 = (token) => {
-  const client = new HttpClient('action/workflow', [
-    new BearerCredentialHandler(token) //process.env.ACTIONS_RUNTIME_TOKEN)
-  ]);
-  return client.getJson(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`)
-
-  //return client.get(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`)
-  console.log(2);
-
-  const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`);
-  const options = {
-    hostname: endpoint.hostname,
-    port: 443,
-    path: endpoint.pathname,
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${process.env['ACTIONS_RUNTIME_TOKEN']}`,
-    },
-  };
-
-  console.debug('options', options);
-
-  return new Promise((resolve, reject) => {
-    const request = https.request(options, (response) => {
-      let body = '';
-
-      response.on('data', (chunk) => {
-        body += chunk;
-      });
-
-      response.on('end', () => {
-        console.log('end', body);
-        if (response.statusCode !== 200) {
-          printHttpError(body, response.statusCode, body);
-          process.exit(1);
-        }
-
-        try {
-          const json = JSON.parse(body);
-
-          if (json.ok) {
-            resolve(json);
-          } else if (json.error) {
-            let error = json.error;
-            reject(`Error: ${error}`);
-          } else {
-            reject(`Unable to post message: ${body}`);
-          }
-        } catch (e) {
-          reject(`Unable to parse response body as JSON: ${body}`);
-        }
-      });
-    });
-
-    request.on('error', (error) => {
-      printHttpError(error.message || error);
-      reject(error.message || error);
-      process.exit(1);
-    });
-    request.end();
-  });
 };

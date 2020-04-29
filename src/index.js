@@ -39,17 +39,15 @@ async function run() {
     // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
     // current JOB:         process.env.GITHUB_JOB     ||  'init'
 
-    console.log('getting client 1');
+
+    // Current job name
     const resp = await githubHttpClient.getJson(
       `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
     );
     console.log(resp.result.jobs);
+    console.log(resp.result.jobs[0].steps);
 
-    console.log('getting client 2');
-    const resp2 = await githubHttpClient.getJson(
-      `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
-    );
-    console.log(resp2.result.jobs);
+
 
     return;
     const response = await doRequest2(getInput('repo-token'));
