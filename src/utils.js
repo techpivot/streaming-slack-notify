@@ -118,7 +118,20 @@ export const saveSlackArtifact = async (channel, timestamp) => {
  * @return object { ts, channel } The values are null if not specified
  */
 export const getSlackArtifact = async () => {
+
+  console.log('checking existing file');
+  try {
+    if (fs.existsSync('/tmp/channel.txt')) {
+      console.log('YES, exists');
+    }
+  } catch(err) {
+    console.log('nope');
+  }
+
+
   console.time('Download artifact');
+
+
 
   try {
     const artifactClient = create();
