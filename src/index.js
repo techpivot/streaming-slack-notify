@@ -14,7 +14,7 @@ import {
 
 
  const doRequest2 = () => {
-  const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows${process.env.GITHUB_RUN_ID}/runs`);
+  const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`);
   const options = {
     hostname: endpoint.hostname,
     port: endpoint.port,
