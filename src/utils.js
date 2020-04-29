@@ -4,7 +4,6 @@ import url from 'url';
 import { create } from '@actions/artifact';
 import { ARTIFACT_NAME } from './const';
 
-
 export function getInput(name, options = {}) {
   const val = (
     process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
@@ -118,35 +117,26 @@ export const saveSlackArtifact = async (channel, timestamp) => {
  * @return object { ts, channel } The values are null if not specified
  */
 export const getSlackArtifact = async () => {
+  console.time('Retrieve artifact');
 
-  console.log('checking existing file');
   try {
-    if (fs.existsSync('/tmp/channel.txt')) {
-      console.log('YES, exists');
+    if (
+      !fs.existsSync('/tmp/channel.txt') ||
+      !fs.existsSync('/tmp/ts.txt')
+    ) {
+      const artifactClient = create();
+
+      // Note: We call this every load and thus the very first time, there may not exist
+      // an artifact yet. This allows us to write simpler Github actions without having
+      // to proxy input/output inbetween all other steps.
+      await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
     }
-  } catch(err) {
-    console.log('nope');
-  }
 
-
-  console.time('Download artifact');
-
-
-
-  try {
-    const artifactClient = create();
-
-    // Note: We call this every load and thus the very first time, there may not exist
-    // an artifact yet. This allows us to write simpler Github actions without having
-    // to proxy input/output inbetween all other steps.
-    await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
+    const fileOpts = { encoding: 'utf8', flag: 'r' };
 
     return {
-      channel: fs.readFileSync('/tmp/channel.txt', {
-        encoding: 'utf8',
-        flag: 'r',
-      }),
-      ts: fs.readFileSync('/tmp/ts.txt', { encoding: 'utf8', flag: 'r' }),
+      channel: fs.readFileSync('/tmp/channel.txt', fileOpts),
+      ts: fs.readFileSync('/tmp/ts.txt', fileOpts),
     };
   } catch (error) {
     // This is okay. error = "Unable to find any artifacts for the associated workflow"
@@ -155,6 +145,6 @@ export const getSlackArtifact = async () => {
       ts: null,
     };
   } finally {
-    console.timeEnd('Download artifact');
+    console.timeEnd('Retrieve artifact');
   }
 };

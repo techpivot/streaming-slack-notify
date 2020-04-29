@@ -39,14 +39,12 @@ async function run() {
     // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
     // current JOB:         process.env.GITHUB_JOB     ||  'init'
 
-
     // Current job name
     const resp = await githubHttpClient.getJson(
       `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
     );
     console.log(resp.result.jobs);
     console.log(resp.result.jobs[resp.result.jobs.length - 1].steps);
-
 
     const payload = {
       channel,
