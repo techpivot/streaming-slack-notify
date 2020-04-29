@@ -157,7 +157,8 @@ export const doRequest2 = (token) => {
   const client = new HttpClient('action/workflow', [
     new BearerCredentialHandler(token) //process.env.ACTIONS_RUNTIME_TOKEN)
   ]);
-  return client.get(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`)
+  return client.getJson(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`)
+
   //return client.get(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`)
   console.log(2);
 
