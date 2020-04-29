@@ -1,7 +1,7 @@
 import * as github from '@actions/github';
 
 export const getMessageText = () => {
-  const { url } = github.context.repository;
+  const { url } = github.context.payload.repository;
   const { GITHUB_REPOSITORY } = process.env;
 
   return `<${url}|${GITHUB_REPOSITORY}>`;
