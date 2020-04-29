@@ -35,17 +35,11 @@ async function run() {
    // console.log(process.env);
     console.log(process.env.GITHUB_EVENT_PATH);
 
-    fs.readdir('/home/runner/work/_temp/_github_workflow/', function (err, files) {
-      //handling error
-      if (err) {
-          return console.log('Unable to scan directory: ' + err);
-      }
-      //listing all files using forEach
-      files.forEach(function (file) {
-          // Do whatever you want to do with the file
-          console.log(file);
-      });
-  });
+    fs.readdirSync('/home/runner/work/_temp/_github_workflow').forEach(file => {
+      console.log(file);
+    });
+
+
     return;
     //console.log(JSON.stringify(github.context));
     //console.dir(process.env);
