@@ -41,7 +41,7 @@ async function run() {
 
 
 
-    const response = await doRequest2(this.getInput('repo-token'));
+    const response = await doRequest2(getInput('repo-token'));
     console.log(response.message);
     const stringBody = await response.readBody();
     console.log(stringBody);
