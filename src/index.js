@@ -22,8 +22,8 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-   // console.dir(github.context);
-   // console.dir(process.env);
+    // console.dir(github.context);
+    // console.dir(process.env);
 
     const payload = {
       channel,
@@ -31,12 +31,15 @@ async function run() {
       attachments: [
         {
           color: '#000000',
-          blocks: [].concat.apply([], [
-            getHeaderBlocks(),
-            getDividerBlock(),
-            getCommitBlocks(),
-            getDividerBlock()
-          ]),
+          blocks: [].concat.apply(
+            [],
+            [
+              getHeaderBlocks(),
+              getDividerBlock(),
+              getCommitBlocks(),
+              getDividerBlock(),
+            ]
+          ),
         },
       ],
     };
@@ -61,7 +64,6 @@ async function run() {
 
     console.dir(payload);
 
-
     let responseJson;
     await postSlackMessage(method, payload)
       .then((json) => {
@@ -79,7 +81,6 @@ async function run() {
     if (!ts) {
       await saveSlackArtifact(responseJson.channel, responseJson.ts);
     }
-
   } catch (error) {
     console.error(`\u001b[31;1mERROR: ${error.message || error}\u001b[0m`);
     process.exit(1);
