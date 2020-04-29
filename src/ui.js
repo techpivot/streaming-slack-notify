@@ -4,7 +4,7 @@ export const getMessageText = () => {
   const { url } = github.context.repository;
   const { GITHUB_REPOSITORY } = process.env;
 
-  return `<${url}|${GITHUB_REPOSITORY}>`;
+  return `Main <${url}|${GITHUB_REPOSITORY}>`;
 };
 
 export const getHeaderBlocks = () => {
