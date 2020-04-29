@@ -46,11 +46,7 @@ async function run() {
 
     if (ts) {
       payload.ts = ts;
-      payload.text = 'REPLACEME NEW';
     } else {
-      // Add other required fields for the first post.
-      payload.text = 'replaceme';
-
       // Optional fields (These are only applicable for the first post)
       ['username', 'icon_url', 'icon_emoji'].forEach((k) => {
         const inputValue = getInput(k);
