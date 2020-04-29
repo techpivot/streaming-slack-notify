@@ -37,7 +37,6 @@ async function run() {
               getHeaderBlocks(),
               getDividerBlock(),
               getCommitBlocks(),
-              getDividerBlock(),
             ]
           ),
         },
