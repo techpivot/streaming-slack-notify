@@ -14,7 +14,7 @@ import {
   getCommitBlocks,
 } from './ui';
 import githubHttpClient from './github-http-client';
-
+import * as github from '@actions/github';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
