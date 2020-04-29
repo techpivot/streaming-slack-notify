@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: init
     steps:
-      - name: Slack Notify 1
+      - name: Slack Notify
         env:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
@@ -32,7 +32,7 @@ jobs:
       - name: Sleep ABC
         run: sleep 3
 
-      - name: Slack Notify 2
+      - name: Slack Notify
         env:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
