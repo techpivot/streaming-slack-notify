@@ -5,7 +5,12 @@ import {
   getSlackArtifact,
   saveSlackArtifact,
 } from './utils';
-import { getMessageText, getDividerBlock, getHeaderBlocks, getCommitBlocks } from './ui';
+import {
+  getMessageText,
+  getDividerBlock,
+  getHeaderBlocks,
+  getCommitBlocks,
+} from './ui';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -33,11 +38,7 @@ async function run() {
           color: '#000000',
           blocks: [].concat.apply(
             [],
-            [
-              getHeaderBlocks(),
-              getDividerBlock(),
-              getCommitBlocks(),
-            ]
+            [getHeaderBlocks(), getDividerBlock(), getCommitBlocks()]
           ),
         },
       ],
