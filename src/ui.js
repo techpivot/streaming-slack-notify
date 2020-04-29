@@ -51,7 +51,7 @@ export const getCommitBlocks = () => {
     const maxCommits = 2;
     let index = 0;
 
-    payload.commits.slice(0, maxCommits).forEach((commit) => {
+    payload.commits.reverse().slice(0, maxCommits).forEach((commit) => {
       index += 1;
 
       const {
@@ -97,7 +97,7 @@ export const getCommitBlocks = () => {
         elements: [
           {
             type: 'mrkdwn',
-            text: `Plus *${extra}* more ${extra === 1 ? 'commit' : 'commits'}>`,
+            text: `Plus *${extra}* more ${extra === 1 ? 'commit' : 'commits'}`,
           },
         ],
       });
