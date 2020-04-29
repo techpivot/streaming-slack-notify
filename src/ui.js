@@ -1,5 +1,12 @@
 import * as github from '@actions/github';
 
+export const getMessageText = () => {
+  const { url } = github.context.repository;
+  const { GITHUB_REPOSITORY } = process.env;
+
+  return `<${url}|${GITHUB_REPOSITORY}>`
+}
+
 export const getHeaderBlocks = () => {
   const {
     context: {
