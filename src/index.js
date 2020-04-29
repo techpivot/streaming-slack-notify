@@ -5,7 +5,7 @@ import {
   getSlackArtifact,
   saveSlackArtifact,
 } from './utils';
-import { getDividerBlock, getHeaderBlocks, getCommitBlocks } from './ui';
+import { getMessageText, getDividerBlock, getHeaderBlocks, getCommitBlocks } from './ui';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -54,7 +54,7 @@ async function run() {
       // Optional fields (These are only applicable for the first post)
       ['username', 'icon_url', 'icon_emoji'].forEach((k) => {
         const inputValue = getInput(k);
-        if (!!inputValue) {
+        if (inputValue) {
           payload[k] = inputValue;
         }
       });
