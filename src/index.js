@@ -13,6 +13,7 @@ import {
   getCommitBlocks,
 } from './ui';
 
+import * as github from '@actions/github';
 
 
 
