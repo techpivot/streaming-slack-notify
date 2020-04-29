@@ -51,7 +51,7 @@ export const getCommitBlocks = () => {
     const maxCommits = 2;
     let index = 0;
 
-    payload.commits.slice(maxCommits).forEach((commit) => {
+    payload.commits.slice(0, maxCommits).forEach((commit) => {
       index += 1;
 
       const {
