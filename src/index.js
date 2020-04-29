@@ -31,8 +31,10 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-    console.log(JSON.stringify(github.context));
-    console.dir(process.env);
+    console.log(github.context.token);
+    return;
+    //console.log(JSON.stringify(github.context));
+    //console.dir(process.env);
 
     // current WORKFLOW:    github.context.workflow    ||  'Main'
     // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
