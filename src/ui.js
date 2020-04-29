@@ -1,6 +1,33 @@
 import * as github from '@actions/github';
 
+export const getHeaderBlocks = () => {
+  const {
+    context: {
+      eventName,
+      workflow,
+      payload: {
+        repository: { url },
+      },
+    },
+  } = github;
+  const { GITHUB_RUN_ID } = process.env;
+
+  return [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*Workflow*: <${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>     *Event*: ``${eventName}```,
+      },
+    },
+  ];
+};
+
 export const getCommitBlocks = () => {
+  const {
+    context: { eventName, payload },
+  } = github;
+
   const {
     GITHUB_ACTOR,
     GITHUB_EVENT_NAME,
@@ -9,12 +36,57 @@ export const getCommitBlocks = () => {
     GITHUB_REPOSITORY,
   } = process.env;
 
-  if (github.context.eventName === 'push') {
-    const pushPayload = github.context.payload;
-    console.log('pushpayload', pushPayload);
-    console.log('commits', pushPayload.commits);
+  const blocks = [];
+
+  if (eventName === 'push') {
+    const max = 2;
+    let index = 0;
+    payload.commits.forEach((commit) => {
+      const {
+        id,
+        url,
+        message,
+        author: { username },
+        timestamp,
+      } = commit;
+      const commitDate = new Date(timestamp);
+      const unixTimestamp = commitDate.getTime() / 1000;
+
+      blocks.push(
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `*<${url}|${id.substring(0, 7)}>*: ${message}`,
+          },
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'image',
+              image_url: `https://github.com/${username}.png`,
+              alt_text: GITHUB_ACTOR,
+            },
+            {
+              type: 'mrkdwn',
+              text: `*<https://github.com/${username}|${username}>*`,
+            },
+            {
+              type: 'mrkdwn',
+              text: `*Branch*: ${GITHUB_REF.trim('/').replace(
+                'refs/heads/',
+                ''
+              )}`,
+            },
+          ],
+        }
+      );
+      index += 1;
+    });
   }
 
+  return blocks;
 
   // workflow: 'Main',
   // organization: // https://avatars1.githubusercontent.com/u/8423420?v=4

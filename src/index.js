@@ -37,6 +37,7 @@ async function run() {
     console.dir(process.env);
 
     let blocks = [];
+    blocks.push(getHeaderBlocks());
     blocks.push(getDividerBlock());
     blocks = blocks.concat(getCommitBlocks());
     blocks.push(getDividerBlock());
