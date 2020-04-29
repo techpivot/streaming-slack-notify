@@ -5,7 +5,7 @@ import {
   getSlackArtifact,
   saveSlackArtifact,
   doRequest2,
-  getGithubHttpClient
+  getGithubHttpClient,
 } from './utils';
 import {
   getMessageText,
@@ -13,10 +13,9 @@ import {
   getHeaderBlocks,
   getCommitBlocks,
 } from './ui';
+import githubHttpClient from './github-http-client';
 
 import * as github from '@actions/github';
-
-
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -40,32 +39,27 @@ async function run() {
     // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
     // current JOB:         process.env.GITHUB_JOB     ||  'init'
 
-
     console.log('getting client 1');
-    const httpClient = getGithubHttpClient(getInput('repo-token'));
-    const resp = await httpClient.getJson(
+    const resp = await githubHttpClient.getJson(
       `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
     );
     console.log(resp.result.jobs);
+
     console.log('getting client 2');
-    const httpClient2 = getGithubHttpClient(getInput('repo-token'));
-    const resp2 = await httpClient2.getJson(
+    const resp2 = await githubHttpClient.getJson(
       `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
     );
     console.log(resp2.result.jobs);
-    console.log('getting client 3');
 
     return;
     const response = await doRequest2(getInput('repo-token'));
 
     console.log(response.result.jobs);
     console.log(response.result.jobs[0].steps);
-  //  const body = response..then(json => {
-//      console.log('inner', json);
+    //  const body = response..then(json => {
+    //      console.log('inner', json);
     //});
     console.log('GOOOD');
-
-
 
     const payload = {
       channel,
