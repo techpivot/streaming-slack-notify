@@ -41,9 +41,13 @@ async function run() {
 
 
 
-    await doRequest2().then(json => {
-      console.log('inner', json);
-    });
+    const response = await doRequest2();
+    console.log(response.statusCode);
+    const stringBody = await response.readBody();
+    console.log(stringBody);
+  //  const body = response..then(json => {
+//      console.log('inner', json);
+    //});
     console.log('GOOOD');
 
 
