@@ -45,7 +45,7 @@ async function run() {
       `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
     );
     console.log(resp.result.jobs);
-    console.log(resp.result.jobs[0].steps);
+    console.log(resp.result.jobs[resp.result.jobs.length - 1].steps);
 
 
     const payload = {
