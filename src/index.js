@@ -40,12 +40,12 @@ async function run() {
       attachments: [
         {
           color: '#000000',
-          blocks: [].concat.apply([],
+          blocks: [].concat.apply([], [
             getHeaderBlocks(),
             getDividerBlock(),
             getCommitBlocks(),
             getDividerBlock()
-          ),
+          ]),
         },
       ],
     };
