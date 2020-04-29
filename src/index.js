@@ -12,6 +12,59 @@ import {
   getCommitBlocks,
 } from './ui';
 
+
+ const doRequest2 = () => {
+  const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows${process.env.GITHUB_RUN_ID}/runs`);
+  const options = {
+    hostname: endpoint.hostname,
+    port: endpoint.port,
+    path: endpoint.pathname,
+    method: 'GET',
+  };
+
+  console.debug('options', options);
+
+  return new Promise((resolve, reject) => {
+    const request = https.request(options, (response) => {
+      let body = '';
+
+      response.on('data', (chunk) => {
+        body += chunk;
+      });
+
+      response.on('end', () => {
+        if (response.statusCode !== 200) {
+          printHttpError(body, response.statusCode, body);
+          process.exit(1);
+        }
+
+        try {
+          const json = JSON.parse(body);
+
+          if (json.ok) {
+            resolve(json);
+          } else if (json.error) {
+            let error = json.error;
+            reject(`Error: ${error}`);
+          } else {
+            reject(`Unable to post message: ${body}`);
+          }
+        } catch (e) {
+          reject(`Unable to parse response body as JSON: ${body}`);
+        }
+      });
+    });
+
+    request.on('error', (error) => {
+      printHttpError(error.message || error);
+      reject(error.message || error);
+      process.exit(1);
+    });
+    request.end();
+  });
+};
+
+
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
   try {
@@ -27,8 +80,17 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-    // console.dir(github.context);
-    // console.dir(process.env);
+    //console.log(JSON.stringify(github.context));
+    //console.dir(process.env);
+
+    // current WORKFLOW:    github.context.workflow    ||  'Main'
+    // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
+    // current JOB:         process.env.GITHUB_JOB     ||  'init'
+
+
+    doRequest2();
+
+
 
     const payload = {
       channel,
@@ -55,10 +117,6 @@ async function run() {
         }
       });
     }
-
-    console.log(JSON.stringify(payload));
-
-    console.dir(payload);
 
     let responseJson;
     await postSlackMessage(method, payload)

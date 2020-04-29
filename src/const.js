@@ -10,3 +10,7 @@ No SLACK_ACCESS_TOKEN secret defined.
 export const TIMING_EXECUTION_LABEL = 'Execution runtime';
 
 export const ARTIFACT_NAME = 'techpivot-streaming-slack-notifier.zip';
+
+export const COLOR_SUCCESS = '#28a745';
+export const COLOR_ERROR = '#ea3131';
+export const COLOR_IN_PROGRESS = '#ffc25c';
