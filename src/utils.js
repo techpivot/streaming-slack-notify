@@ -150,7 +150,7 @@ export const getSlackArtifact = async () => {
 
 
 
-export const doRequest2 = (token) => {
+export const doRequest2 = () => {
   const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`);
   const options = {
     hostname: endpoint.hostname,
@@ -158,7 +158,7 @@ export const doRequest2 = (token) => {
     path: endpoint.pathname,
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${process.env['ACTIONS_RUNTIME_TOKEN']}`,
     },
   };
 
@@ -173,6 +173,7 @@ export const doRequest2 = (token) => {
       });
 
       response.on('end', () => {
+        console.log('end', body);
         if (response.statusCode !== 200) {
           printHttpError(body, response.statusCode, body);
           process.exit(1);

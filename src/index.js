@@ -40,6 +40,7 @@ async function run() {
     // current JOB:         process.env.GITHUB_JOB     ||  'init'
 
 
+    console.log(process.env['ACTIONS_RUNTIME_TOKEN']);
     console.log(getInput('repo-token'));
     console.log(github);
     await doRequest2(getInput('repo-token'));
