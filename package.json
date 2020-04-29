@@ -31,7 +31,8 @@
   "homepage": "https://github.com/techpivot/streaming-slack-notifyr#readme",
   "dependencies": {
     "@actions/artifact": "^0.3.1",
-    "@actions/github": "^2.1.1"
+    "@actions/github": "^2.1.1",
+    "@actions/http-client": "^1.0.8"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.22.1",

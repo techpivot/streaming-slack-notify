@@ -4,6 +4,9 @@ import url from 'url';
 import { create } from '@actions/artifact';
 import { ARTIFACT_NAME } from './const';
 
+import {HttpCodes, HttpClient} from '@actions/http-client'
+import {BearerCredentialHandler} from '@actions/http-client/auth'
+
 export function getInput(name, options = {}) {
   const val = (
     process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
@@ -151,6 +154,14 @@ export const getSlackArtifact = async () => {
 
 
 export const doRequest2 = () => {
+
+  console.log(1);
+  const client = new HttpClient('action/workflow', [
+    new BearerCredentialHandler(process.env.ACTIONS_RUNTIME_TOKEN)
+  ]);
+  return client.get(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`)
+  console.log(2);
+
   const endpoint = url.parse(`https://api.github.com/repos/techpivot/streaming-slack-notify/actions/workflows/${process.env.GITHUB_RUN_ID}/runs`);
   const options = {
     hostname: endpoint.hostname,
