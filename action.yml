@@ -21,11 +21,9 @@ inputs:
     required: false
   username:
     description: 'The slack bot user name'
-    default: 'Github Actions'
     required: false
   icon_url:
     description: 'URL to an image to use as the icon for this message'
-    default: 'https://github.com/actions.png'
     required: false
   icon_emoji:
     description: 'Emoji to use as the icon for this message. Overrides "icon_url"'
