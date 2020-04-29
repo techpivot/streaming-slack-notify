@@ -15,6 +15,7 @@ import {
 } from './ui';
 import githubHttpClient from './github-http-client';
 import * as github from '@actions/github';
+import fs from 'fs';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -31,10 +32,20 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-    console.log(process.env);
+   // console.log(process.env);
     console.log(process.env.GITHUB_EVENT_PATH);
 
-
+    fs.readdir('/home/runner/work/_temp/_github_workflow/', function (err, files) {
+      //handling error
+      if (err) {
+          return console.log('Unable to scan directory: ' + err);
+      }
+      //listing all files using forEach
+      files.forEach(function (file) {
+          // Do whatever you want to do with the file
+          console.log(file);
+      });
+  });
     return;
     //console.log(JSON.stringify(github.context));
     //console.dir(process.env);
