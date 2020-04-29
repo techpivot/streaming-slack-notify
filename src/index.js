@@ -5,7 +5,7 @@ import {
   getSlackArtifact,
   saveSlackArtifact,
 } from './utils';
-import { getDividerBlock, getCommitBlocks } from './ui';
+import { getDividerBlock, getHeaderBlocks, getCommitBlocks } from './ui';
 import * as github from '@actions/github';
 
 async function run() {
