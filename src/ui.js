@@ -23,7 +23,7 @@ export const getJobSummaryBlocks = (workflowSummary) => {
     switch (job.status) {
       case 'in_progress':
         statusVerb = 'In progress';
-        icon = ':hourglass_flowing_sand';
+        icon = ':hourglass_flowing_sand:';
         break;
 
       case 'queued':
