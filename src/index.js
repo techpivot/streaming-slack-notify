@@ -3,7 +3,7 @@ import {
   NO_SLACK_ACCESS_TOKEN,
   TIMING_EXECUTION_LABEL,
 } from './const';
-import { getInput, postSlackMessage } from './utils';
+import { getInput, postSlackMessage  } from './utils';
 import {
   getMessageText,
   getJobSummaryBlocks,
@@ -12,7 +12,7 @@ import {
   getCommitBlocks,
 } from './ui';
 
-import { getSlackArtifact, saveSlackArtifact } from './github';
+import { getSlackArtifact, saveSlackArtifact, getWorkflowSummary } from './github';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
