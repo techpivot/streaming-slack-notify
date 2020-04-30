@@ -21,7 +21,10 @@ export const getJobSummaryBlocks = (workflowSummary) => {
 
   const rows = [];
 
+console.log(workflowSummary);
+
   workflowSummary.jobs.forEach((job) => {
+    console.log(job);
     let lastStep = job.steps[job.steps.length - 1];
     let rowText = '';
     let icon;
