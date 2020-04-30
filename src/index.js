@@ -6,14 +6,13 @@ import {
 import { getInput, postSlackMessage } from './utils';
 import {
   getMessageText,
+  getJobSummaryBlocks,
   getDividerBlock,
-  getHeaderBlocks,
+  getEventSummaryBlocks,
   getCommitBlocks,
 } from './ui';
 
 import { getSlackArtifact, saveSlackArtifact } from './github';
-import * as github from '@actions/github';
-import fs from 'fs';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -27,6 +26,7 @@ async function run() {
     }
 
     let { channel, ts } = await getSlackArtifact();
+    const workflowSummary = await getWorkflowSummary();
 
     if (!channel) {
       channel = getInput('channel', { required: true });
@@ -42,7 +42,13 @@ async function run() {
           color: '#000000',
           blocks: [].concat.apply(
             [],
-            [getHeaderBlocks(), getDividerBlock(), getCommitBlocks()]
+            [
+              getJobSummaryBlocks(workflowSummary),
+              getDividerBlock(),
+              getEventSummaryBlocks(),
+              getDividerBlock(),
+              getCommitBlocks(),
+            ]
           ),
         },
       ],

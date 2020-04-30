@@ -72,4 +72,6 @@ export const getWorkflowSummary = async () => {
   console.log('summary');
   console.log(resp.result.jobs);
   console.log(resp.result.jobs[resp.result.jobs.length - 1].steps);
+
+  return resp.result.jobs;
 };

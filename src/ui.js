@@ -7,7 +7,24 @@ export const getMessageText = () => {
   return `*<${url}|${GITHUB_REPOSITORY}>*`;
 };
 
-export const getHeaderBlocks = () => {
+export const getJobSummaryBlocks = (workflowSummary) => {
+  const {
+    context: {
+      eventName,
+      ref,
+      workflow,
+      payload: {
+        repository: { url },
+      },
+    },
+  } = github;
+
+  const blocks = [];
+
+  return [];
+};
+
+export const getEventSummaryBlocks = () => {
   const {
     context: {
       eventName,
