@@ -26,9 +26,8 @@ console.log(workflowSummary);
   workflowSummary.jobs.forEach((job) => {
     console.log(job);
     let lastStep = job.steps[job.steps.length - 1];
-    let rowText = '';
     let icon;
-    let stausVerb;
+    let statusVerb;
     console.log(` >>>> ${job.name} : ${job.status}`);
 
     // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
@@ -38,6 +37,11 @@ console.log(workflowSummary);
       case 'in_progress':
         statusVerb = 'In progress';
         icon = ':hourglass_flowing_sand';
+        break;
+
+      case 'queued':
+        statusVerb = 'Queued';
+        icon = ':timer_clock:';
         break;
 
       case 'completed':
@@ -72,9 +76,6 @@ console.log(workflowSummary);
             icon = ':exclamation:';
             break;
         }
-        break;
-
-      case 'queued':
         break;
 
       default:
