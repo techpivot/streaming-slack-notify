@@ -220,6 +220,9 @@ export const getJobAttachments = (workflowSummary) => {
     attachments.push(attachment);
   });
 
+
+  console.log('>>> HERE', attachments);
+
   return attachments;
 };
 
