@@ -1,4 +1,8 @@
-import { NO_GITHUB_TOKEN, NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
+import {
+  NO_GITHUB_TOKEN,
+  NO_SLACK_ACCESS_TOKEN,
+  TIMING_EXECUTION_LABEL,
+} from './const';
 import {
   getInput,
   postSlackMessage,
