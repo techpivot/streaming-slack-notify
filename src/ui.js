@@ -220,6 +220,7 @@ export const getJobAttachments = (workflowSummary) => {
     attachments.push(attachment);
   });
 
+  return attachments;
 };
 
 

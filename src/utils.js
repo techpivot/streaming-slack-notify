@@ -38,7 +38,7 @@ const doRequest = (method, payload) => {
     },
   };
 
-  console.debug('payload', payload);
+  console.debug('payload', JSON.stringify(payload, null, 2));
 
   return new Promise((resolve, reject) => {
     const request = https.request(options, (response) => {
