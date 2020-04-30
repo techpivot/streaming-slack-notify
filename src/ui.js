@@ -1,6 +1,10 @@
 import * as github from '@actions/github';
-import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from './const';
-
+import {
+  COLOR_SUCCESS,
+  COLOR_ERROR,
+  COLOR_IN_PROGRESS,
+  COLOR_QUEUED,
+} from './const';
 
 export const getMessageText = () => {
   const { url } = github.context.payload.repository;
@@ -21,8 +25,7 @@ export const getJobSummaryBlocks = (workflowSummary) => {
     let actionStep;
     let totalCompleted = 0;
 
-    outerLoop:
-    for (let i = 0; i < job.steps.length; i += 1) {
+    outerLoop: for (let i = 0; i < job.steps.length; i += 1) {
       actionStep = job.steps[i];
       switch (actionStep.status) {
         case 'completed':
@@ -37,7 +40,6 @@ export const getJobSummaryBlocks = (workflowSummary) => {
           break;
       }
     }
-
 
     switch (job.status) {
       case 'in_progress':
@@ -123,8 +125,7 @@ export const getJobAttachments = (workflowSummary) => {
     let actionStep;
     let totalCompleted = 0;
 
-    outerLoop:
-    for (let i = 0; i < job.steps.length; i += 1) {
+    outerLoop: for (let i = 0; i < job.steps.length; i += 1) {
       actionStep = job.steps[i];
       switch (actionStep.status) {
         case 'completed':
@@ -139,7 +140,6 @@ export const getJobAttachments = (workflowSummary) => {
           break;
       }
     }
-
 
     switch (job.status) {
       case 'in_progress':
@@ -216,17 +216,13 @@ export const getJobAttachments = (workflowSummary) => {
       },
     ];
 
-
     attachments.push(attachment);
   });
-
 
   console.log('>>> HERE', attachments);
 
   return attachments;
 };
-
-
 
 export const getEventSummaryBlocks = () => {
   const {

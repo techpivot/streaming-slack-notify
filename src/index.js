@@ -17,7 +17,6 @@ import {
   getSlackArtifact,
   saveSlackArtifact,
   getWorkflowSummary,
-
 } from './github';
 
 async function run() {
@@ -65,20 +64,24 @@ async function run() {
     const payload = {
       channel,
       text: getMessageText(),
-      attachments: [].concat.apply([], [
-        {
-          color: '#000000',
-          blocks: [].concat.apply(
-            [],
-            [
-              getJobSummaryBlocks(workflowSummary),
-              getEventSummaryBlocks(),
-              getDividerBlock(),
-              getCommitBlocks(),
-            ]
-          ),
-        },
-      ], getJobAttachments(workflowSummary)),
+      attachments: [].concat.apply(
+        [],
+        [
+          {
+            color: '#000000',
+            blocks: [].concat.apply(
+              [],
+              [
+                getJobSummaryBlocks(workflowSummary),
+                getEventSummaryBlocks(),
+                getDividerBlock(),
+                getCommitBlocks(),
+              ]
+            ),
+          },
+          getJobAttachments(workflowSummary),
+        ]
+      ),
     };
 
     if (ts) {
