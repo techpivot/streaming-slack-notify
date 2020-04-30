@@ -3,21 +3,15 @@ import {
   NO_SLACK_ACCESS_TOKEN,
   TIMING_EXECUTION_LABEL,
 } from './const';
-import {
-  getInput,
-  postSlackMessage,
-  getSlackArtifact,
-  saveSlackArtifact,
-  doRequest2,
-  getGithubHttpClient,
-} from './utils';
+import { getInput, postSlackMessage } from './utils';
 import {
   getMessageText,
   getDividerBlock,
   getHeaderBlocks,
   getCommitBlocks,
 } from './ui';
-import githubHttpClient from './github-http-client';
+
+import { getSlackArtifact, saveSlackArtifact } from './github';
 import * as github from '@actions/github';
 import fs from 'fs';
 
@@ -39,30 +33,6 @@ async function run() {
     }
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
-
-    // console.log(process.env);
-    console.log(process.env.GITHUB_EVENT_PATH);
-
-    fs.readdirSync('/home/runner/work/_temp/_github_workflow').forEach(
-      (file) => {
-        console.log(file);
-      }
-    );
-
-    return;
-    //console.log(JSON.stringify(github.context));
-    //console.dir(process.env);
-
-    // current WORKFLOW:    github.context.workflow    ||  'Main'
-    // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
-    // current JOB:         process.env.GITHUB_JOB     ||  'init'
-
-    // Current job name
-    const resp = await githubHttpClient.getJson(
-      `https://api.github.com/repos/techpivot/streaming-slack-notify/actions/runs/${process.env.GITHUB_RUN_ID}/jobs`
-    );
-    console.log(resp.result.jobs);
-    console.log(resp.result.jobs[resp.result.jobs.length - 1].steps);
 
     const payload = {
       channel,
