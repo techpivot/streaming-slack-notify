@@ -11,56 +11,81 @@ export const getJobSummaryBlocks = (workflowSummary) => {
   const rows = [];
 
   workflowSummary.jobs.forEach((job) => {
-    console.log(job);
-    let lastStep = job.steps[job.steps.length - 1];
-    let icon;
-    let statusVerb;
-    console.log(` >>>> ${job.name} : ${job.status}`);
-
+    // Reference
+    // =========
     // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
     // status: queued, in_progress, completed
 
+    let actionStep;
+    let totalCompleted = 0;
+
+    outerLoop:
+    for (let i = 0; i < job.steps.length; i += 1) {
+      actionStep = job.steps[i];
+      switch (actionStep.status) {
+        case 'completed':
+          totalCompleted += 1;
+          break outerLoop;
+
+        case 'in_progress':
+          break outerLoop;
+
+        case 'queued':
+        default:
+          break;
+      }
+    }
+
+
     switch (job.status) {
       case 'in_progress':
-        statusVerb = 'In progress';
-        icon = ':hourglass_flowing_sand:';
+        rows.push(
+          `:hourglass_flowing_sand:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(In progress [${totalCompleted} of ${job.steps.length} complete])_`
+        );
         break;
 
       case 'queued':
-        statusVerb = 'Queued';
-        icon = ':timer_clock:';
+        rows.push(
+          `:timer_clock:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Queued)_`
+        );
         break;
 
       case 'completed':
         switch (job.conclusion) {
           case 'success':
-            statusVerb = 'Completed';
-            icon = ':heavy_check_mark:';
+            rows.push(
+              `:heavy_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed successfully`
+            );
             break;
 
           case 'failure':
-            statusVerb = 'Completed';
-            icon = ':x:';
+            rows.push(
+              `:x:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Completed)_`
+            );
             break;
 
           case 'neutral':
-            statusVerb = 'Completed (Neutral)';
-            icon = ':white_check_mark:';
+            rows.push(
+              `:white_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed _(neutral)_`
+            );
             break;
 
           case 'cancelled':
-            statusVerb = 'Cancelled';
-            icon = ':x:';
+            rows.push(
+              `:x:  *<${job.url}|${job.name}>*:  _(Cancelled [${totalCompleted} of ${job.steps.length} completed])_`
+            );
             break;
 
           case 'timed_out':
-            statusVerb = 'Timed out';
-            icon = ':x:';
+            rows.push(
+              `:x:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Timed out [${totalCompleted} of ${job.steps.length} completed])_`
+            );
             break;
 
           case 'action_required':
-            statusVerb = 'Manual Action Required';
-            icon = ':exclamation:';
+            rows.push(
+              `:exclamation:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Manual Action Required)_`
+            );
             break;
         }
         break;
@@ -68,9 +93,6 @@ export const getJobSummaryBlocks = (workflowSummary) => {
       default:
         throw new Error(`Unknown job status: ${job.status}`);
     }
-    rows.push(
-      `${icon}  *<${job.url}|${job.name}>*:  ${lastStep.name}  _(${statusVerb})_`
-    );
   });
 
   return [
