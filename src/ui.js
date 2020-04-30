@@ -8,20 +8,7 @@ export const getMessageText = () => {
 };
 
 export const getJobSummaryBlocks = (workflowSummary) => {
-  const {
-    context: {
-      eventName,
-      ref,
-      workflow,
-      payload: {
-        repository: { url },
-      },
-    },
-  } = github;
-
   const rows = [];
-
-console.log(workflowSummary);
 
   workflowSummary.jobs.forEach((job) => {
     console.log(job);
@@ -81,7 +68,9 @@ console.log(workflowSummary);
       default:
         throw new Error(`Unknown job status: ${job.status}`);
     }
-    rowText += `${icon}  *${job.name}*:  ${lastStep.name}  _(${statusVerb})_`;
+    rows.push(
+      `${icon}  *<${job.url}|${job.name}>*:  ${lastStep.name}  _(${statusVerb})_`
+    );
   });
 
   return [
