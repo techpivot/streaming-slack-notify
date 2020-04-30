@@ -1,4 +1,6 @@
 import * as github from '@actions/github';
+import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from './const';
+
 
 export const getMessageText = () => {
   const { url } = github.context.payload.repository;
@@ -105,6 +107,122 @@ export const getJobSummaryBlocks = (workflowSummary) => {
     },
   ];
 };
+
+export const getJobAttachments = (workflowSummary) => {
+  const attachments = [];
+
+  workflowSummary.jobs.forEach((job) => {
+    const attachment = {};
+    const rows = [];
+
+    // Reference
+    // =========
+    // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
+    // status: queued, in_progress, completed
+
+    let actionStep;
+    let totalCompleted = 0;
+
+    outerLoop:
+    for (let i = 0; i < job.steps.length; i += 1) {
+      actionStep = job.steps[i];
+      switch (actionStep.status) {
+        case 'completed':
+          totalCompleted += 1;
+          break outerLoop;
+
+        case 'in_progress':
+          break outerLoop;
+
+        case 'queued':
+        default:
+          break;
+      }
+    }
+
+
+    switch (job.status) {
+      case 'in_progress':
+        attachment.color = COLOR_IN_PROGRESS;
+        rows.push(
+          `:hourglass_flowing_sand:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(In progress [${totalCompleted} of ${job.steps.length} complete])_`
+        );
+        break;
+
+      case 'queued':
+        attachment.color = COLOR_QUEUED;
+        rows.push(
+          `:timer_clock:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Queued)_`
+        );
+        break;
+
+      case 'completed':
+        switch (job.conclusion) {
+          case 'success':
+            attachment.color = COLOR_SUCCESS;
+            rows.push(
+              `:heavy_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed successfully`
+            );
+            break;
+
+          case 'failure':
+            attachment.color = COLOR_ERROR;
+            rows.push(
+              `:x:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Completed)_`
+            );
+            break;
+
+          case 'neutral':
+            attachment.color = COLOR_SUCCESS;
+            rows.push(
+              `:white_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed _(neutral)_`
+            );
+            break;
+
+          case 'cancelled':
+            attachment.color = COLOR_ERROR;
+            rows.push(
+              `:x:  *<${job.url}|${job.name}>*:  _(Cancelled [${totalCompleted} of ${job.steps.length} completed])_`
+            );
+            break;
+
+          case 'timed_out':
+            attachment.color = COLOR_ERROR;
+            rows.push(
+              `:x:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Timed out [${totalCompleted} of ${job.steps.length} completed])_`
+            );
+            break;
+
+          case 'action_required':
+            attachment.color = COLOR_ERROR;
+            rows.push(
+              `:exclamation:  *<${job.url}|${job.name}>*:  ${actionStep.name}  _(Manual Action Required)_`
+            );
+            break;
+        }
+        break;
+
+      default:
+        throw new Error(`Unknown job status: ${job.status}`);
+    }
+
+    attachment.blocks = [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: rows.join('\n'),
+        },
+      },
+    ];
+
+
+    attachments.push(attachment);
+  });
+
+};
+
+
 
 export const getEventSummaryBlocks = () => {
   const {
