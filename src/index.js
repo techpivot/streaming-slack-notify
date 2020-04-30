@@ -1,4 +1,4 @@
-import { NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
+import { NO_GITHUB_TOKEN, NO_SLACK_ACCESS_TOKEN, TIMING_EXECUTION_LABEL } from './const';
 import {
   getInput,
   postSlackMessage,
@@ -24,6 +24,10 @@ async function run() {
       throw new Error(NO_SLACK_ACCESS_TOKEN);
     }
 
+    if (!process.env.GITHUB_TOKEN) {
+      throw new Error(NO_GITHUB_TOKEN);
+    }
+
     let { channel, ts } = await getSlackArtifact();
 
     if (!channel) {
@@ -32,13 +36,14 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-   // console.log(process.env);
+    // console.log(process.env);
     console.log(process.env.GITHUB_EVENT_PATH);
 
-    fs.readdirSync('/home/runner/work/_temp/_github_workflow').forEach(file => {
-      console.log(file);
-    });
-
+    fs.readdirSync('/home/runner/work/_temp/_github_workflow').forEach(
+      (file) => {
+        console.log(file);
+      }
+    );
 
     return;
     //console.log(JSON.stringify(github.context));

@@ -120,10 +120,7 @@ export const getSlackArtifact = async () => {
   console.time('Retrieve artifact');
 
   try {
-    if (
-      !fs.existsSync('/tmp/channel.txt') ||
-      !fs.existsSync('/tmp/ts.txt')
-    ) {
+    if (!fs.existsSync('/tmp/channel.txt') || !fs.existsSync('/tmp/ts.txt')) {
       const artifactClient = create();
 
       // Note: We call this every load and thus the very first time, there may not exist
