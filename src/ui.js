@@ -19,9 +19,76 @@ export const getJobSummaryBlocks = (workflowSummary) => {
     },
   } = github;
 
-  const blocks = [];
+  const rows = [];
 
-  return [];
+  workflowSummary.jobs.forEach((job) => {
+    let lastStep = job.steps[job.steps.length - 1];
+    let rowText = '';
+    let icon;
+    let stausVerb;
+    console.log(` >>>> ${job.name} : ${job.status}`);
+
+    // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
+    // status: queued, in_progress, completed
+
+    switch (job.status) {
+      case 'in_progress':
+        statusVerb = 'In progress';
+        icon = ':hourglass_flowing_sand';
+        break;
+
+      case 'completed':
+        switch (job.conclusion) {
+          case 'success':
+            statusVerb = 'Completed';
+            icon = ':heavy_check_mark:';
+            break;
+
+          case 'failure':
+            statusVerb = 'Completed';
+            icon = ':x:';
+            break;
+
+          case 'neutral':
+            statusVerb = 'Completed (Neutral)';
+            icon = ':white_check_mark:';
+            break;
+
+          case 'cancelled':
+            statusVerb = 'Cancelled';
+            icon = ':x:';
+            break;
+
+          case 'timed_out':
+            statusVerb = 'Timed out';
+            icon = ':x:';
+            break;
+
+          case 'action_required':
+            statusVerb = 'Manual Action Required';
+            icon = ':exclamation:';
+            break;
+        }
+        break;
+
+      case 'queued':
+        break;
+
+      default:
+        throw new Error(`Unknown job status: ${job.status}`);
+    }
+    rowText += `${icon}  *${job.name}*:  ${lastStep.name}  _(${statusVerb})_`;
+  });
+
+  return [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: rows.join('\n'),
+      },
+    },
+  ];
 };
 
 export const getEventSummaryBlocks = () => {
