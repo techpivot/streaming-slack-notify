@@ -18,12 +18,13 @@ import { getWorkflowSummary } from './github';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
+
   try {
     const { SLACK_ACCESS_TOKEN, GITHUB_TOKEN } = process.env;
+
     if (!SLACK_ACCESS_TOKEN) {
       throw new Error(NO_SLACK_ACCESS_TOKEN);
     }
-
     if (!GITHUB_TOKEN) {
       throw new Error(NO_GITHUB_TOKEN);
     }
@@ -32,9 +33,9 @@ async function run() {
 
     // create a new github client
 
-    const client = new github.Github(GITHUB_TOKEN);
+    const client = new github.GitHub(GITHUB_TOKEN);
 
-    console.log('client');
+    console.log('client', client);
 
 
 
