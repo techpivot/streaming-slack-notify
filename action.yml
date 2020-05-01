@@ -23,12 +23,12 @@ inputs:
 
   INTERNAL_STATUS_SUCCESS:
     description: Secret GitHub API token to use for making API requests.
-    default: ${{ success() }}
+    default:  success()
     required: true
 
   INTERNAL_STATUS_FAILURE:
     description: Secret GitHub API token to use for making API requests.
-    default: ${{ failure() }}
+    default: failure()
     required: true
 
   channel:
