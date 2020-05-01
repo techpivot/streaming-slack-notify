@@ -16,6 +16,11 @@ env:
     required: true
 
 inputs:
+  GITHUB_TOKEN:
+    description: Secret GitHub API token to use for making API requests.
+    default: ${{ github.token }}
+    required: true
+
   channel:
     description: 'Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity.'
     required: false

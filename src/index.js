@@ -33,7 +33,7 @@ async function run() {
 
     // create a new github client
 
-    const octokit = new GitHub(GITHUB_TOKEN);
+    const octokit = new GitHub(getInput('GITHUB_TOKEN', { required: true}));
 
     console.log('client');
 
