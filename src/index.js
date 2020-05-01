@@ -100,6 +100,7 @@ async function run() {
       })
       .catch((error) => {
         console.error(`\u001b[31;1mERROR: ${error}\u001b[0m`);
+        console.trace();
         process.exit(1);
       });
 
