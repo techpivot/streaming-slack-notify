@@ -19,11 +19,12 @@ import { getWorkflowSummary } from './github';
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
   try {
-    if (!process.env.SLACK_ACCESS_TOKEN) {
+    const { SLACK_ACCESS_TOKEN, GITHUB_TOKEN } = process.env;
+    if (!SLACK_ACCESS_TOKEN) {
       throw new Error(NO_SLACK_ACCESS_TOKEN);
     }
 
-    if (!process.env.GITHUB_TOKEN) {
+    if (!GITHUB_TOKEN) {
       throw new Error(NO_GITHUB_TOKEN);
     }
 
