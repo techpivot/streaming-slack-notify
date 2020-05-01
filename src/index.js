@@ -49,6 +49,7 @@ async function run() {
     repo,
     run_id: process.env.GITHUB_RUN_ID,
   });
+  console.timeEnd('test1');
   console.time('test2');
   const jobs = await octokit.actions.listJobsForWorkflowRun({
     owner,
@@ -56,8 +57,8 @@ async function run() {
     run_id: process.env.GITHUB_RUN_ID,
   });
 
-  console.log('good', jobs);
-  console.timeEnd('test1');
+  console.log('good', jobs.data.jobs);
+
   console.timeEnd('test2');
   console.timeEnd('total');
   return;
