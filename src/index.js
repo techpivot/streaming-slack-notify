@@ -13,7 +13,7 @@ import {
   getCommitBlocks,
   getJobAttachments,
 } from './ui';
-import {  getArtifacts, saveArtifacts } from './artifacts';
+import { getArtifacts, saveArtifacts } from './artifacts';
 import { getWorkflowSummary } from './github';
 
 async function run() {
@@ -29,42 +29,40 @@ async function run() {
       throw new Error(NO_GITHUB_TOKEN);
     }
 
-
-
     // create a new github client
 
-    const octokit = new GitHub(getInput('GITHUB_TOKEN', { required: true}));
+    const octokit = new GitHub(getInput('GITHUB_TOKEN', { required: true }));
 
     console.log('client');
 
-  // current WORKFLOW:    github.context.workflow    ||  'Main'
-  // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
-  // current JOB:         process.env.GITHUB_JOB     ||  'init'
-  console.time('test1');
-  console.time('total');
+    // current WORKFLOW:    github.context.workflow    ||  'Main'
+    // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
+    // current JOB:         process.env.GITHUB_JOB     ||  'init'
+    console.time('test1');
+    console.time('total');
 
-  const { owner, repo } = context.repo;
-  const workflowRun = await octokit.actions.getWorkflowRun({
-    owner,
-    repo,
-    run_id: process.env.GITHUB_RUN_ID,
-  });
-  console.timeEnd('test1');
-  console.time('test2');
-  const jobs = await octokit.actions.listJobsForWorkflowRun({
-    owner,
-    repo,
-    run_id: process.env.GITHUB_RUN_ID,
-  });
+    const { owner, repo } = context.repo;
+    const workflowRun = await octokit.actions.getWorkflowRun({
+      owner,
+      repo,
+      run_id: process.env.GITHUB_RUN_ID,
+    });
+    console.timeEnd('test1');
+    console.time('test2');
+    const jobs = await octokit.actions.listJobsForWorkflowRun({
+      owner,
+      repo,
+      run_id: process.env.GITHUB_RUN_ID,
+    });
 
-  //console.log('good', jobs.data.jobs);
+    //console.log('good', jobs.data.jobs);
 
-  console.log(workflowRun.data);
-  console.timeEnd('test2');
-  console.timeEnd('total');
+    console.log(workflowRun.data);
+    console.timeEnd('test2');
+    console.timeEnd('total');
 
     let { channel, ts } = await getArtifacts();
-   // const workflowSummary = await getWorkflowSummary();
+    // const workflowSummary = await getWorkflowSummary();
 
     const workflowSummary = {
       workflow: workflowRun.data,
