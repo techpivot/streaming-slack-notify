@@ -1,4 +1,5 @@
 import { context, GitHub } from '@actions/github';
+import { startGroup, endGroup } from '@actions/core';
 import {
   NO_GITHUB_TOKEN,
   NO_SLACK_ACCESS_TOKEN,
