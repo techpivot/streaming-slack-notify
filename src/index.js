@@ -57,18 +57,19 @@ async function run() {
     run_id: process.env.GITHUB_RUN_ID,
   });
 
-  console.log('good', jobs.data.jobs);
+  //console.log('good', jobs.data.jobs);
 
+  console.log(workflowRun.data);
   console.timeEnd('test2');
   console.timeEnd('total');
-  return;
 
-
-
-
-    return;
     let { channel, ts } = await getArtifacts();
-    const workflowSummary = await getWorkflowSummary();
+   // const workflowSummary = await getWorkflowSummary();
+
+    const workflowSummary = {
+      workflow: workflowRun.data,
+      jobs: jobs.data.jobs,
+    };
 
     if (!channel) {
       channel = getInput('channel', { required: true });
