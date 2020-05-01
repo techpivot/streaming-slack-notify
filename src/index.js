@@ -1,8 +1,10 @@
+import * as github from '@actions/github';
 import {
   NO_GITHUB_TOKEN,
   NO_SLACK_ACCESS_TOKEN,
   TIMING_EXECUTION_LABEL,
 } from './const';
+
 import { getInput, postSlackMessage } from './utils';
 import {
   getTitleBlocks,
@@ -11,12 +13,8 @@ import {
   getCommitBlocks,
   getJobAttachments,
 } from './ui';
-
-import {
-  getSlackArtifact,
-  saveSlackArtifact,
-  getWorkflowSummary,
-} from './github';
+import {  getArtifacts, saveArtifacts } from './artifacts';
+import { getWorkflowSummary } from './github';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -29,7 +27,19 @@ async function run() {
       throw new Error(NO_GITHUB_TOKEN);
     }
 
-    let { channel, ts } = await getSlackArtifact();
+
+
+    // create a new github client
+
+    const client = new github.Github(GITHUB_TOKEN);
+
+    console.log('client');
+
+
+
+
+    return;
+    let { channel, ts } = await getArtifacts();
     const workflowSummary = await getWorkflowSummary();
 
     if (!channel) {
@@ -44,8 +54,8 @@ async function run() {
         [],
         [
           getTitleBlocks(),
+          getEventSummaryBlocks(), //migrate to context
           getDividerBlock(),
-          getEventSummaryBlocks(),
           getCommitBlocks(),
           getDividerBlock(),
         ]
@@ -80,7 +90,7 @@ async function run() {
 
     // Create the artifact on init
     if (!ts) {
-      await saveSlackArtifact(responseJson.channel, responseJson.ts);
+      await saveArtifacts(responseJson.channel, responseJson.ts);
     }
   } catch (error) {
     console.error(`\u001b[31;1mERROR: ${error.message || error}\u001b[0m`);
