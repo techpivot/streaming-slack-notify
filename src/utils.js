@@ -1,6 +1,6 @@
 import https from 'https';
 import url from 'url';
-import core from '@actions/core';
+import { startGroup, endGroup } from '@actions/core';
 
 export function getInput(name, options = {}) {
   const val = (
@@ -67,9 +67,9 @@ const doRequest = (method, payload) => {
     },
   };
 
-  core.startGroup('Slack Payload')
+  startGroup('Slack Payload');
   console.debug(JSON.stringify(payload, null, 2));
-  core.endGroup()
+  endGroup();
 
 
   return new Promise((resolve, reject) => {
