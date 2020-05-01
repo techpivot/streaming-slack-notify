@@ -151,9 +151,10 @@ export const getJobAttachments = (workflowSummary) => {
         case 'completed':
         case 'in_progress':
           totalActiveSteps += 1;
-          if (currentStep && jobs.steps[i].number > currentStep.number) {
+          if (!currentStep || jobs.steps[i].number > currentStep.number) {
             currentStep = job.steps[i];
           }
+          break;
       }
     }
 
