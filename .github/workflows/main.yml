@@ -15,6 +15,8 @@ jobs:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
+          INTERNAL_STATUS_SUCCESS: ${{ success() }}
+          INTERNAL_STATUS_FAILURE: ${{ failure() }}
         with:
           channel: '#builds'
 
@@ -30,6 +32,8 @@ jobs:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
+          INTERNAL_STATUS_SUCCESS: ${{ success() }}
+          INTERNAL_STATUS_FAILURE: ${{ failure() }}
 
       - name: Linting
         run: sleep 4
@@ -39,6 +43,8 @@ jobs:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
+          INTERNAL_STATUS_SUCCESS: ${{ success() }}
+          INTERNAL_STATUS_FAILURE: ${{ failure() }}
 
       - name: Building
         run: sleep 5
@@ -48,6 +54,8 @@ jobs:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
+          INTERNAL_STATUS_SUCCESS: ${{ success() }}
+          INTERNAL_STATUS_FAILURE: ${{ failure() }}
 
       - name: Packaging for deployment
         run: sleep 5
@@ -58,6 +66,8 @@ jobs:
           SLACK_ACCESS_TOKEN1: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
+          INTERNAL_STATUS_SUCCESS: ${{ success() }}
+          INTERNAL_STATUS_FAILURE: ${{ failure() }}
 
       - uses: technote-space/workflow-conclusion-action@v1
         if: always()
