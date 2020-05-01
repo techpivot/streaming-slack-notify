@@ -21,12 +21,12 @@ inputs:
     default: ${{ github.token }}
     required: true
 
-  INTERNAL_STATUS_SUCCESS:
+  INTERNAL_STATUS_SUCCESS1:
     description: Secret GitHub API token to use for making API requests.
     default:  success()
     required: true
 
-  INTERNAL_STATUS_FAILURE:
+  INTERNAL_STATUS_FAILURE1:
     description: Secret GitHub API token to use for making API requests.
     default: failure()
     required: true
