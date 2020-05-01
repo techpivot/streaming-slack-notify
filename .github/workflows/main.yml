@@ -17,8 +17,8 @@ jobs:
         uses: techpivot/streaming-slack-notify@master
         with:
           channel: '#builds'
-          INTERNAL_STATUS_SUCCESS: 'true'
-          INTERNAL_STATUS_FAILURE: ${{ failure() }}
+          INTERNAL_STATUS_SUCCESS: success()
+          INTERNAL_STATUS_FAILURE: failure()
 
   build:
     runs-on: ubuntu-latest
