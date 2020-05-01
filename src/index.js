@@ -67,12 +67,12 @@ async function run() {
       text: getMessageText(),
       blocks: [].concat.apply(
         [],
-        [getEventSummaryBlocks(), getDividerBlock(), getCommitBlocks()]
+        [getDividerBlock(), getEventSummaryBlocks(), getCommitBlocks(), getDividerBlock()]
       ),
       attachments: [].concat.apply(
         [],
         [
-          getJobAttachments(workflowSummary),
+          //getJobAttachments(workflowSummary),
           getJobAttachments2(workflowSummary),
         ]
       ),
