@@ -41,16 +41,25 @@ async function run() {
   // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
   // current JOB:         process.env.GITHUB_JOB     ||  'init'
   console.time('test1');
+  console.time('total');
 
   const { owner, repo } = context.repo;
-  const result = await octokit.actions.getWorkflowRun({
+  const workflowRun = await octokit.actions.getWorkflowRun({
+    owner,
+    repo,
+    run_id: process.env.GITHUB_RUN_ID,
+  });
+  console.time('test2');
+  const jobs = await octokit.actions.listJobsForWorkflowRun({
     owner,
     repo,
     run_id: process.env.GITHUB_RUN_ID,
   });
 
-  console.log('good', result);
+  console.log('good', jobs);
   console.timeEnd('test1');
+  console.timeEnd('test2');
+  console.timeEnd('total');
   return;
 
 
