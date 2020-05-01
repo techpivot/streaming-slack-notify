@@ -224,6 +224,145 @@ export const getJobAttachments = (workflowSummary) => {
   return attachments;
 };
 
+export const getJobAttachments2 = (workflowSummary) => {
+  const attachments = [];
+
+  workflowSummary.jobs.forEach((job) => {
+    const attachment = {};
+    const elements = [];
+
+    // Reference
+    // =========
+    // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
+    // status: queued, in_progress, completed
+
+
+
+
+    let actionStep;
+    let totalCompleted = 0;
+
+    outerLoop: for (let i = 0; i < job.steps.length; i += 1) {
+      actionStep = job.steps[i];
+      switch (actionStep.status) {
+        case 'completed':
+          totalCompleted += 1;
+          break outerLoop;
+
+        case 'in_progress':
+          break outerLoop;
+
+        case 'queued':
+        default:
+          break;
+      }
+    }
+
+    let icon;
+
+    switch (job.status) {
+      case 'in_progress':
+        attachment.color = COLOR_IN_PROGRESS;
+        icon = ':hourglass_flowing_sand';
+        elements.push({
+          'type': 'mrkdwn',
+          'text': '_In Progress_',
+        });
+        elements.push({
+          'type': 'mrkdwn',
+          'text': `*${actionStep.name} (${totalCompleted} of ${job.steps.length})`,
+        });
+        break;
+
+      case 'queued':
+        icon = ':white_circle:';
+        attachment.color = COLOR_QUEUED;
+        elements.push({
+          'type': 'mrkdwn',
+          'text': '_Queued_',
+        });
+        console.log('check queue jobs');
+        break;
+
+      case 'completed':
+        switch (job.conclusion) {
+          case 'success':
+            icon = ':heavy_check_mark:';
+            attachment.color = COLOR_SUCCESS;
+
+            elements.push({
+              'type': 'mrkdwn',
+              'text': `*${job.steps.length} steps completed *successfully* `,
+            });
+            /*rows.push(
+              `:heavy_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed successfully`
+            );*/
+            break;
+
+          case 'neutral':
+            icon = ':heavy_check_mark:';
+            attachment.color = COLOR_SUCCESS;
+            elements.push({
+              'type': 'mrkdwn',
+              'text': `*${job.steps.length} steps completed *successfully* _(Neutral)_`,
+            });
+            /*
+            rows.push(
+              `:white_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed _(neutral)_`
+            ); */
+            break;
+
+          case 'failure':
+          case 'cancelled':
+          case 'timed_out':
+          case 'action_required':
+            icon = ':x:';
+            attachment.color = COLOR_ERROR;
+            elements.push({
+              'type': 'mrkdwn',
+              'text': `errorn `,
+            });
+            break;
+        }
+        break;
+
+      default:
+        throw new Error(`Unknown job status: ${job.status}`);
+    }
+
+    elements.unshift({
+      'type': 'mrkdwn',
+      'text': `*Job*: *<${job.url}|${job.name}>*`,
+    });
+    elements.unshift({
+      'type': 'mrkdwn',
+      'text': icon,
+    })
+
+    // Get the duration
+    if (!!job.started_at) {
+      console.log('started at', new Date(job.started_at));
+      console.log('current', new Date(job.completed_at)); // existing or current timestamp (okay)
+    }
+
+
+
+    attachment.blocks = [
+      {
+        type: 'context',
+        elements,
+      },
+    ];
+
+    attachments.push(attachment);
+  });
+
+  console.log('>>> HERE', attachments);
+
+  return attachments;
+};
+
+
 export const getEventSummaryBlocks = () => {
   const {
     context: {

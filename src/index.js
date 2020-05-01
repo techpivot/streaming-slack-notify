@@ -11,6 +11,7 @@ import {
   getEventSummaryBlocks,
   getCommitBlocks,
   getJobAttachments,
+  getJobAttachments2,
 } from './ui';
 
 import {
@@ -80,6 +81,7 @@ async function run() {
             ),
           },
           getJobAttachments(workflowSummary),
+          getJobAttachments2(workflowSummary),
         ]
       ),
     };
