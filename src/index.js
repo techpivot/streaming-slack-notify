@@ -65,21 +65,13 @@ async function run() {
     const payload = {
       channel,
       text: getMessageText(),
+      blocks: [].concat.apply(
+        [],
+        [getEventSummaryBlocks(), getDividerBlock(), getCommitBlocks()]
+      ),
       attachments: [].concat.apply(
         [],
         [
-          {
-            color: '#000000',
-            blocks: [].concat.apply(
-              [],
-              [
-                getJobSummaryBlocks(workflowSummary),
-                getEventSummaryBlocks(),
-                getDividerBlock(),
-                getCommitBlocks(),
-              ]
-            ),
-          },
           getJobAttachments(workflowSummary),
           getJobAttachments2(workflowSummary),
         ]

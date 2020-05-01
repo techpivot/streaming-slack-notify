@@ -13,7 +13,6 @@ export function getInput(name, options = {}) {
   return val;
 }
 
-
 export const getReadableDurationString = (dateOne, dateTwo) => {
   let d, h, m, s;
 
@@ -67,7 +66,8 @@ const doRequest = (method, payload) => {
     },
   };
 
-  console.debug('payload', JSON.stringify(payload, null, 2));
+  console.debug('Slack payload:');
+  console.debug(JSON.stringify(payload, null, 2));
 
   return new Promise((resolve, reject) => {
     const request = https.request(options, (response) => {

@@ -5,7 +5,7 @@ import {
   COLOR_IN_PROGRESS,
   COLOR_QUEUED,
 } from './const';
-import { getReadableDurationString} from './utils';
+import { getReadableDurationString } from './utils';
 
 export const getMessageText = () => {
   const { url } = github.context.payload.repository;
@@ -237,9 +237,6 @@ export const getJobAttachments2 = (workflowSummary) => {
     // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
     // status: queued, in_progress, completed
 
-
-
-
     let actionStep;
     let totalCompleted = 0;
 
@@ -266,12 +263,12 @@ export const getJobAttachments2 = (workflowSummary) => {
         attachment.color = COLOR_IN_PROGRESS;
         icon = ':hourglass_flowing_sand:';
         elements.push({
-          'type': 'mrkdwn',
-          'text': '_In Progress_',
+          type: 'mrkdwn',
+          text: '_In Progress_',
         });
         elements.push({
-          'type': 'mrkdwn',
-          'text': `*${actionStep.name}* (${totalCompleted} of ${job.steps.length})`,
+          type: 'mrkdwn',
+          text: `*${actionStep.name}* (${totalCompleted} of ${job.steps.length})`,
         });
         break;
 
@@ -279,8 +276,8 @@ export const getJobAttachments2 = (workflowSummary) => {
         icon = ':white_circle:';
         attachment.color = COLOR_QUEUED;
         elements.push({
-          'type': 'mrkdwn',
-          'text': '_Queued_',
+          type: 'mrkdwn',
+          text: '_Queued_',
         });
         console.log('check queue jobs');
         break;
@@ -292,8 +289,8 @@ export const getJobAttachments2 = (workflowSummary) => {
             attachment.color = COLOR_SUCCESS;
 
             elements.push({
-              'type': 'mrkdwn',
-              'text': `*${job.steps.length}* steps completed *successfully* `,
+              type: 'mrkdwn',
+              text: `*${job.steps.length}* steps completed *successfully* `,
             });
             /*rows.push(
               `:heavy_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed successfully`
@@ -304,8 +301,8 @@ export const getJobAttachments2 = (workflowSummary) => {
             icon = ':heavy_check_mark:';
             attachment.color = COLOR_SUCCESS;
             elements.push({
-              'type': 'mrkdwn',
-              'text': `*${job.steps.length}* steps completed *successfully* _(Neutral)_`,
+              type: 'mrkdwn',
+              text: `*${job.steps.length}* steps completed *successfully* _(Neutral)_`,
             });
             /*
             rows.push(
@@ -320,8 +317,8 @@ export const getJobAttachments2 = (workflowSummary) => {
             icon = ':x:';
             attachment.color = COLOR_ERROR;
             elements.push({
-              'type': 'mrkdwn',
-              'text': `errorn `,
+              type: 'mrkdwn',
+              text: `errorn `,
             });
             break;
         }
@@ -332,24 +329,24 @@ export const getJobAttachments2 = (workflowSummary) => {
     }
 
     elements.unshift({
-      'type': 'mrkdwn',
-      'text': `*Job*: *<${job.url}|${job.name}>*`,
+      type: 'mrkdwn',
+      text: `*Job*: *<${job.url}|${job.name}>*`,
     });
     elements.unshift({
-      'type': 'mrkdwn',
-      'text': icon,
+      type: 'mrkdwn',
+      text: icon,
     });
 
     // Get the duration
     if (job.started_at) {
       elements.push({
-        'type': 'mrkdwn',
-        'text': `:clock3:${getReadableDurationString(new Date(job.started_at), job.completed_at ? new Date(job.completed_at) : new Date())}`,
-      })
-      console.log('started at', new Date(job.started_at));
-      console.log('current', new Date(job.completed_at)); // existing or current timestamp (okay)
+        type: 'mrkdwn',
+        text: `:clock3:${getReadableDurationString(
+          new Date(job.started_at),
+          job.completed_at ? new Date(job.completed_at) : new Date()
+        )}`,
+      });
     }
-
 
     attachment.blocks = [
       {
@@ -365,7 +362,6 @@ export const getJobAttachments2 = (workflowSummary) => {
 
   return attachments;
 };
-
 
 export const getEventSummaryBlocks = () => {
   const {
