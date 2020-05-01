@@ -6,13 +6,10 @@ import {
 import { getInput, postSlackMessage } from './utils';
 import {
   getTitleBlocks,
-  getMessageText,
-  getJobSummaryBlocks,
   getDividerBlock,
   getEventSummaryBlocks,
   getCommitBlocks,
   getJobAttachments,
-  getJobAttachments2,
 } from './ui';
 
 import {
@@ -41,42 +38,19 @@ async function run() {
 
     const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-    //v1
-    /*
     const payload = {
       channel,
-      text: getMessageText(),
-      attachments: [
-        {
-          color: '#000000',
-          blocks: [].concat.apply(
-            [],
-            [
-              getJobSummaryBlocks(workflowSummary),
-              getDividerBlock(),
-              getEventSummaryBlocks(),
-              getDividerBlock(),
-              getCommitBlocks(),
-            ]
-          ),
-        },
-      ],
-    }; */
-    // v2
-    const payload = {
-      channel,
-     // text: getMessageText(),
       blocks: [].concat.apply(
         [],
-        [getTitleBlocks(), getDividerBlock(), getEventSummaryBlocks(), getCommitBlocks(), getDividerBlock()]
-      ),
-      attachments: [].concat.apply(
-        [],
         [
-          //getJobAttachments(workflowSummary),
-          getJobAttachments2(workflowSummary),
+          getTitleBlocks(),
+          getDividerBlock(),
+          getEventSummaryBlocks(),
+          getCommitBlocks(),
+          getDividerBlock(),
         ]
       ),
+      attachments: [].concat.apply([], [getJobAttachments(workflowSummary)]),
     };
 
     if (ts) {
