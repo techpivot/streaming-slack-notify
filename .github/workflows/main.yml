@@ -17,8 +17,12 @@ jobs:
         uses: techpivot/streaming-slack-notify@master
         with:
           channel: '#builds'
-          INTERNAL_STATUS_SUCCESS: '${{ success() }}'
-          INTERNAL_STATUS_FAILURE: '${{ failure() }}'
+          debug1: ${{ toJson(github) }}
+          debug2: ${{ toJson(job) }}
+          debug3: ${{ toJson(steps) }}
+          debug4: ${{ toJson(runner) }}
+          debug5: ${{ toJson(strategy) }}
+          debug6: ${{ toJson(matrix) }}
 
   build:
     runs-on: ubuntu-latest

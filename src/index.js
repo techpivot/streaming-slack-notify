@@ -61,8 +61,28 @@ async function run() {
     console.timeEnd('test2');
     console.timeEnd('total');
 
-    console.log(getInput('INTERNAL_STATUS_SUCCESS', { required: true }));
-    console.log(getInput('INTERNAL_STATUS_FAILURE', { required: true }));
+    startGroup('debug1 | github');
+    console.debug(JSON.stringify(getInput('debug1') || {}, null, 2));
+    endGroup();
+    startGroup('debug2 | job');
+    console.debug(JSON.stringify(getInput('debug2') || {}, null, 2));
+    endGroup();
+    startGroup('debug3 | steps');
+    console.debug(JSON.stringify(getInput('debug3') || {}, null, 2));
+    endGroup();
+    startGroup('debug4 | runner');
+    console.debug(JSON.stringify(getInput('debug4') || {}, null, 2));
+    endGroup();
+    startGroup('debug5 | strategy');
+    console.debug(JSON.stringify(getInput('debug5') || {}, null, 2));
+    endGroup();
+    startGroup('debug6 | matrix');
+    console.debug(JSON.stringify(getInput('debug6') || {}, null, 2));
+    endGroup();
+
+
+    //console.log(getInput('INTERNAL_STATUS_SUCCESS', { required: true }));
+   // console.log(getInput('INTERNAL_STATUS_FAILURE', { required: true }));
 
     //return;
 
