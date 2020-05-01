@@ -271,7 +271,7 @@ export const getJobAttachments2 = (workflowSummary) => {
         });
         elements.push({
           'type': 'mrkdwn',
-          'text': `*${actionStep.name} (${totalCompleted} of ${job.steps.length})`,
+          'text': `*${actionStep.name}* (${totalCompleted} of ${job.steps.length})`,
         });
         break;
 
@@ -293,7 +293,7 @@ export const getJobAttachments2 = (workflowSummary) => {
 
             elements.push({
               'type': 'mrkdwn',
-              'text': `*${job.steps.length} steps completed *successfully* `,
+              'text': `*${job.steps.length}* steps completed *successfully* `,
             });
             /*rows.push(
               `:heavy_check_mark:  *<${job.url}|${job.name}>*:  ${totalCompleted} of ${job.steps.length} completed successfully`
@@ -305,7 +305,7 @@ export const getJobAttachments2 = (workflowSummary) => {
             attachment.color = COLOR_SUCCESS;
             elements.push({
               'type': 'mrkdwn',
-              'text': `*${job.steps.length} steps completed *successfully* _(Neutral)_`,
+              'text': `*${job.steps.length}* steps completed *successfully* _(Neutral)_`,
             });
             /*
             rows.push(
@@ -342,7 +342,7 @@ export const getJobAttachments2 = (workflowSummary) => {
 
     // Get the duration
     if (job.started_at) {
-      elements.unshift({
+      elements.push({
         'type': 'mrkdwn',
         'text': `:clock3:${getReadableDurationString(new Date(job.started_at), job.completed_at ? new Date(job.completed_at) : new Date())}`,
       })
