@@ -378,7 +378,7 @@ export const getEventSummaryBlocks = () => {
 
   const fields = [
     `*<${url}|${GITHUB_REPOSITORY}>*`,
-    `*Workflow*: <${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>`,
+    //`*Workflow*: <${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>`,
     '*Event*: `' + eventName + '`',
   ];
 
@@ -391,7 +391,7 @@ export const getEventSummaryBlocks = () => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: fields.join('     '),
+        text: `Running workflow: *<${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>*\n` + fields.join('     '),
       },
     },
   ];
