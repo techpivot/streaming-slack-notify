@@ -84,7 +84,6 @@ async function run() {
     }
   } catch (error) {
     console.error(`\u001b[31;1mERROR: ${error.message || error}\u001b[0m`);
-    console.trace();
     process.exit(1);
   } finally {
     console.timeEnd(TIMING_EXECUTION_LABEL);
