@@ -1,4 +1,4 @@
-import * as github from '@actions/github';
+import { GitHub } from '@actions/github';
 import {
   NO_GITHUB_TOKEN,
   NO_SLACK_ACCESS_TOKEN,
@@ -33,9 +33,25 @@ async function run() {
 
     // create a new github client
 
-    const client = new github.GitHub(GITHUB_TOKEN);
+    const octokit = new GitHub(GITHUB_TOKEN);
 
-    console.log('client', client);
+    console.log('client');
+
+  // current WORKFLOW:    github.context.workflow    ||  'Main'
+  // current RUN_ID:      process.env.GITHUB_RUN_ID  ||  '90637811'
+  // current JOB:         process.env.GITHUB_JOB     ||  'init'
+  console.time('test1');
+
+  const { owner, repo } = github.context.repo;
+  const result = await octokit.getWorkflowRun({
+    owner,
+    repo,
+    run_id: process.env.GITHUB_RUN_ID,
+  });
+
+  console.log('good', result);
+  console.timeEnd('test1');
+  return;
 
 
 
