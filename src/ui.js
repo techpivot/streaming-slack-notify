@@ -377,7 +377,7 @@ export const getEventSummaryBlocks = () => {
   const { GITHUB_RUN_ID, GITHUB_REPOSITORY } = process.env;
 
   const fields = [
-    `*<${url}|${GITHUB_REPOSITORY}>*`
+    `*<${url}|${GITHUB_REPOSITORY}>*`,
     `*Workflow*: <${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>`,
     '*Event*: `' + eventName + '`',
   ];
