@@ -55,7 +55,7 @@ jobs:
       - name: Slack Notify
         if: ${{ always() }}
         env:
-          SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
+          SLACK_ACCESS_TOKEN1: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
 
