@@ -43,7 +43,7 @@ async function run() {
   console.time('test1');
 
   const { owner, repo } = context.repo;
-  const result = await octokit.getWorkflowRun({
+  const result = await octokit.actions.getWorkflowRun({
     owner,
     repo,
     run_id: process.env.GITHUB_RUN_ID,
