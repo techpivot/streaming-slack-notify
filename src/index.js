@@ -57,9 +57,12 @@ async function run() {
 
     //console.log('good', jobs.data.jobs);
 
-    console.log(workflowRun.data);
+   // console.log(workflowRun.data);
     console.timeEnd('test2');
     console.timeEnd('total');
+
+    console.log(getInput('INTERNAL_STATUS_SUCCESS', { required: true }));
+    console.log(getInput('INTERNAL_STATUS_FAILURE', { required: true }));
 
     //return;
 

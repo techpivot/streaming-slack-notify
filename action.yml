@@ -21,6 +21,16 @@ inputs:
     default: ${{ github.token }}
     required: true
 
+  INTERNAL_STATUS_SUCCESS:
+    description: Secret GitHub API token to use for making API requests.
+    default: ${{ success() }}
+    required: true
+
+  INTERNAL_STATUS_FAILURE:
+    description: Secret GitHub API token to use for making API requests.
+    default: ${{ failure() }}
+    required: true
+
   channel:
     description: 'Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity.'
     required: false

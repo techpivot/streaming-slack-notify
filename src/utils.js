@@ -71,7 +71,6 @@ const doRequest = (method, payload) => {
   console.debug(JSON.stringify(payload, null, 2));
   endGroup();
 
-
   return new Promise((resolve, reject) => {
     const request = https.request(options, (response) => {
       let body = '';
