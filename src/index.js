@@ -61,7 +61,7 @@ async function run() {
     console.timeEnd('test2');
     console.timeEnd('total');
 
-    return;
+    //return;
 
     let { channel, ts } = await getArtifacts();
     // const workflowSummary = await getWorkflowSummary();
