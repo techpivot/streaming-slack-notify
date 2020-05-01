@@ -34,13 +34,12 @@ export const getEventSummaryBlocks = () => {
     context: {
       eventName,
       ref,
-      workflow,
       payload: {
         repository: { url },
       },
     },
   } = github;
-  const { GITHUB_RUN_ID, GITHUB_REPOSITORY } = process.env;
+  const { GITHUB_REPOSITORY } = process.env;
 
   const fields = [
     `*<${url}|${GITHUB_REPOSITORY}>*`,
@@ -56,9 +55,7 @@ export const getEventSummaryBlocks = () => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text:
-          `Running workflow: *<${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>*\n` +
-          fields.join('     '),
+        text: fields.join('     '),
       },
     },
   ];
@@ -141,18 +138,19 @@ export const getJobAttachments = (workflowSummary) => {
 
   workflowSummary.jobs.forEach((job) => {
     const elements = [];
+    const { completed_at, html_url, name, status, started_at, steps } = job;
     let icon;
     let color;
     let currentStep;
     let totalActiveSteps = 0;
 
-    for (let i = 0; i < job.steps.length; i += 1) {
-      switch (job.steps[i].status) {
+    for (let i = 0; i < steps.length; i += 1) {
+      switch (steps[i].status) {
         case 'completed':
         case 'in_progress':
           totalActiveSteps += 1;
-          if (!currentStep || jobs.steps[i].number > currentStep.number) {
-            currentStep = job.steps[i];
+          if (!currentStep || steps[i].number > currentStep.number) {
+            currentStep = steps[i];
           }
           break;
       }
@@ -174,7 +172,7 @@ export const getJobAttachments = (workflowSummary) => {
         });
         elements.push({
           type: 'mrkdwn',
-          text: `*${currentStep.name}* (${totalActiveSteps} of ${job.steps.length})`,
+          text: `*${currentStep.name}* (${totalActiveSteps} of ${steps.length})`,
         });
         break;
 
@@ -199,7 +197,7 @@ export const getJobAttachments = (workflowSummary) => {
             color = COLOR_SUCCESS;
             elements.push({
               type: 'mrkdwn',
-              text: `*${job.steps.length}* steps completed *successfully*`,
+              text: `*${steps.length}* steps completed *successfully*`,
             });
             break;
 
@@ -208,7 +206,7 @@ export const getJobAttachments = (workflowSummary) => {
             color = COLOR_SUCCESS;
             elements.push({
               type: 'mrkdwn',
-              text: `*${job.steps.length}* steps completed *successfully* _(Neutral)_`,
+              text: `*${steps.length}* steps completed *successfully* _(Neutral)_`,
             });
             break;
 
@@ -227,12 +225,12 @@ export const getJobAttachments = (workflowSummary) => {
         break;
 
       default:
-        throw new Error(`Unknown job status: ${job.status}`);
+        throw new Error(`Unknown job status: ${status}`);
     }
 
     elements.unshift({
       type: 'mrkdwn',
-      text: `*Job*: *<${job.html_url}|${job.name}>*`,
+      text: `*Job*: *<${html_url}|${name}>*`,
     });
     elements.unshift({
       type: 'mrkdwn',
@@ -240,13 +238,13 @@ export const getJobAttachments = (workflowSummary) => {
     });
 
     // Get the duration
-    if (job.started_at) {
+    if (started_at) {
       elements.push({
         type: 'mrkdwn',
         // Note: Match the styling as close as possible to actual GitHub actions layout
         text: `:clock3:${getReadableDurationString(
-          new Date(job.started_at),
-          job.completed_at ? new Date(job.completed_at) : new Date()
+          new Date(started_at),
+          completed_at ? new Date(completed_at) : new Date()
         )}`,
       });
     }
