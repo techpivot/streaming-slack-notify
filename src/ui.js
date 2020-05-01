@@ -14,6 +14,28 @@ export const getMessageText = () => {
   return `*<${url}|${GITHUB_REPOSITORY}>*`;
 };
 
+export const getTitleBlocks = (workflowSummary) => {
+  const { GITHUB_RUN_ID } = process.env;
+  const {
+    context: {
+      workflow,
+      payload: {
+        repository: { url },
+      },
+    },
+  } = github;
+
+  return [
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `GitHub actions is running *workflow*: <${url}/actions/runs/${GITHUB_RUN_ID}|${workflow}>*`,
+      },
+    },
+  ];
+};
+
 export const getJobSummaryBlocks = (workflowSummary) => {
   const rows = [];
 
@@ -220,13 +242,14 @@ export const getJobAttachments = (workflowSummary) => {
     attachments.push(attachment);
   });
 
-  console.log('>>> HERE', attachments);
-
   return attachments;
 };
 
 export const getJobAttachments2 = (workflowSummary) => {
   const attachments = [];
+
+  console.log('HERE');
+  console.log(JSON.stringify(workflowSummary));
 
   workflowSummary.jobs.forEach((job) => {
     const attachment = {};
@@ -330,7 +353,7 @@ export const getJobAttachments2 = (workflowSummary) => {
 
     elements.unshift({
       type: 'mrkdwn',
-      text: `*Job*: *<${job.url}|${job.name}>*`,
+      text: `*Job*: *<${job.html_url}|${job.name}>*`,
     });
     elements.unshift({
       type: 'mrkdwn',
@@ -357,8 +380,6 @@ export const getJobAttachments2 = (workflowSummary) => {
 
     attachments.push(attachment);
   });
-
-  console.log('>>> HERE', attachments);
 
   return attachments;
 };

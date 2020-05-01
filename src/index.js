@@ -5,6 +5,7 @@ import {
 } from './const';
 import { getInput, postSlackMessage } from './utils';
 import {
+  getTitleBlocks,
   getMessageText,
   getJobSummaryBlocks,
   getDividerBlock,
@@ -64,10 +65,10 @@ async function run() {
     // v2
     const payload = {
       channel,
-      text: getMessageText(),
+     // text: getMessageText(),
       blocks: [].concat.apply(
         [],
-        [getDividerBlock(), getEventSummaryBlocks(), getCommitBlocks(), getDividerBlock()]
+        [getTitleBlocks(), getDividerBlock(), getEventSummaryBlocks(), getCommitBlocks(), getDividerBlock()]
       ),
       attachments: [].concat.apply(
         [],
