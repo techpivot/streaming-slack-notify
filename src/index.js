@@ -1,4 +1,4 @@
-import { GitHub } from '@actions/github';
+import { context, GitHub } from '@actions/github';
 import {
   NO_GITHUB_TOKEN,
   NO_SLACK_ACCESS_TOKEN,
@@ -42,7 +42,7 @@ async function run() {
   // current JOB:         process.env.GITHUB_JOB     ||  'init'
   console.time('test1');
 
-  const { owner, repo } = github.context.repo;
+  const { owner, repo } = context.repo;
   const result = await octokit.getWorkflowRun({
     owner,
     repo,
