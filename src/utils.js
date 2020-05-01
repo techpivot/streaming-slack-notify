@@ -13,41 +13,33 @@ export function getInput(name, options = {}) {
   return val;
 }
 
-export const getDurationStringFromDates = (dateOne, dateTwo) => {
-  // TIP: to find current time in milliseconds, use:
-  // var  current_time_milliseconds = new Date().getTime();
 
-  // Seconds
-  let leftover = Math.abs(dateOne.getTime() - dateTwo.getTime()) / 1000;
+export const getReadableDurationString = (dateOne, dateTwo) => {
+  let d, h, m, s;
 
-  var years = Math.floor(temp / 31536000);
-  if (years) {
-      return years + ' year' + numberEnding(years);
+  s = Math.floor(Math.abs(dateOne.getTime() - dateTwo.getTime()) / 1000);
+  m = Math.floor(s / 60);
+  s = s % 60;
+  h = Math.floor(m / 60);
+  m = m % 60;
+  d = Math.floor(h / 24);
+  h = h % 24;
+
+  const result = [];
+  if (d > 0) {
+    result.push(`${d}d`);
+  }
+  if (h > 0) {
+    result.push(`${h}h`);
+  }
+  if (m > 0) {
+    result.push(`${m}m`);
+  }
+  if (s > 0) {
+    result.push(`${s}s`);
   }
 
-  function numberEnding (number) {
-      return (number > 1) ? 's' : '';
-  }
-
-
-  //TODO: Months! Maybe weeks?
-  var days = Math.floor((temp %= 31536000) / 86400);
-  if (days) {
-      return days + ' day' + numberEnding(days);
-  }
-  var hours = Math.floor((temp %= 86400) / 3600);
-  if (hours) {
-      return hours + ' hour' + numberEnding(hours);
-  }
-  var minutes = Math.floor((temp %= 3600) / 60);
-  if (minutes) {
-      return minutes + ' minute' + numberEnding(minutes);
-  }
-  var seconds = temp % 60;
-  if (seconds) {
-      return seconds + ' second' + numberEnding(seconds);
-  }
-  return 'less than a second'; //'just now' //or other string you like;
+  return result.join(' ');
 };
 
 export function printHttpError(errorMessage, statusCode = null, body = null) {

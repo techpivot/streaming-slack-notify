@@ -21,5 +21,5 @@ export const ARTIFACT_NAME = 'techpivot-streaming-slack-notifier.zip';
 
 export const COLOR_SUCCESS = '#28a745';
 export const COLOR_ERROR = '#ea3131';
-export const COLOR_IN_PROGRESS = '#ffc25c';
+export const COLOR_IN_PROGRESS = '#d2942c';
 export const COLOR_QUEUED = '#d2d2d2';

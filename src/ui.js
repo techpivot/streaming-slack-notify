@@ -5,6 +5,7 @@ import {
   COLOR_IN_PROGRESS,
   COLOR_QUEUED,
 } from './const';
+import { getReadableDurationString} from './utils';
 
 export const getMessageText = () => {
   const { url } = github.context.payload.repository;
@@ -263,7 +264,7 @@ export const getJobAttachments2 = (workflowSummary) => {
     switch (job.status) {
       case 'in_progress':
         attachment.color = COLOR_IN_PROGRESS;
-        icon = ':hourglass_flowing_sand';
+        icon = ':hourglass_flowing_sand:';
         elements.push({
           'type': 'mrkdwn',
           'text': '_In Progress_',
@@ -337,14 +338,17 @@ export const getJobAttachments2 = (workflowSummary) => {
     elements.unshift({
       'type': 'mrkdwn',
       'text': icon,
-    })
+    });
 
     // Get the duration
-    if (!!job.started_at) {
+    if (job.started_at) {
+      elements.unshift({
+        'type': 'mrkdwn',
+        'text': `:clock3:${getReadableDurationString(new Date(job.started_at), job.completed_at ? new Date(job.completed_at) : new Date())}`,
+      })
       console.log('started at', new Date(job.started_at));
       console.log('current', new Date(job.completed_at)); // existing or current timestamp (okay)
     }
-
 
 
     attachment.blocks = [
