@@ -21,9 +21,9 @@ inputs:
     default: ${{ github.token }}
     required: true
 
-  INTERNAL_STATUS_SUCCESS1:
+  JOB_STATUS:
     description: Secret GitHub API token to use for making API requests.
-    default:  success()
+    default: ${{ job.status }}
     required: true
 
   INTERNAL_STATUS_FAILURE1:

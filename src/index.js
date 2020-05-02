@@ -62,7 +62,7 @@ async function run() {
     console.timeEnd('test2');
     console.timeEnd('total');
 
-    console.debug('debug0', getInput('debug0'));
+    console.debug('JOB_STATUS', getInput('JOB_STATUS'));
 
 
 
