@@ -2,7 +2,7 @@ import { startGroup, endGroup } from '@actions/core';
 import { HttpClient } from '@actions/http-client';
 import { getSlackToken } from './utils';
 
-export const postSlackMessage = async (method: String, payload: String): Promise<object> =>  {
+export const postSlackMessage = async (method: String, payload: String): Promise<object> => {
   startGroup('Slack Payload');
   console.debug(JSON.stringify(payload, null, 2));
   endGroup();
@@ -15,16 +15,14 @@ export const postSlackMessage = async (method: String, payload: String): Promise
       Authorization: `Bearer ${getSlackToken()}`,
       'Content-Type': 'application/json; charset=utf-8',
       'Content-Length': data.length,
-  }});
+    },
+  });
 
   const { statusCode } = response.message;
   const body: string = await response.readBody();
   const jsonBody: any = JSON.parse(body);
 
-  console.error(`Response Status Code: ${statusCode}`);
-  startGroup('Response Body')
-  console.error(body);
-  endGroup();
+  console.debug(`Response Status Code: ${statusCode}`);
 
   let error;
   if (jsonBody && jsonBody.error) {
@@ -35,13 +33,10 @@ export const postSlackMessage = async (method: String, payload: String): Promise
   }
 
   if (statusCode !== 200 || error != undefined) {
-    throw new Error(`Unable to post message to Slack${
-      error !== null ? ': ' + error : ''
-    }\n`)
+    throw new Error(`Unable to post message to Slack${error !== null ? ': ' + error : ''}\n`);
   }
 
   return jsonBody;
-
 
   /*
   const data = JSON.stringify(payload);
@@ -105,4 +100,3 @@ export const postSlackMessage = async (method: String, payload: String): Promise
     request.end();
   }); */
 };
-
