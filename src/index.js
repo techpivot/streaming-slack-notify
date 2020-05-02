@@ -32,7 +32,7 @@ async function run() {
 
     // create a new github client
 
-    const octokit = new GitHub(getInput('GITHUB_TOKEN', { required: true }));
+    const octokit = new GitHub(); //getInput('GITHUB_TOKEN', { required: true }));
 
     console.log('client');
 
@@ -69,7 +69,6 @@ async function run() {
     console.timeEnd('total');
 
     console.debug('JOB_STATUS', getInput('JOB_STATUS'));
-
 
 
     startGroup('debug1 | github');
