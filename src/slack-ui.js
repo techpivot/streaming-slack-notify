@@ -126,8 +126,6 @@ export const getCommitBlocks = () => {
 export const getJobAttachments = (workflowSummary) => {
   const attachments = [];
 
-  console.log(JSON.stringify(workflowSummary));
-
   workflowSummary.jobs.forEach((job) => {
     const elements = [];
     const { completed_at, html_url, name, status, started_at, steps } = job;

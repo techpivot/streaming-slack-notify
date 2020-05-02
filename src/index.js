@@ -56,6 +56,8 @@ async function run() {
     }
 
 
+    console.log('good we got payload, now post');
+
     const response = await postSlackMessage(method, payload);
     console.log('outer', response);
 

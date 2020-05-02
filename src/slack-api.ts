@@ -1,7 +1,5 @@
 import { startGroup, endGroup } from '@actions/core';
 import { HttpClient } from '@actions/http-client';
-import url from 'url';
-import https from 'https';
 import { getSlackToken } from './utils';
 
 export function printHttpError(errorMessage: string, statusCode = null, body = null) {
@@ -16,14 +14,11 @@ export function printHttpError(errorMessage: string, statusCode = null, body = n
 
 
 export const postSlackMessage = async (method: String, payload: String): Promise<object> =>  {
-
   startGroup('Slack Payload');
   console.debug(JSON.stringify(payload, null, 2));
   endGroup();
 
-
   const data = JSON.stringify(payload);
-
   const client = new HttpClient();
 
   const response = await client.post(`https://slack.com//api/${method}`, data, {
