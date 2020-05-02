@@ -1,6 +1,6 @@
 import { context, GitHub } from '@actions/github';
 import { getInput, startGroup, endGroup } from '@actions/core';
-import {  TIMING_EXECUTION_LABEL } from './const';
+
 
 import { postSlackMessage } from './utils';
 import {
@@ -9,10 +9,11 @@ import {
   getEventSummaryBlocks,
   getCommitBlocks,
   getJobAttachments,
-} from './ui';
-import { validateInputs } from './validation';
+} from './slack-ui';
 import { getArtifacts, saveArtifacts } from './artifacts';
-import { getWorkflowSummary } from './github';
+import {  TIMING_EXECUTION_LABEL } from './const';
+import { validateInputs } from './validation';
+import { getWorkflowSummary } from './workflow';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -22,12 +23,62 @@ async function run() {
     // error out early on
     validateInputs();
 
+    // Get existing artifacts which hold the resulting `ts` and `channel` required for
+    // subsequent `chat.update` posts.
+    let { channel, ts } = await getArtifacts();
+
+    if (!channel) {
+      channel = getInput('channel', { required: true });
+    }
+
+    const method = !ts ? 'chat.postMessage' : 'chat.update';
+
+
+    console.time('workflow');
+    const workflow = await getWorkflowSummary();
+    console.timeEnd('workflow');
+    startGroup('workflow');
+    console.log(workflow);
+    endGroup();
+
+    return;
+
+
+
+
+    const payload = {
+      channel,
+      blocks: [].concat.apply(
+        [],
+        [
+          getTitleBlocks(),
+          getEventSummaryBlocks(), //migrate to context
+          getDividerBlock(),
+          getCommitBlocks(),
+          getDividerBlock(),
+        ]
+      ),
+      attachments: [].concat.apply([], [getJobAttachments(workflowSummary)]),
+    };
+
+    if (ts) {
+      payload.ts = ts;
+    } else {
+      // Optional fields (These are only applicable for the first post)
+      ['username', 'icon_url', 'icon_emoji'].forEach((k) => {
+        const inputValue = getInput(k);
+        if (inputValue) {
+          payload[k] = inputValue;
+        }
+      });
+    }
+
+
 
     return;
 
     // create a new github client
 
-    const octokit = new GitHub(getInput('GITHUB_TOKEN', { required: true }));
 
     console.log('client');
 
@@ -38,25 +89,7 @@ async function run() {
     console.time('total');
 
     const { owner, repo } = context.repo;
-    const workflowRun = await octokit.actions.getWorkflowRun({
-      owner,
-      repo,
-      run_id: process.env.GITHUB_RUN_ID,
-    });
-    console.timeEnd('test1');
-    console.time('test2');
-    const jobs = await octokit.actions.listJobsForWorkflowRun({
-      owner,
-      repo,
-      run_id: process.env.GITHUB_RUN_ID,
-    });
 
-
-    startGroup('jobs dump');
-    console.log(jobs.data.jobs);
-    endGroup();
-
-    startGroup('workflow');
 
     console.log(workflowRun.data);
     endGroup();
@@ -91,46 +124,12 @@ async function run() {
 
     //return;
 
-    let { channel, ts } = await getArtifacts();
+
     // const workflowSummary = await getWorkflowSummary();
 
-    const workflowSummary = {
-      workflow: workflowRun.data,
-      jobs: jobs.data.jobs,
-    };
 
-    if (!channel) {
-      channel = getInput('channel', { required: true });
-    }
 
-    const method = !ts ? 'chat.postMessage' : 'chat.update';
 
-    const payload = {
-      channel,
-      blocks: [].concat.apply(
-        [],
-        [
-          getTitleBlocks(),
-          getEventSummaryBlocks(), //migrate to context
-          getDividerBlock(),
-          getCommitBlocks(),
-          getDividerBlock(),
-        ]
-      ),
-      attachments: [].concat.apply([], [getJobAttachments(workflowSummary)]),
-    };
-
-    if (ts) {
-      payload.ts = ts;
-    } else {
-      // Optional fields (These are only applicable for the first post)
-      ['username', 'icon_url', 'icon_emoji'].forEach((k) => {
-        const inputValue = getInput(k);
-        if (inputValue) {
-          payload[k] = inputValue;
-        }
-      });
-    }
 
     let responseJson;
     await postSlackMessage(method, payload)

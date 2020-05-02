@@ -6,7 +6,15 @@ export const getGithubToken = (): string | undefined => {
   return process.env.GITHUB_TOKEN;
 };
 
+export const getGithubRunId = (): number => {
+  const { GITHUB_RUN_ID } = process.env;
 
+  if (!GITHUB_RUN_ID) {
+    throw new Error('Unable to determine current run ID: No GITHUB_RUN_ID environment variable set');
+  }
+
+  return parseInt(GITHUB_RUN_ID, 10);
+};
 
 export const getReadableDurationString = (dateOne: Date, dateTwo: Date): string => {
   let d, h, m, s;

@@ -2,30 +2,17 @@ import fs from 'fs';
 import { create } from '@actions/artifact';
 import { ARTIFACT_NAME } from './const';
 
-export const saveArtifacts = async (channel, timestamp) => {
-  console.time('Upload artifact');
-
-  try {
-    fs.writeFileSync('/tmp/channel.txt', channel);
-    fs.writeFileSync('/tmp/ts.txt', timestamp);
-    const artifactClient = create();
-
-    await artifactClient.uploadArtifact(
-      ARTIFACT_NAME,
-      ['/tmp/channel.txt', '/tmp/ts.txt'],
-      '/tmp'
-    );
-  } finally {
-    console.timeEnd('Upload artifact');
-  }
-};
+interface ArtifactInterface {
+  channel: string | null;
+  ts: string | null;
+}
 
 /**
  * Returns the string timestamp or null.
  *
  * @return object { ts, channel } The values are null if not specified
  */
-export const getArtifacts = async () => {
+export const getArtifacts = async (): Promise<ArtifactInterface> => {
   console.time('Retrieve artifact');
 
   try {
@@ -52,5 +39,23 @@ export const getArtifacts = async () => {
     };
   } finally {
     console.timeEnd('Retrieve artifact');
+  }
+};
+
+export const saveArtifacts = async (channel: string, timestamp: string): Promise<any> => {
+  console.time('Upload artifact');
+
+  try {
+    fs.writeFileSync('/tmp/channel.txt', channel);
+    fs.writeFileSync('/tmp/ts.txt', timestamp);
+    const artifactClient = create();
+
+    return await artifactClient.uploadArtifact(
+      ARTIFACT_NAME,
+      ['/tmp/channel.txt', '/tmp/ts.txt'],
+      '/tmp'
+    );
+  } finally {
+    console.timeEnd('Upload artifact');
   }
 };
