@@ -28,7 +28,12 @@ export const postSlackMessage = async (method: String, payload: String): Promise
       'Content-Length': data.length,
   }});
 
-  console.log('here', response);
+  console.log('response sc', response.message.statusCode);
+
+  const body: string = await response.readBody();
+    console.log('body', body);
+    const obj: any = JSON.parse(body);
+    console.log('json', obj);
 
   return response;
 
