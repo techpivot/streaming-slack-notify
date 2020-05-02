@@ -1,10 +1,5 @@
 import * as github from '@actions/github';
-import {
-  COLOR_SUCCESS,
-  COLOR_ERROR,
-  COLOR_IN_PROGRESS,
-  COLOR_QUEUED,
-} from './const';
+import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from './const';
 import { getReadableDurationString } from './utils';
 
 export const getTitleBlocks = (workflowSummary) => {
@@ -41,10 +36,7 @@ export const getEventSummaryBlocks = () => {
   } = github;
   const { GITHUB_REPOSITORY } = process.env;
 
-  const fields = [
-    `*<${url}|${GITHUB_REPOSITORY}>*`,
-    '*Event*: `' + eventName + '`',
-  ];
+  const fields = [`*<${url}|${GITHUB_REPOSITORY}>*`, '*Event*: `' + eventName + '`'];
 
   if (eventName === 'push') {
     fields.push('*Branch*: `' + ref.trim('/').replace('refs/heads/', '') + '`');

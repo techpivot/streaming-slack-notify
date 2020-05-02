@@ -50,11 +50,7 @@ export const saveArtifacts = async (channel: string, timestamp: string): Promise
     fs.writeFileSync('/tmp/ts.txt', timestamp);
     const artifactClient = create();
 
-    return await artifactClient.uploadArtifact(
-      ARTIFACT_NAME,
-      ['/tmp/channel.txt', '/tmp/ts.txt'],
-      '/tmp'
-    );
+    return await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/channel.txt', '/tmp/ts.txt'], '/tmp');
   } finally {
     console.timeEnd('Upload artifact');
   }

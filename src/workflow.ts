@@ -8,6 +8,7 @@ interface WorkflowSummaryInterface {
 
 export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> => {
   const token = getGithubToken();
+
   if (token === undefined) {
     throw new Error('Workflow summary requires GITHUB_TOKEN to access actions REST API');
   }
@@ -18,13 +19,12 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const opts = { run_id, owner, repo };
 
   const [workflow, jobs] = await Promise.all([
-    octokit.actions.getWorkflowRun(opts), octokit.actions.listJobsForWorkflowRun(opts)]
-  );
+    octokit.actions.getWorkflowRun(opts),
+    octokit.actions.listJobsForWorkflowRun(opts),
+  ]);
 
   return {
-    workflow,
-    jobs,
+    workflow: workflow.data,
+    jobs: jobs.data.jobs,
   };
 };
-
-

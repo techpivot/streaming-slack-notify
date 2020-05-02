@@ -1,51 +1,10 @@
-export const getSlackToken = (): string | undefined => {
-  return process.env.SLACK_ACCESS_TOKEN;
-};
+import { startGroup, endGroup } from '@actions/core';
+import { HttpClient } from '@actions/http-client';
+import url from 'url';
+import https from 'https';
+import { getSlackToken } from './utils';
 
-export const getGithubToken = (): string | undefined => {
-  return process.env.GITHUB_TOKEN;
-};
-
-export const getGithubRunId = (): number => {
-  const { GITHUB_RUN_ID } = process.env;
-
-  if (!GITHUB_RUN_ID) {
-    throw new Error('Unable to determine current run ID: No GITHUB_RUN_ID environment variable set');
-  }
-
-  return parseInt(GITHUB_RUN_ID, 10);
-};
-
-export const getReadableDurationString = (dateOne: Date, dateTwo: Date): string => {
-  let d, h, m, s;
-
-  s = Math.floor(Math.abs(dateOne.getTime() - dateTwo.getTime()) / 1000);
-  m = Math.floor(s / 60);
-  s = s % 60;
-  h = Math.floor(m / 60);
-  m = m % 60;
-  d = Math.floor(h / 24);
-  h = h % 24;
-
-  const result = [];
-  if (d > 0) {
-    result.push(`${d}d`);
-  }
-  if (h > 0) {
-    result.push(`${h}h`);
-  }
-  if (m > 0) {
-    result.push(`${m}m`);
-  }
-  if (s > 0) {
-    result.push(`${s}s`);
-  }
-
-  return result.join(' ');
-};
-
-/*
-export function printHttpError(errorMessage, statusCode = null, body = null) {
+export function printHttpError(errorMessage: string, statusCode = null, body = null) {
   console.error(
     `ERROR: Unable to post message to Slack${
       errorMessage !== null ? ': ' + errorMessage : ''
@@ -55,7 +14,31 @@ export function printHttpError(errorMessage, statusCode = null, body = null) {
   console.error(`Response Body: ${body}`);
 }
 
-const doRequest = (method, payload) => {
+
+export const postSlackMessage = async (method: String, payload: String): Promise<object> =>  {
+
+  startGroup('Slack Payload');
+  console.debug(JSON.stringify(payload, null, 2));
+  endGroup();
+
+
+  const data = JSON.stringify(payload);
+
+  const client = new HttpClient();
+
+  const response = await client.post(`https://slack.com//api/${method}`, data, {
+    headers: {
+      Authorization: `Bearer ${getSlackToken()}`,
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Length': data.length,
+  }});
+
+  console.log('here', response);
+
+  return response;
+
+
+  /*
   const data = JSON.stringify(payload);
   const endpoint = url.parse(`https://slack.com//api/${method}`);
   const options = {
@@ -64,15 +47,13 @@ const doRequest = (method, payload) => {
     path: endpoint.pathname,
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${process.env.SLACK_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${getSlackToken()}`,
       'Content-Type': 'application/json; charset=utf-8',
       'Content-Length': data.length,
     },
   };
 
-  startGroup('Slack Payload');
-  console.debug(JSON.stringify(payload, null, 2));
-  endGroup();
+
 
   return new Promise((resolve, reject) => {
     const request = https.request(options, (response) => {
@@ -117,10 +98,6 @@ const doRequest = (method, payload) => {
     });
     request.write(data);
     request.end();
-  });
+  }); */
 };
 
-export const postSlackMessage = async (method, payload) => {
-  return await doRequest(method, payload);
-};
-*/
