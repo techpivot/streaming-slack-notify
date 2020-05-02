@@ -2,17 +2,6 @@ import { startGroup, endGroup } from '@actions/core';
 import { HttpClient } from '@actions/http-client';
 import { getSlackToken } from './utils';
 
-export function printHttpError(errorMessage: string, statusCode = null, body = null) {
-  console.error(
-    `ERROR: Unable to post message to Slack${
-      errorMessage !== null ? ': ' + errorMessage : ''
-    }\n`
-  );
-  console.error(`Response Code: ${statusCode}`);
-  console.error(`Response Body: ${body}`);
-}
-
-
 export const postSlackMessage = async (method: String, payload: String): Promise<object> =>  {
   startGroup('Slack Payload');
   console.debug(JSON.stringify(payload, null, 2));
@@ -28,18 +17,30 @@ export const postSlackMessage = async (method: String, payload: String): Promise
       'Content-Length': data.length,
   }});
 
-  if (response.message.statusCode === 200) {
-    throw new Error(`Failed posting to slack. Status code = %{response.message.statusCode}`)
+  const { statusCode } = response.message;
+  const body: string = await response.readBody();
+  const jsonBody: any = JSON.parse(body);
+
+  console.error(`Response Status Code: ${statusCode}`);
+  startGroup('Response Body')
+  console.error(body);
+  endGroup();
+
+  let error;
+  if (jsonBody && jsonBody.error) {
+    error = jsonBody.error;
+    if (jsonBody.response_metadata && jsonBody.response_metadata.messages) {
+      error += `: ${jsonBody.response_metadata.messages[0]}`;
+    }
   }
 
-  console.log('response sc', response.message.statusCode);
+  if (statusCode !== 200 || error != undefined) {
+    throw new Error(`Unable to post message to Slack${
+      error !== null ? ': ' + error : ''
+    }\n`)
+  }
 
-  const body: string = await response.readBody();
-    console.log('body', body);
-    const obj: any = JSON.parse(body);
-    console.log('json', obj);
-
-  return response;
+  return jsonBody;
 
 
   /*
