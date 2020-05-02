@@ -62,6 +62,10 @@ async function run() {
     console.timeEnd('test2');
     console.timeEnd('total');
 
+    console.debug('debug0', getInput('debug0'));
+
+
+
     startGroup('debug1 | github');
     console.debug(JSON.stringify(getInput('debug1') || {}, null, 2));
     endGroup();

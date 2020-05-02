@@ -17,6 +17,7 @@ jobs:
         uses: techpivot/streaming-slack-notify@master
         with:
           channel: '#builds'
+          debug0: ${{ job.status }}
           debug1: ${{ toJson(github) }}
           debug2: ${{ toJson(job) }}
           debug3: ${{ toJson(steps) }}
@@ -68,12 +69,13 @@ jobs:
         run: sleep 5
 
       - name: Slack Notify
-        if: ${{ always() }}
+        if: always()
         env:
           SLACK_ACCESS_TOKEN1: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
         with:
+          debug0: ${{ job.status }}
           INTERNAL_STATUS_SUCCESS: success()
           INTERNAL_STATUS_FAILURE: failure()
 
