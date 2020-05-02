@@ -55,7 +55,6 @@ async function run() {
       });
     }
 
-    console.log('good we got payload, now post');
 
     console.time('slack1');
     const response = await postSlackMessage(method, payload);

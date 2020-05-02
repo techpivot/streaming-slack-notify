@@ -1,16 +1,18 @@
 import { startGroup, endGroup } from '@actions/core';
 import { HttpClient } from '@actions/http-client';
 import { getSlackToken } from './utils';
+import axios from 'axios';
 
 export const postSlackMessage = async (method: String, payload: String): Promise<object> => {
   startGroup('Slack Payload');
   console.debug(JSON.stringify(payload, null, 2));
   endGroup();
 
-  const data = JSON.stringify(payload);
-  const client = new HttpClient();
+  console.time('Slack timing');
 
-  const response = await client.post(`https://slack.com//api/${method}`, data, {
+  const data = JSON.stringify(payload);
+
+  const response = await axios.post(`https://slack.com//api/${method}`, data, {
     headers: {
       Authorization: `Bearer ${getSlackToken()}`,
       'Content-Type': 'application/json; charset=utf-8',
@@ -18,11 +20,12 @@ export const postSlackMessage = async (method: String, payload: String): Promise
     },
   });
 
-  const { statusCode } = response.message;
-  const body: string = await response.readBody();
+  const { status, data: body} = response;
   const jsonBody: any = JSON.parse(body);
 
-  console.debug(`Response Status Code: ${statusCode}`);
+  console.timeEnd('Slack timing');
+
+  console.debug(`Response Status Code: ${status}`);
 
   let error;
   if (jsonBody && jsonBody.error) {
@@ -32,7 +35,7 @@ export const postSlackMessage = async (method: String, payload: String): Promise
     }
   }
 
-  if (statusCode !== 200 || error != undefined) {
+  if (status !== 200 || error != undefined) {
     throw new Error(`Unable to post message to Slack${error !== null ? ': ' + error : ''}\n`);
   }
 
