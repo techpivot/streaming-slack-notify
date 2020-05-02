@@ -56,9 +56,15 @@ async function run() {
       run_id: process.env.GITHUB_RUN_ID,
     });
 
-    //console.log('good', jobs.data.jobs);
 
-   // console.log(workflowRun.data);
+    startGroup('jobs dump');
+    console.log(jobs.data.jobs);
+    endGroup();
+
+    startGroup('workflow');
+
+    console.log(workflowRun.data);
+    endGroup();
     console.timeEnd('test2');
     console.timeEnd('total');
 
