@@ -1,8 +1,8 @@
 import { getInput } from '@actions/core';
-import { postSlackMessage } from './utils';
-import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack-ui';
 import { getArtifacts, saveArtifacts } from './artifacts';
 import { TIMING_EXECUTION_LABEL } from './const';
+import { postSlackMessage } from './slack-api';
+import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack-ui';
 import { validateInputs } from './validation';
 import { getWorkflowSummary } from './workflow';
 
