@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { create } from '@actions/artifact';
-import { ARTIFACT_NAME } from './const';
+import { ARTIFACT_NAME } from '../const';
 
 interface ArtifactInterface {
   channel: string | null;

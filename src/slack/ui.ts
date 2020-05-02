@@ -1,8 +1,9 @@
 import * as github from '@actions/github';
-import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from './const';
-import { getReadableDurationString } from './utils';
+import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
+import { getReadableDurationString } from '../utils';
+import { WorkflowSummaryInterface } from '../github/workflow';
 
-export const getTitleBlocks = (workflowSummary) => {
+export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface) => {
   const { GITHUB_RUN_ID } = process.env;
   const {
     context: {
@@ -39,7 +40,7 @@ export const getEventSummaryBlocks = () => {
   const fields = [`*<${url}|${GITHUB_REPOSITORY}>*`, '*Event*: `' + eventName + '`'];
 
   if (eventName === 'push') {
-    fields.push('*Branch*: `' + ref.trim('/').replace('refs/heads/', '') + '`');
+    fields.push('*Branch*: `' + ref.replace('refs/heads/', '') + '`');
   }
 
   return [
@@ -67,7 +68,7 @@ export const getCommitBlocks = () => {
     payload.commits
       .reverse()
       .slice(0, maxCommits)
-      .forEach((commit) => {
+      .forEach((commit: any) => {
         index += 1;
 
         const {
@@ -123,8 +124,8 @@ export const getCommitBlocks = () => {
   return blocks;
 };
 
-export const getJobAttachments = (workflowSummary) => {
-  const attachments = [];
+export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface) => {
+  const attachments: any = [];
 
   workflowSummary.jobs.forEach((job) => {
     const elements = [];
@@ -144,6 +145,11 @@ export const getJobAttachments = (workflowSummary) => {
           }
           break;
       }
+    }
+
+    if (!currentStep) {
+      // This will never happen just type safety
+      throw new Error('Unable to determine current job step');
     }
 
     console.log('current active step: ', currentStep);

@@ -1,10 +1,10 @@
 import { getInput } from '@actions/core';
-import { getArtifacts, saveArtifacts } from './artifacts';
 import { TIMING_EXECUTION_LABEL } from './const';
-import { postSlackMessage } from './slack-api';
-import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack-ui';
+import { postSlackMessage } from './slack/api';
+import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack/ui';
 import { validateInputs } from './validation';
-import { getWorkflowSummary } from './workflow';
+import { getArtifacts, saveArtifacts } from './github/artifacts';
+import { getWorkflowSummary } from './github/workflow';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -54,7 +54,6 @@ async function run() {
         }
       });
     }
-
 
     console.time('slack1');
     const response = await postSlackMessage(method, payload);

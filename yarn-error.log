@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /opt/yarn-v1.22.4/bin/yarn.js format:write
+  /usr/local/bin/node /opt/yarn-v1.22.4/bin/yarn.js add dev @typescript-eslint
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -14,23 +14,28 @@ Platform:
   linux x64
 
 Trace: 
-  SyntaxError: /app/package.json: Unexpected token } in JSON at position 762
-      at JSON.parse (<anonymous>)
-      at /opt/yarn-v1.22.4/lib/cli.js:1625:59
-      at Generator.next (<anonymous>)
-      at step (/opt/yarn-v1.22.4/lib/cli.js:310:30)
-      at /opt/yarn-v1.22.4/lib/cli.js:321:13
+  Error: https://registry.yarnpkg.com/@typescript-eslint: Request "https://registry.yarnpkg.com/@typescript-eslint" returned a 405
+      at Request.params.callback [as _callback] (/opt/yarn-v1.22.4/lib/cli.js:66996:18)
+      at Request.self.callback (/opt/yarn-v1.22.4/lib/cli.js:140748:22)
+      at Request.emit (events.js:310:20)
+      at Request.<anonymous> (/opt/yarn-v1.22.4/lib/cli.js:141720:10)
+      at Request.emit (events.js:310:20)
+      at IncomingMessage.<anonymous> (/opt/yarn-v1.22.4/lib/cli.js:141642:12)
+      at Object.onceWrapper (events.js:416:28)
+      at IncomingMessage.emit (events.js:322:22)
+      at endReadableNT (_stream_readable.js:1187:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21)
 
 npm manifest: 
   {
     "name": "streaming-slack-notify",
     "version": "1.0.0",
     "description": "send slack notification with advanced message format",
-    "main": "src/index.js",
+    "main": "src/index.ts",
     "scripts": {
-      "lint": "eslint src/**/*.js",
-      "lint:fix": "eslint --fix src/**/*.js",
-      "build": "ncc build --minify --out dist src/index.js",
+      "lint": "eslint src/**/*.ts",
+      "lint:fix": "eslint --fix src/**/*.ts",
+      "build": "ncc build --minify --out dist src/index.ts",
       "format": "prettier --check **/*.{ts,js,json,yml,md}",
       "format:write": "prettier --write -l **/*.{ts,js,json,yml,md}"
     },
@@ -49,7 +54,7 @@ npm manifest:
       "trailingComma": "es5",
       "semi": true,
       "singleQuote": true,
-      "printWidth": 120,
+      "printWidth": 120
     },
     "author": "TechPivot",
     "license": "MIT",
@@ -58,16 +63,16 @@ npm manifest:
       "@actions/artifact": "^0.3.1",
       "@actions/core": "^1.2.4",
       "@actions/github": "^2.1.1",
-      "@actions/http-client": "^1.0.8"
+      "axios": "^0.19.2"
     },
     "devDependencies": {
+      "@types/node": "^13.13.4",
+      "@typescript-eslint/parser": "^2.8.0",
       "@zeit/ncc": "^0.22.1",
       "eslint": "6.8.0",
       "eslint-config-prettier": "6.11.0",
       "eslint-plugin-prettier": "3.1.3",
       "prettier": "2.0.5",
-      "@types/node": "^13.13.4",
-      "@typescript-eslint/parser": "^2.8.0",
       "typescript": "^3.6.4"
     }
   }
@@ -110,7 +115,7 @@ Lockfile:
       "@octokit/graphql" "^4.3.1"
       "@octokit/rest" "^16.43.1"
   
-  "@actions/http-client@^1.0.3", "@actions/http-client@^1.0.7", "@actions/http-client@^1.0.8":
+  "@actions/http-client@^1.0.3", "@actions/http-client@^1.0.7":
     version "1.0.8"
     resolved "https://registry.yarnpkg.com/@actions/http-client/-/http-client-1.0.8.tgz#8bd76e8eca89dc8bcf619aa128eba85f7a39af45"
     integrity sha512-G4JjJ6f9Hb3Zvejj+ewLLKLf99ZC+9v+yCxoYf9vSyH+WkzPLB2LuUtRMGNkooMqdugGBFStIKXOuvH1W+EctA==
@@ -376,6 +381,13 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/atob-lite/-/atob-lite-2.0.0.tgz#0fef5ad46f1bd7a8502c65727f0367d5ee43d696"
     integrity sha1-D+9a1G8b16hQLGVyfwNn1e5D1pY=
   
+  axios@^0.19.2:
+    version "0.19.2"
+    resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+    integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+    dependencies:
+      follow-redirects "1.5.10"
+  
   balanced-match@^1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
@@ -477,6 +489,13 @@ Lockfile:
       semver "^5.5.0"
       shebang-command "^1.2.0"
       which "^1.2.9"
+  
+  debug@=3.1.0:
+    version "3.1.0"
+    resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+    integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
+    dependencies:
+      ms "2.0.0"
   
   debug@^4.0.1, debug@^4.1.1:
     version "4.1.1"
@@ -721,6 +740,13 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.2.tgz#4575b21e2bcee7434aa9be662f4b7b5f9c2b5138"
     integrity sha512-r5wGx7YeOwNWNlCA0wQ86zKyDLMQr+/RB8xy74M4hTphfmjlijTSSXGuH8rnvKZnfT9i+75zmd8jcKdMR4O6jA==
   
+  follow-redirects@1.5.10:
+    version "1.5.10"
+    resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
+    integrity sha512-0V5l4Cizzvqt5D44aTXbFZz+FtyXV1vrDN6qrelxtfYQKW0KO0W2T/hkE8xvGa/540LkZlkaUjO4ailYTFtHVQ==
+    dependencies:
+      debug "=3.1.0"
+  
   fs.realpath@^1.0.0:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
@@ -959,6 +985,11 @@ Lockfile:
     integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
     dependencies:
       minimist "^1.2.5"
+  
+  ms@2.0.0:
+    version "2.0.0"
+    resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
+    integrity sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
   
   ms@^2.1.1:
     version "2.1.2"

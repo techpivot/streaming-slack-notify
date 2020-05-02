@@ -1,8 +1,24 @@
 import { context, GitHub } from '@actions/github';
-import { getGithubToken, getGithubRunId } from './utils';
+import { getGithubToken, getGithubRunId } from '../utils';
 
-interface WorkflowSummaryInterface {
-  jobs: object;
+export interface JobStepInterface {
+  status: string;
+  name: string;
+  number: number;
+}
+
+export interface JobInterface {
+  completed_at: string;
+  html_url: string;
+  name: string;
+  status: string;
+  conclusion: string;
+  started_at: string;
+  steps: Array<JobStepInterface>;
+}
+
+export interface WorkflowSummaryInterface {
+  jobs: Array<JobInterface>;
   workflow: object;
 }
 
@@ -14,9 +30,10 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   }
 
   const octokit = new GitHub(token);
-  const run_id = getGithubRunId();
   const { owner, repo } = context.repo;
-  const opts = { run_id, owner, repo };
+
+  // eslint-disable-next-line
+  const opts = { run_id: getGithubRunId(), owner, repo };
 
   const [workflow, jobs] = await Promise.all([
     octokit.actions.getWorkflowRun(opts),
