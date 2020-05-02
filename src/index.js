@@ -1,12 +1,8 @@
 import { context, GitHub } from '@actions/github';
-import { startGroup, endGroup } from '@actions/core';
-import {
-  NO_GITHUB_TOKEN,
-  NO_SLACK_ACCESS_TOKEN,
-  TIMING_EXECUTION_LABEL,
-} from './const';
+import { getInput, startGroup, endGroup } from '@actions/core';
+import {  TIMING_EXECUTION_LABEL } from './const';
 
-import { getInput, postSlackMessage } from './utils';
+import { postSlackMessage } from './utils';
 import {
   getTitleBlocks,
   getDividerBlock,
@@ -14,6 +10,7 @@ import {
   getCommitBlocks,
   getJobAttachments,
 } from './ui';
+import { validateInputs } from './validation';
 import { getArtifacts, saveArtifacts } from './artifacts';
 import { getWorkflowSummary } from './github';
 
@@ -21,18 +18,16 @@ async function run() {
   console.time(TIMING_EXECUTION_LABEL);
 
   try {
-    const { SLACK_ACCESS_TOKEN, GITHUB_TOKEN } = process.env;
+    // Just quick sanity check to make sure we have all the data we need. If not,
+    // error out early on
+    validateInputs();
 
-    if (!SLACK_ACCESS_TOKEN) {
-      throw new Error(NO_SLACK_ACCESS_TOKEN);
-    }
-    if (!GITHUB_TOKEN) {
-      throw new Error(NO_GITHUB_TOKEN);
-    }
+
+    return;
 
     // create a new github client
 
-    const octokit = new GitHub(); //getInput('GITHUB_TOKEN', { required: true }));
+    const octokit = new GitHub(getInput('GITHUB_TOKEN', { required: true }));
 
     console.log('client');
 

@@ -1,20 +1,14 @@
-import https from 'https';
-import url from 'url';
-import { startGroup, endGroup } from '@actions/core';
+export const getSlackToken = (): string | undefined => {
+  return process.env.SLACK_ACCESS_TOKEN;
+};
 
-export function getInput(name, options = {}) {
-  const val = (
-    process.env[`INPUT_${name.replace(/ /g, '_').toUpperCase()}`] || ''
-  ).trim();
+export const getGithubToken = (): string | undefined => {
+  return process.env.GITHUB_TOKEN;
+};
 
-  if (options && options.required && val.length === 0) {
-    throw new Error(`Input required and not supplied: ${name}`);
-  }
 
-  return val;
-}
 
-export const getReadableDurationString = (dateOne, dateTwo) => {
+export const getReadableDurationString = (dateOne: Date, dateTwo: Date): string => {
   let d, h, m, s;
 
   s = Math.floor(Math.abs(dateOne.getTime() - dateTwo.getTime()) / 1000);
@@ -42,6 +36,16 @@ export const getReadableDurationString = (dateOne, dateTwo) => {
   return result.join(' ');
 };
 
+
+
+
+
+
+
+
+
+
+/*
 export function printHttpError(errorMessage, statusCode = null, body = null) {
   console.error(
     `ERROR: Unable to post message to Slack${
@@ -120,3 +124,4 @@ const doRequest = (method, payload) => {
 export const postSlackMessage = async (method, payload) => {
   return await doRequest(method, payload);
 };
+*/
