@@ -17,9 +17,9 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const { owner, repo } = context.repo;
   const opts = { run_id, owner, repo };
 
-  return await {
-    workflow: octokit.actions.getWorkflowRun(opts),
-    jobs: octokit.actions.listJobsForWorkflowRun(opts),
+  return {
+    workflow: await octokit.actions.getWorkflowRun(opts),
+    jobs: await octokit.actions.listJobsForWorkflowRun(opts),
   };
 };
 
