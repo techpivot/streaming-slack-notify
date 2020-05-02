@@ -38,6 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
         with:
+          debug0: ${{ job.status }}
           INTERNAL_STATUS_SUCCESS: success()
           INTERNAL_STATUS_FAILURE: failure()
 
@@ -50,6 +51,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
         with:
+          debug0: ${{ job.status }}
           INTERNAL_STATUS_SUCCESS: success()
           INTERNAL_STATUS_FAILURE: failure()
 
@@ -62,6 +64,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
         with:
+          debug0: ${{ job.status }}
           INTERNAL_STATUS_SUCCESS: success()
           INTERNAL_STATUS_FAILURE: failure()
 
