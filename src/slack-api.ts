@@ -20,8 +20,9 @@ export const postSlackMessage = async (method: String, payload: String): Promise
     },
   });
 
-  const { status, data: body} = response;
-  const jsonBody: any = JSON.parse(body);
+  console.log(response);
+
+  const { status, data: jsonBody} = response;
 
   console.timeEnd('Slack timing');
 
