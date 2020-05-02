@@ -77,7 +77,6 @@ jobs:
           SLACK_ACCESS_TOKEN: ${{ secrets.SLACK_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: techpivot/streaming-slack-notify@master
-        with:
 
       - uses: technote-space/workflow-conclusion-action@v1
         if: always()
