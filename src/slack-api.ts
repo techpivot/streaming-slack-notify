@@ -28,6 +28,10 @@ export const postSlackMessage = async (method: String, payload: String): Promise
       'Content-Length': data.length,
   }});
 
+  if (response.message.statusCode === 200) {
+    throw new Error(`Failed posting to slack. Status code = %{response.message.statusCode}`)
+  }
+
   console.log('response sc', response.message.statusCode);
 
   const body: string = await response.readBody();
