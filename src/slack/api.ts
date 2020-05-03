@@ -36,8 +36,6 @@ const send = async (method: string, payload: ChatPostMessageArguments | ChatUpda
 
   console.timeEnd('Slack API timing');
 
-  console.log(response);
-
   let error;
   if (response.error) {
     error = response.error;

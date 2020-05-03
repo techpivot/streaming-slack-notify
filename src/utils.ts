@@ -13,16 +13,6 @@ export const getGithubToken = (): string | undefined => {
   return process.env.GITHUB_TOKEN;
 };
 
-export const getGithubRepositoryUrl = (): string => {
-  const { GITHUB_REPOSITORY } = process.env;
-
-  if (!GITHUB_REPOSITORY) {
-    throw new Error('Unable to determine current GitHub repository URL');
-  }
-
-  return GITHUB_REPOSITORY;
-};
-
 export const getGithubRepository = (): GitHubRepositoryInterface => {
   const { owner, repo } = context.repo;
 
@@ -32,10 +22,18 @@ export const getGithubRepository = (): GitHubRepositoryInterface => {
   };
 };
 
-export const getGithubRepositoryName = (): string => {
-  const repo = getGithubRepository();
+export const getGithubRepositoryFullName = (): string => {
+  const { GITHUB_REPOSITORY } = process.env;
 
-  return `${repo.owner}/${repo.repo}`;
+  if (!GITHUB_REPOSITORY) {
+    throw new Error('Unable to determine current GitHub repository full name');
+  }
+
+  return GITHUB_REPOSITORY;
+};
+
+export const getGithubRepositoryUrl = (): string => {
+  return `https://github.com/${getGithubRepositoryFullName}`;
 };
 
 export const getActionEventName = (): string => {
