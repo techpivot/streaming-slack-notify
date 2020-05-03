@@ -10,8 +10,6 @@ branding:
   icon: 'slack'
   color: 'blue'
 
-env:
-
 inputs:
   ###
   ### User configurable options
@@ -35,6 +33,9 @@ inputs:
     description: 'Flag that defines the last Slack notify step in your workflow. This step should be run with the "if: always()" condition to ensure that it always gets executed.'
     required: false
 
+outputs:
+
+env:
   ###
   ### These do not need to be specified from your action references
   ###
@@ -46,6 +47,3 @@ inputs:
     description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
     default: ${{ job.status }}
     required: true
-
-
-outputs:

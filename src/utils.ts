@@ -10,10 +10,15 @@ export const getSlackToken = (): string => {
   return getInput('slack_access_token');
 };
 
-export const getGithubToken = (): string | undefined => {
-  return process.env.GITHUB_TOKEN;
-};
+export const getGithubToken = (): string => {
+  const token = process.env.GITHUB_TOKEN;
 
+  if (token === undefined) {
+    throw new Error('GITHUB_TOKEN environment variable is undefined');
+  }
+
+  return token;
+};
 
 export const isFinalStep = (): boolean => {
   const isFinalStep = getInput('is_final_step');
@@ -21,16 +26,18 @@ export const isFinalStep = (): boolean => {
   console.log('>>>>', isFinalStep);
 
   return isFinalStep.toLowerCase() === 'true';
-
 };
 
 export const getJobContextStatus = (): string => {
-  const jobStatus = getInput('JOB_STATUS');
+  const jobStatus = process.env.JOB_STATUS;
+  if (jobStatus === undefined) {
+    throw new Error('JOB_STATUS environment variable is undefined');
+  }
 
   console.log('>>>>', jobStatus);
 
   return jobStatus;
-}
+};
 
 export const getGithubRepository = (): GitHubRepositoryInterface => {
   const { owner, repo } = context.repo;

@@ -49,4 +49,3 @@ jobs:
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           is_final_step: true
-

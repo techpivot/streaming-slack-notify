@@ -172,74 +172,71 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
     // tidy up the final display and the currently running job.
     if (finalStep)
+      switch (job.status) {
+        case 'in_progress':
+          color = COLOR_IN_PROGRESS;
+          icon = ':hourglass_flowing_sand:';
+          elements.push({
+            type: 'mrkdwn',
+            text: '_In Progress_',
+          });
+          elements.push({
+            type: 'mrkdwn',
+            text: `*${currentStep.name}* (${totalActiveSteps} of ${steps.length})`,
+          });
+          break;
 
+        case 'queued':
+          icon = ':white_circle:';
+          color = COLOR_QUEUED;
+          elements.push({
+            type: 'mrkdwn',
+            text: '_Queued_',
+          });
+          console.log('check queue jobs');
+          break;
 
+        case 'completed':
+          // Reference
+          // =========
+          // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
 
-    switch (job.status) {
-      case 'in_progress':
-        color = COLOR_IN_PROGRESS;
-        icon = ':hourglass_flowing_sand:';
-        elements.push({
-          type: 'mrkdwn',
-          text: '_In Progress_',
-        });
-        elements.push({
-          type: 'mrkdwn',
-          text: `*${currentStep.name}* (${totalActiveSteps} of ${steps.length})`,
-        });
-        break;
+          switch (job.conclusion) {
+            case 'success':
+              icon = ':heavy_check_mark:';
+              color = COLOR_SUCCESS;
+              elements.push({
+                type: 'mrkdwn',
+                text: `*${steps.length}* steps completed *successfully*`,
+              });
+              break;
 
-      case 'queued':
-        icon = ':white_circle:';
-        color = COLOR_QUEUED;
-        elements.push({
-          type: 'mrkdwn',
-          text: '_Queued_',
-        });
-        console.log('check queue jobs');
-        break;
+            case 'neutral':
+              icon = ':heavy_check_mark:';
+              color = COLOR_SUCCESS;
+              elements.push({
+                type: 'mrkdwn',
+                text: `*${steps.length}* steps completed *successfully* _(Neutral)_`,
+              });
+              break;
 
-      case 'completed':
-        // Reference
-        // =========
-        // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
+            case 'failure':
+            case 'cancelled':
+            case 'timed_out':
+            case 'action_required':
+              icon = ':x:';
+              color = COLOR_ERROR;
+              elements.push({
+                type: 'mrkdwn',
+                text: `errorn `,
+              });
+              break;
+          }
+          break;
 
-        switch (job.conclusion) {
-          case 'success':
-            icon = ':heavy_check_mark:';
-            color = COLOR_SUCCESS;
-            elements.push({
-              type: 'mrkdwn',
-              text: `*${steps.length}* steps completed *successfully*`,
-            });
-            break;
-
-          case 'neutral':
-            icon = ':heavy_check_mark:';
-            color = COLOR_SUCCESS;
-            elements.push({
-              type: 'mrkdwn',
-              text: `*${steps.length}* steps completed *successfully* _(Neutral)_`,
-            });
-            break;
-
-          case 'failure':
-          case 'cancelled':
-          case 'timed_out':
-          case 'action_required':
-            icon = ':x:';
-            color = COLOR_ERROR;
-            elements.push({
-              type: 'mrkdwn',
-              text: `errorn `,
-            });
-            break;
-        }
-        break;
-
-      default:
-        throw new Error(`Unknown job status: ${status}`);
-    }
+        default:
+          throw new Error(`Unknown job status: ${status}`);
+      }
 
     elements.unshift({
       type: 'mrkdwn',
