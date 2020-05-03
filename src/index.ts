@@ -27,20 +27,7 @@ async function run() {
     // Get the current workflow summary
     const workflowSummary = await getWorkflowSummary();
 
-    // Build payload
-    const payloadCommon: any = {
-      channel,
-      blocks: [].concat.apply([], [
-        getTitleBlocks(),
-        getEventSummaryBlocks(), // migrate to context
-        getDividerBlock(),
-        getCommitBlocks(),
-        getDividerBlock(),
-      ] as Array<any>),
-      attachments: getJobAttachments(workflowSummary),
-    };
-
-    let payload;
+    // Build payload and send to Slack
     if (ts) {
       const payload: ChatUpdateArguments = {
         channel,
