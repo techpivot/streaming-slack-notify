@@ -40,7 +40,7 @@ export const getTitleBlocks = (): KnownBlock[] => {
 
 export const getEventSummaryBlocks = (): KnownBlock[] => {
   const eventName = getActionEventName();
-  const fields = [`*<${getGithubRepositoryUrl}|${getGithubRepositoryFullName()}>*`, '*Event*: `' + eventName + '`'];
+  const fields = [`*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*`, '*Event*: `' + eventName + '`'];
 
   if (eventName === 'push') {
     fields.push('*Branch*: `' + getActionBranch() + '`');

@@ -33,7 +33,7 @@ export const getGithubRepositoryFullName = (): string => {
 };
 
 export const getGithubRepositoryUrl = (): string => {
-  return `https://github.com/${getGithubRepositoryFullName}`;
+  return `https://github.com/${getGithubRepositoryFullName()}`;
 };
 
 export const getActionEventName = (): string => {
