@@ -16,6 +16,9 @@ inputs:
   ###
   ### User configurable options
   ###
+  slack_access_token:
+    description: 'required'
+    required: true
   channel:
     description: 'Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity.'
     required: false
@@ -43,10 +46,6 @@ inputs:
     description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
     default: ${{ job.status }}
     required: true
-  SLACK_ACCESS_TOKEN:
-    description: 'required'
-    required: true
-    default: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
 
 outputs:

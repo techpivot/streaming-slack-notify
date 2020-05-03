@@ -3,8 +3,8 @@ No SLACK_ACCESS_TOKEN environment variable defined.
 
   1) Navigate to Repository > Settings > Secrets and add SLACK_ACCESS_TOKEN secret
   2) Update Github workflow file (e.g.  ./github/workflows/main.yml) to include:
-      env:
-        SLACK_ACCESS_TOKEN: \${{ secrets.SLACK_ACCESS_TOKEN }}
+      with:
+        slack_access_token: \${{ secrets.SLACK_ACCESS_TOKEN }}
 `;
 
 export const NO_GITHUB_TOKEN = `

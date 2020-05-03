@@ -6,8 +6,8 @@ interface GitHubRepositoryInterface {
   repo: string;
 }
 
-export const getSlackToken = (): string | undefined => {
-  return process.env.SLACK_ACCESS_TOKEN;
+export const getSlackToken = (): string => {
+  return getInput('slack_access_token');
 };
 
 export const getGithubToken = (): string | undefined => {

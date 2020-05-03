@@ -13,6 +13,7 @@ jobs:
       - name: Slack Notify Init
         uses: techpivot/streaming-slack-notify@master
         with:
+          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           channel: '#builds'
 
   build:
@@ -23,16 +24,22 @@ jobs:
         run: sleep 4
 
       - uses: techpivot/streaming-slack-notify@master
+        with:
+          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Linting
         run: sleep 4
 
       - uses: techpivot/streaming-slack-notify@master
+        with:
+          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Building
         run: sleep 5
 
       - uses: techpivot/streaming-slack-notify@master
+        with:
+          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Packaging for deployment
         run: sleep 5
@@ -40,5 +47,6 @@ jobs:
       - uses: techpivot/streaming-slack-notify@master
         if: always()
         with:
+          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           is_final_step: true
 
