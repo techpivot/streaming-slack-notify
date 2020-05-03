@@ -62,7 +62,6 @@ export const getCommitBlocks = (): KnownBlock[] => {
       let index = 0;
 
       payload.commits
-        .reverse()
         .slice(0, maxCommits)
         .forEach((commit: any) => {
           index += 1;
