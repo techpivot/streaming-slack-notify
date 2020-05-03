@@ -12,9 +12,6 @@ You must set `SLACK_WEBHOOK` environment value in settings page of your reposito
 
 Create a workflow, set a step that uses this action and don't forget to specify `SLACK_WEBHOOK` environment value.
 
-
-
-
 ```yaml
 name: Notification on push
 

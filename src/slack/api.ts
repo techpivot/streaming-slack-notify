@@ -3,8 +3,8 @@ import { getSlackToken } from '../utils';
 import { ChatPostMessageArguments, ChatUpdateArguments, WebClient, WebAPICallResult } from '@slack/web-api';
 
 export interface ChatResponse extends WebAPICallResult {
-  ok: boolean,
-  error?: string,
+  ok: boolean;
+  error?: string;
   channel: string;
   ts: string;
   message: {
@@ -12,16 +12,13 @@ export interface ChatResponse extends WebAPICallResult {
   };
   response_metadata?: {
     messages?: string[];
-  }
+  };
 }
 
 const isPayloadChatUpdate = (payload: ChatPostMessageArguments | ChatUpdateArguments): payload is ChatUpdateArguments =>
   payload.ts !== undefined;
 
-const send = async (
-  method: string,
-  payload: ChatPostMessageArguments | ChatUpdateArguments
-): Promise<ChatResponse> => {
+const send = async (method: string, payload: ChatPostMessageArguments | ChatUpdateArguments): Promise<ChatResponse> => {
   startGroup('Slack Payload');
   console.debug(JSON.stringify(payload, null, 2));
   endGroup();

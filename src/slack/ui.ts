@@ -61,46 +61,44 @@ export const getCommitBlocks = (): KnownBlock[] => {
       const maxCommits = 2;
       let index = 0;
 
-      payload.commits
-        .slice(0, maxCommits)
-        .forEach((commit: any) => {
-          index += 1;
+      payload.commits.slice(0, maxCommits).forEach((commit: any) => {
+        index += 1;
 
-          const {
-            id,
-            url,
-            message,
-            author: { username },
-          } = commit;
+        const {
+          id,
+          url,
+          message,
+          author: { username },
+        } = commit;
 
-          if (index > 1) {
-            blocks.push(getDividerBlock());
-          }
+        if (index > 1) {
+          blocks.push(getDividerBlock());
+        }
 
-          blocks.push(
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `*<${url}|${id.substring(0, 7)}>*: ${message}`,
-              },
+        blocks.push(
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `*<${url}|${id.substring(0, 7)}>*: ${message}`,
             },
-            {
-              type: 'context',
-              elements: [
-                {
-                  type: 'image',
-                  image_url: `https://github.com/${username}.png`,
-                  alt_text: username,
-                },
-                {
-                  type: 'mrkdwn',
-                  text: `*<https://github.com/${username}|${username}>*`,
-                },
-              ],
-            }
-          );
-        });
+          },
+          {
+            type: 'context',
+            elements: [
+              {
+                type: 'image',
+                image_url: `https://github.com/${username}.png`,
+                alt_text: username,
+              },
+              {
+                type: 'mrkdwn',
+                text: `*<https://github.com/${username}|${username}>*`,
+              },
+            ],
+          }
+        );
+      });
 
       if (payload.commits.length > maxCommits) {
         const extra = payload.commits.length - maxCommits;
