@@ -23,8 +23,6 @@ export const getJobContextStatus = (): string => {
     throw new Error('JOB_STATUS input variable is undefined');
   }
 
-  console.log('>>>>', jobStatus);
-
   return jobStatus;
 };
 
@@ -40,8 +38,6 @@ export const getSlackToken = (): string => {
 
 export const isFinalStep = (): boolean => {
   const isFinalStep = getInput('is_final_step');
-
-  console.log('>>>>', isFinalStep);
 
   return isFinalStep.toLowerCase() === 'true';
 };
