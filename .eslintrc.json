@@ -15,6 +15,6 @@
   "rules": {
     // octokit/rest requires parameters that are not in camelcase
     "camelcase": "off",
-    "@typescript-eslint/camelcase": ["error", { "properties": "never" }]
+    "@typescript-eslint/camelcase": ["off"]
   }
 }

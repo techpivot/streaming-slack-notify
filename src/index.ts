@@ -43,8 +43,7 @@ async function run() {
         attachments: getJobAttachments(workflowSummary),
       };
 
-      const response = await update(payload);
-      console.log(response);
+      await update(payload);
     } else {
       const payload: ChatPostMessageArguments = {
         channel,
@@ -64,28 +63,9 @@ async function run() {
       };
 
       const response = await postMessage(payload);
-      console.log(response);
 
-      //   await saveArtifacts(responseJson.channel, responseJson.ts);
+      await saveArtifacts(response.channel, response.ts);
     }
-
-    /*return;
-
-    let responseJson;
-    await postSlackMessage(method, payload)
-      .then((json) => {
-        responseJson = json;
-        console.log(`Successfully sent "${method}" payload for channel: ${channel}`);
-      })
-      .catch((error) => {
-        console.error(`\u001b[31;1mERROR: ${error}\u001b[0m`);
-        process.exit(1);
-      }); */
-
-    // Create the artifact on init
-    // if (!ts) {
-    //   await saveArtifacts(responseJson.channel, responseJson.ts);
-    // }
   } catch (error) {
     console.error(`\u001b[31;1mERROR: ${error.message || error}\u001b[0m`);
     console.timeEnd(TIMING_EXECUTION_LABEL);

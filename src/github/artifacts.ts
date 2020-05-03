@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { create } from '@actions/artifact';
+import { create, UploadResponse } from '@actions/artifact';
 import { ARTIFACT_NAME } from '../const';
 
 interface ArtifactInterface {
@@ -42,7 +42,7 @@ export const getArtifacts = async (): Promise<ArtifactInterface> => {
   }
 };
 
-export const saveArtifacts = async (channel: string, timestamp: string): Promise<any> => {
+export const saveArtifacts = async (channel: string, timestamp: string): Promise<UploadResponse> => {
   console.time('Upload artifact');
 
   try {

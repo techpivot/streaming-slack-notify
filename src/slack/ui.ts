@@ -20,6 +20,12 @@ import {
   getWorkflowName,
 } from '../utils';
 
+export const getDividerBlock = (): DividerBlock => {
+  return {
+    type: 'divider',
+  };
+};
+
 export const getTitleBlocks = (): KnownBlock[] => {
   return [
     {
@@ -61,6 +67,7 @@ export const getCommitBlocks = (): KnownBlock[] => {
       const maxCommits = 2;
       let index = 0;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       payload.commits.slice(0, maxCommits).forEach((commit: any) => {
         index += 1;
 
@@ -248,10 +255,4 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
   });
 
   return attachments;
-};
-
-export const getDividerBlock = (): DividerBlock => {
-  return {
-    type: 'divider',
-  };
 };
