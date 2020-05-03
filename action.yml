@@ -11,10 +11,6 @@ branding:
   color: 'blue'
 
 env:
-  SLACK_ACCESS_TOKEN:
-    description: 'required'
-    required: true
-    default: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
 inputs:
   ###
@@ -47,6 +43,10 @@ inputs:
     description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
     default: ${{ job.status }}
     required: true
+  SLACK_ACCESS_TOKEN:
+    description: 'required'
+    required: true
+    default: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
 
 outputs:
