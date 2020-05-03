@@ -1,3 +1,4 @@
+import { getInput } from '@actions/core';
 import { context } from '@actions/github';
 
 interface GitHubRepositoryInterface {
@@ -12,6 +13,24 @@ export const getSlackToken = (): string | undefined => {
 export const getGithubToken = (): string | undefined => {
   return process.env.GITHUB_TOKEN;
 };
+
+
+export const isFinalStep = (): boolean => {
+  const isFinalStep = getInput('is_final_step');
+
+  console.log('>>>>', isFinalStep);
+
+  return isFinalStep.toLowerCase() === 'true';
+
+};
+
+export const getJobContextStatus = (): string => {
+  const jobStatus = getInput('JOB_STATUS');
+
+  console.log('>>>>', jobStatus);
+
+  return jobStatus;
+}
 
 export const getGithubRepository = (): GitHubRepositoryInterface => {
   const { owner, repo } = context.repo;

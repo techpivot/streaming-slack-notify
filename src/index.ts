@@ -5,7 +5,6 @@ import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks
 import { validateInputs } from './validation';
 import { getArtifacts, saveArtifacts } from './github/artifacts';
 import { getWorkflowSummary } from './github/workflow';
-import { KnownBlock, MessageAttachment } from '@slack/types';
 import { ChatPostMessageArguments, ChatUpdateArguments } from '@slack/web-api';
 
 async function run() {

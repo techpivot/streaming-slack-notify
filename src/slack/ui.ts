@@ -18,6 +18,8 @@ import {
   getGithubRepositoryFullName,
   getReadableDurationString,
   getWorkflowName,
+  getJobContextStatus,
+  isFinalStep,
 } from '../utils';
 
 export const getDividerBlock = (): DividerBlock => {
@@ -130,6 +132,12 @@ export const getCommitBlocks = (): KnownBlock[] => {
 export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
 
+  const finalStep = isFinalStep();
+  const jobStatus = getJobContextStatus();
+
+  console.log('final step', finalStep);
+  console.log('job status', jobStatus);
+
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, started_at, steps } = job;
@@ -158,6 +166,14 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     // Reference
     // =========
     // status: queued, in_progress, completed
+
+    // Little bit of some sorcery here. Since there really is no way to tell if the workflow run has finished
+    // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
+    // we rely on input in the action and then also peek the status from the Job context. Using these, we can
+    // tidy up the final display and the currently running job.
+    if (finalStep)
+
+
 
     switch (job.status) {
       case 'in_progress':
