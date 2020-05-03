@@ -151,7 +151,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       throw new Error('Unable to determine current job step');
     }
 
-    console.log('current active step: ', currentStep);
+    console.log('current active step: ', currentStep.name, new Date());
 
     // Reference
     // =========
