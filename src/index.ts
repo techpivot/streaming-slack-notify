@@ -1,10 +1,12 @@
 import { getInput } from '@actions/core';
 import { TIMING_EXECUTION_LABEL } from './const';
-import { postSlackMessage } from './slack/api';
+import { postMessage, update } from './slack/api';
 import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack/ui';
 import { validateInputs } from './validation';
 import { getArtifacts, saveArtifacts } from './github/artifacts';
 import { getWorkflowSummary } from './github/workflow';
+import { KnownBlock, MessageAttachment } from '@slack/types';
+import { ChatPostMessageArguments, ChatUpdateArguments } from '@slack/web-api';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -22,44 +24,65 @@ async function run() {
       channel = getInput('channel', { required: true });
     }
 
-    const method = !ts ? 'chat.postMessage' : 'chat.update';
-
     // Get the current workflow summary
     const workflowSummary = await getWorkflowSummary();
 
     // Build payload
-    const payload = {
+    const payloadCommon: any = {
       channel,
-      blocks: [].concat.apply(
-        [],
-        [
+      blocks: [].concat.apply([], [
+        getTitleBlocks(),
+        getEventSummaryBlocks(), // migrate to context
+        getDividerBlock(),
+        getCommitBlocks(),
+        getDividerBlock(),
+      ] as Array<any>),
+      attachments: getJobAttachments(workflowSummary),
+    };
+
+    let payload;
+    if (ts) {
+      const payload: ChatUpdateArguments = {
+        channel,
+        ts,
+        text: 'test req',
+        blocks: [].concat.apply([], [
           getTitleBlocks(),
-          getEventSummaryBlocks(), //migrate to context
+          getEventSummaryBlocks(), // migrate to context
           getDividerBlock(),
           getCommitBlocks(),
           getDividerBlock(),
-        ]
-      ),
-      attachments: [].concat.apply([], [getJobAttachments(workflowSummary)]),
-    };
+        ] as Array<any>),
+        attachments: getJobAttachments(workflowSummary),
+      };
 
-    if (ts) {
-      payload.ts = ts;
+      const response = await update(payload);
+      console.log(response);
     } else {
-      // Optional fields (These are only applicable for the first post)
-      ['username', 'icon_url', 'icon_emoji'].forEach((k) => {
-        const inputValue = getInput(k);
-        if (inputValue) {
-          payload[k] = inputValue;
-        }
-      });
+      const payload: ChatPostMessageArguments = {
+        channel,
+        text: 'test req',
+        blocks: [].concat.apply([], [
+          getTitleBlocks(),
+          getEventSummaryBlocks(), // migrate to context
+          getDividerBlock(),
+          getCommitBlocks(),
+          getDividerBlock(),
+        ] as Array<any>),
+        attachments: getJobAttachments(workflowSummary),
+        // Optional fields (These are only applicable for the first post)
+        username: getInput('username'),
+        icon_url: getInput('icon_url'),
+        icon_emoji: getInput('icon_emoji'),
+      };
+
+      const response = await postMessage(payload);
+      console.log(response);
+
+      //   await saveArtifacts(responseJson.channel, responseJson.ts);
     }
 
-    console.time('slack1');
-    const response = await postSlackMessage(method, payload);
-    //console.log('outer', response);
-    console.timeEnd('slack1');
-    return;
+    /*return;
 
     let responseJson;
     await postSlackMessage(method, payload)
@@ -70,12 +93,12 @@ async function run() {
       .catch((error) => {
         console.error(`\u001b[31;1mERROR: ${error}\u001b[0m`);
         process.exit(1);
-      });
+      }); */
 
     // Create the artifact on init
-    if (!ts) {
-      await saveArtifacts(responseJson.channel, responseJson.ts);
-    }
+    // if (!ts) {
+    //   await saveArtifacts(responseJson.channel, responseJson.ts);
+    // }
   } catch (error) {
     console.error(`\u001b[31;1mERROR: ${error.message || error}\u001b[0m`);
     console.timeEnd(TIMING_EXECUTION_LABEL);

@@ -32,7 +32,6 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const octokit = new GitHub(token);
   const { owner, repo } = context.repo;
 
-  // eslint-disable-next-line
   const opts = { run_id: getGithubRunId(), owner, repo };
 
   const [workflow, jobs] = await Promise.all([
