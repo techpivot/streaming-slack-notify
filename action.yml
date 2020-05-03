@@ -10,6 +10,19 @@ branding:
   icon: 'slack'
   color: 'blue'
 
+env:
+  ###
+  ### These do not need to be specified from your action references
+  ###
+  GITHUB_TOKEN:
+    description: Secret GitHub API token to use for making API requests.
+    default: ${{ github.token }}
+    required: true
+  JOB_STATUS:
+    description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
+    default: ${{ job.status }}
+    required: true
+
 inputs:
   ###
   ### User configurable options
@@ -32,18 +45,3 @@ inputs:
   is_final_step:
     description: 'Flag that defines the last Slack notify step in your workflow. This step should be run with the "if: always()" condition to ensure that it always gets executed.'
     required: false
-
-outputs:
-
-env:
-  ###
-  ### These do not need to be specified from your action references
-  ###
-  GITHUB_TOKEN:
-    description: Secret GitHub API token to use for making API requests.
-    default: ${{ github.token }}
-    required: true
-  JOB_STATUS:
-    description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
-    default: ${{ job.status }}
-    required: true
