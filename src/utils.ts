@@ -6,15 +6,33 @@ interface GitHubRepositoryInterface {
   repo: string;
 }
 
-export const getSlackToken = (): string => {
-  return getInput('slack_access_token');
+export const getGithubToken = (): string => {
+  const token = getInput('GITHUB_TOKEN');
+
+  if (token === '') {
+    throw new Error('GITHUB_TOKEN input variable is undefined');
+  }
+
+  return token;
 };
 
-export const getGithubToken = (): string => {
-  const token = process.env.GITHUB_TOKEN;
+export const getJobContextStatus = (): string => {
+  const jobStatus = getInput('JOB_STATUS');
 
-  if (token === undefined) {
-    throw new Error('GITHUB_TOKEN environment variable is undefined');
+  if (jobStatus === '') {
+    throw new Error('JOB_STATUS input variable is undefined');
+  }
+
+  console.log('>>>>', jobStatus);
+
+  return jobStatus;
+};
+
+export const getSlackToken = (): string => {
+  const token = getInput('slack_access_token');
+
+  if (token === '') {
+    throw new Error('slack_access_token input variable is undefined');
   }
 
   return token;
@@ -26,17 +44,6 @@ export const isFinalStep = (): boolean => {
   console.log('>>>>', isFinalStep);
 
   return isFinalStep.toLowerCase() === 'true';
-};
-
-export const getJobContextStatus = (): string => {
-  const jobStatus = process.env.JOB_STATUS;
-  if (jobStatus === undefined) {
-    throw new Error('JOB_STATUS environment variable is undefined');
-  }
-
-  console.log('>>>>', jobStatus);
-
-  return jobStatus;
 };
 
 export const getGithubRepository = (): GitHubRepositoryInterface => {

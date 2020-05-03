@@ -10,9 +10,6 @@ branding:
   icon: 'slack'
   color: 'blue'
 
-env:
-
-
 inputs:
   ###
   ### User configurable options
