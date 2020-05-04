@@ -8,7 +8,7 @@ import {
   KnownBlock,
   MessageAttachment,
 } from '@slack/types';
-import { WorkflowSummaryInterface } from '../github/workflow';
+import { JobStepInterface, WorkflowSummaryInterface } from '../github/workflow';
 import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
 import {
   getActionBranch,
@@ -145,10 +145,11 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     console.log('take2', getInput('JOB_ID'));
     let icon = '';
     let color;
-    let currentStep;
+    let currentStep : JobStepInterface | undefined;
     let currentStepIndex = 0;
     let totalActiveSteps = 0;
 
+    currentStepLoop:
     for (; currentStepIndex < steps.length; currentStepIndex += 1) {
       switch (steps[currentStepIndex].status) {
         case 'completed':
@@ -157,7 +158,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           if (!currentStep || steps[currentStepIndex].number > currentStep.number) {
             currentStep = steps[currentStepIndex];
           }
-          break;
+          break currentStepLoop;
       }
     }
 
