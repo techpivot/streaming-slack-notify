@@ -8,7 +8,7 @@ import {
   KnownBlock,
   MessageAttachment,
 } from '@slack/types';
-import { JobStepInterface, WorkflowSummaryInterface } from '../github/workflow';
+import { ActionsListJobsForWorkflowRunResponseJobsItemStepsItem, WorkflowSummaryInterface } from '../github/types';
 import { getLastJobOutputIndex, saveLastJobOutputIndex } from '../github/artifacts';
 import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
 import {
@@ -31,24 +31,38 @@ export const getFallbackText = (): string => {
   return `GitHub actions is running workflow: ${getWorkflowName()}`;
 };
 
-export const getTitleBlocks = (): KnownBlock[] => {
-  return [
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `GitHub actions is running *workflow*: *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>*`,
-      },
-    },
-  ];
-};
+export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): KnownBlock[] => {
+  // Theoretically, we should always be in 'in_progress' stage; however, we mock the completed to handle
+  // consistent UI output in various parts of the output blocks. (See ../github/workflow)
+  let verb;
+  switch (workflowSummary.workflow.status) {
+    case 'queued':
+      verb = 'queued';
+      break;
 
-export const getEventSummaryBlocks2 = (): KnownBlock[] => {
-  const eventName = getActionEventName();
-  const fields = [`*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*`, '*Event*: `' + eventName + '`'];
+    case 'in_progress':
+      verb = 'is running';
+      break;
 
-  if (eventName === 'push') {
-    fields.push('*Branch*: `' + getActionBranch() + '`');
+    case 'completed': {
+      verb = 'completed';
+
+      switch (workflowSummary.workflow.conclusion) {
+        case 'success':
+        case 'neutral':
+          break;
+
+        case 'failure':
+          break;
+        case 'cancelled':
+          break;
+        case 'timed_out':
+          break;
+        case 'action_required':
+          break;
+      }
+      break;
+    }
   }
 
   return [
@@ -56,7 +70,7 @@ export const getEventSummaryBlocks2 = (): KnownBlock[] => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: fields.join('     '),
+        text: `GitHub actions ${verb} *workflow*: *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>*`,
       },
     },
   ];
@@ -171,7 +185,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     const lastJobOutputIndex = getLastJobOutputIndex(name) || 0;
     let icon = '';
     let color;
-    let currentStep: JobStepInterface | undefined;
+    let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
     let currentStepIndex = 0; // Zero indexed
 
     for (let i = 0; i < steps.length; i += 1) {

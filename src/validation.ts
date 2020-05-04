@@ -1,11 +1,11 @@
-import { NO_GITHUB_TOKEN, NO_SLACK_ACCESS_TOKEN, NO_CURRENT_JOB_STATUS } from './const';
+import { NO_GITHUB_TOKEN, NO_SLACK_ACCESS_TOKEN, NO_CURRENT_JOB_STATUS, NO_CURRENT_JOB_NAME } from './const';
 import { getSlackToken, getGithubToken, getJobContextStatus, getJobContextName } from './utils';
 
 export const validateInputs = (): void => {
   try {
     getSlackToken();
   } catch (error) {
-    throw new Error(NO_GITHUB_TOKEN);
+    throw new Error(NO_SLACK_ACCESS_TOKEN);
   }
 
   try {
@@ -23,6 +23,6 @@ export const validateInputs = (): void => {
   try {
     getJobContextName();
   } catch (error) {
-    throw new Error(NO_CURRENT_JOB_STATUS);
+    throw new Error(NO_CURRENT_JOB_NAME);
   }
 };

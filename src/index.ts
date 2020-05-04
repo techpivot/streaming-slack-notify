@@ -40,7 +40,7 @@ async function run() {
         ts,
         text: getFallbackText(), // fallback when using blocks
         blocks: [].concat.apply([], [
-          getTitleBlocks(),
+          getTitleBlocks(workflowSummary),
           getEventSummaryBlocks(),
           getDividerBlock(),
           getCommitBlocks(),
@@ -55,7 +55,7 @@ async function run() {
         channel,
         text: getFallbackText(), // fallback when using blocks
         blocks: [].concat.apply([], [
-          getTitleBlocks(),
+          getTitleBlocks(workflowSummary),
           getEventSummaryBlocks(),
           getDividerBlock(),
           getCommitBlocks(),

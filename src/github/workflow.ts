@@ -1,37 +1,13 @@
 import { context, GitHub } from '@actions/github';
 import { getGithubToken, getGithubRunId, getJobContextName, getJobContextStatus, isFinalStep } from '../utils';
+import {
+  ActionsGetWorkflowRunResponse,
+  ActionsListJobsForWorkflowRunResponseJobsItem,
+  WorkflowSummaryInterface,
+} from './types';
 
-export interface JobStepInterface {
-  status: string;
-  conclusion?: string; // 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
-  name: string;
-  number: number;
-  // Currently we need to mock this for the last completed step. Currently ommitting the last two
-  // started_at: string;
-  // completed_at: string;
-}
-
-export interface JobInterface {
-  check_run_url: string;
-  completed_at: string;
-  conclusion: string;
-  head_sha: string;
-  html_url: string;
-  id: number;
-  name: string;
-  node_id: string;
-  run_id: number;
-  run_url: string;
-  started_at: string;
-  status: string; // 'queued' | 'in_progress' | 'completed';
-  steps: JobStepInterface[];
-  url: string;
-}
-
-export interface WorkflowSummaryInterface {
-  jobs: Array<JobInterface>;
-  workflow: object;
-}
+// eslint-disable-next-line
+const isActionsGetWorkflowRunResponse = (payload: any): payload is ActionsGetWorkflowRunResponse => true;
 
 export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> => {
   const token = getGithubToken();
@@ -55,7 +31,7 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const contextJobStatus = getJobContextStatus();
   const contextJobName = getJobContextName();
 
-  jobs.data.jobs.forEach((job: JobInterface) => {
+  jobs.data.jobs.forEach((job: ActionsListJobsForWorkflowRunResponseJobsItem) => {
     const { name, status, steps } = job;
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
@@ -105,6 +81,13 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
       }
     }
   });
+
+  console.debug('workflow', workflow.data);
+
+  // Quick type guard to coerce the 'conclusion'/'status' update fixes
+  if (!isActionsGetWorkflowRunResponse(workflow.data)) {
+    throw new Error();
+  }
 
   return {
     workflow: workflow.data,
