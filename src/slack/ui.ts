@@ -235,9 +235,12 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           console.log('leaving name: ', name);
         }
 
+        // Note: For in progress, the current steps don't include the last step "Complete job".
+        // Thus let's increase by one to account for this
+
         elements.push({
           type: 'mrkdwn',
-          text: `*${name}* (${totalActiveSteps} of ${steps.length})`,
+          text: `*${name}* (${totalActiveSteps} of ${steps.length + 1})`,
         });
 
         break;
