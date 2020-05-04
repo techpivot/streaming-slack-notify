@@ -145,6 +145,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
     // tidy up the final display and the currently running job.
+    console.log('finalStep', finalStep);
+    console.log('contextJobName', contextJobName);
+    console.log('contextJobStatus', contextJobStatus);
     if (finalStep && contextJobName === name) {
       switch (contextJobStatus) {
         case 'Success':
@@ -192,7 +195,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     }
 
     let lastJobOutputIndex = getLastJobOutputIndex(job.name) || 0;
-    console.log('last job output index', job.name, lastJobOutputIndex);
 
     // Reference
     // =========
@@ -212,12 +214,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         // the default naming to be consistent. In this case, if we're an in progress and the actions
         // is actually on it self (or from 1 + n behind) ... let's bump to the next one which is
         // even more accurate.
-
-        console.log(
-          "currentStep.name.indexOf('techpivot/streaming-slack-notify')",
-          currentStep.name.indexOf('techpivot/streaming-slack-notify'),
-          currentStep.name
-        );
 
         if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
           // We could potentially walk this continously; however, that's silly and if the end-user wants
@@ -239,7 +235,8 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         }
 
         // Note: For in progress, the current steps don't include the last step "Complete job".
-        // Thus let's increase by one to account for this
+        // Thus let's increase by one to account for this. Additionally, the ${currentStepIndex}
+        // is zero-indexed so convert this to human numbered indexed (+1)
 
         elements.push({
           type: 'mrkdwn',
@@ -322,7 +319,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     }
 
     // Save the current step
-    console.log('saving step index', name, currentStepIndex);
     saveLastJobOutputIndex(name, currentStepIndex);
 
     attachments.push({
