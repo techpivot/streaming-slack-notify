@@ -67,7 +67,7 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
 
   elements.push({
     type: 'mrkdwn',
-    text: '*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*',
+    text: `*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*`,
   });
   elements.push({
     type: 'mrkdwn',
