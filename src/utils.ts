@@ -19,9 +19,9 @@ export const getGithubToken = (): string => {
 };
 
 export const getJobContextName = (): string => {
-  const name = getInput('CURRENT_JOB_STATUS');
+  const name = getInput('CURRENT_JOB_NAME');
   if (name === '') {
-    throw new Error('CURRENT_JOB_STATUS input variable is undefined');
+    throw new Error('CURRENT_JOB_NAME input variable is undefined');
   }
 
   return name;
