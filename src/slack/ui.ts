@@ -171,17 +171,13 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
     let icon = '';
     let color;
-    let lastJobOutputIndex = getLastJobOutputIndex(job.name);
-    console.log('last job output index', job.name, lastJobOutputIndex);
     let currentStep: JobStepInterface | undefined;
-    let currentStepIndex = 0;
-    let totalActiveSteps = 0;
+    let currentStepIndex = 0; // Zero indexed
 
     for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
         case 'completed':
         case 'in_progress':
-          totalActiveSteps += 1;
           if (!currentStep || steps[i].number > currentStep.number) {
             currentStepIndex = i;
             currentStep = steps[i];
@@ -194,6 +190,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       // This will never happen just type safety
       throw new Error('Unable to determine current job step');
     }
+
+    let lastJobOutputIndex = getLastJobOutputIndex(job.name) || 0;
+    console.log('last job output index', job.name, lastJobOutputIndex);
 
     // Reference
     // =========
@@ -227,21 +226,16 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
           // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
           // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
-          // typically are slightly late meaning we should display the subsequent notification.
-          if (
-            currentStepIndex >= 2 &&
-            currentStepIndex <= 3 &&
-            steps[currentStepIndex - 1].name.indexOf('techpivot/streaming-slack-notify') < 0
-          ) {
-            currentStepIndex -= 1;
-
-            console.log('updating name A: ', steps[currentStepIndex], currentStepIndex);
-          } else if (steps[currentStepIndex + 1].name.indexOf('techpivot/streaming-slack-notify') < 0) {
-            currentStepIndex += 1;
-            console.log('updating name B: ', name, currentStepIndex);
+          // typically are slightly late meaning we should display the subsequent notification. However, sometimes
+          // we are spot on and thus we do our best to spread out the progress notifications accordingly. We save
+          // the currentStepIndex and will find the NEXT available.
+          for (let i = Math.max(lastJobOutputIndex, currentStepIndex - 1); i <= currentStepIndex + 1; i += 1) {
+            if (steps[i].name.indexOf('techpivot/streaming-slack-notify') < 0) {
+              console.debug(`Updating step display from "${steps[currentStepIndex].name}" to "${steps[i].name}"`);
+              currentStepIndex = i;
+              break;
+            }
           }
-        } else {
-          console.log('leaving name: ', name);
         }
 
         // Note: For in progress, the current steps don't include the last step "Complete job".
@@ -249,7 +243,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
         elements.push({
           type: 'mrkdwn',
-          text: `*${steps[currentStepIndex].name}* (${currentStepIndex} of ${steps.length + 1})`,
+          text: `*${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length + 1})`,
         });
 
         break;
