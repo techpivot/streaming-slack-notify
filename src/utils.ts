@@ -18,7 +18,6 @@ export const getGithubToken = (): string => {
   return token;
 };
 
-
 export const getJobContextName = (): string => {
   const name = getInput('CURRENT_JOB_STATUS');
   if (name === '') {
@@ -26,7 +25,6 @@ export const getJobContextName = (): string => {
   }
 
   return name;
-
 };
 
 export const getJobContextStatus = (): JobContextStatus => {
@@ -35,7 +33,7 @@ export const getJobContextStatus = (): JobContextStatus => {
   switch (jobStatus) {
     case 'Success':
     case 'Failure':
-      case 'Cancelled':
+    case 'Cancelled':
       break;
 
     case '':

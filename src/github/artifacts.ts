@@ -61,12 +61,13 @@ export const saveArtifacts = async (channel: string, timestamp: string): Promise
  */
 export const getLastJobOutputIndex = (jobName: string): number | undefined => {
   try {
-    const jobOutputIndex = fs.readFileSync(`/tmp/${jobName.replace(/[\W_]+/g, '')}.txt`, fileOpts);
-
-    return parseInt(jobOutputIndex, 10);
+    return parseInt(fs.readFileSync(`/tmp/${jobName.replace(/[\W_]+/g, '').toLowerCase()}.txt`, fileOpts), 10);
   } catch (error) {
     // Return undefined if unable to get a number
-    console.error('error reading file', error);
+    // The first time this is run we'll get the following error. Just return undefined
+    // Error: ENOENT: no such file or directory, open '/tmp/init.txt'
+    // at Object.openSync (fs.js:440:3)
+    // at Object.readFileSync (fs.js:342:35)
   }
 };
 
@@ -75,10 +76,12 @@ export const getLastJobOutputIndex = (jobName: string): number | undefined => {
  */
 export const saveLastJobOutputIndex = (jobName: string, index: number): void => {
   try {
-    fs.writeFileSync(`/tmp/${jobName.replace(/[\W_]+/g, '')}.txt`, index);
-
+    fs.writeFileSync(`/tmp/${jobName.replace(/[\W_]+/g, '').toLowerCase()}.txt`, index);
   } catch (error) {
+    // We shouldn't have any trouble writing the file. However, in the event the tmp directory
+    // changes or invalid characters somewhere. Let's fail
     // Return undefined if unable to get a number
-    console.error('error writing file', error);
+    console.error('Error saving last job output index');
+    throw error;
   }
 };

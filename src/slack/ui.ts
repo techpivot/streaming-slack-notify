@@ -9,10 +9,7 @@ import {
   MessageAttachment,
 } from '@slack/types';
 import { JobStepInterface, WorkflowSummaryInterface } from '../github/workflow';
-import {
-  getLastJobOutputIndex,
-  saveLastJobOutputIndex,
-} from '../github/artifacts';
+import { getLastJobOutputIndex, saveLastJobOutputIndex } from '../github/artifacts';
 import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
 import {
   getActionBranch,
@@ -144,7 +141,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, started_at, steps } = job;
 
-
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
@@ -173,12 +169,11 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       }
     }
 
-
     let icon = '';
     let color;
     let lastJobOutputIndex = getLastJobOutputIndex(job.name);
     console.log('last job output index', job.name, lastJobOutputIndex);
-    let currentStep : JobStepInterface | undefined;
+    let currentStep: JobStepInterface | undefined;
     let currentStepIndex = 0;
     let totalActiveSteps = 0;
 
@@ -219,9 +214,11 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         // is actually on it self (or from 1 + n behind) ... let's bump to the next one which is
         // even more accurate.
 
-
-        console.log("currentStep.name.indexOf('techpivot/streaming-slack-notify')",
-        currentStep.name.indexOf('techpivot/streaming-slack-notify'), currentStep.name);
+        console.log(
+          "currentStep.name.indexOf('techpivot/streaming-slack-notify')",
+          currentStep.name.indexOf('techpivot/streaming-slack-notify'),
+          currentStep.name
+        );
 
         if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
           // We could potentially walk this continously; however, that's silly and if the end-user wants
@@ -231,9 +228,10 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
           // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
           // typically are slightly late meaning we should display the subsequent notification.
-          if (currentStepIndex >= 2 &&
-              currentStepIndex <= 3 &&
-              steps[currentStepIndex - 1].name.indexOf('techpivot/streaming-slack-notify') < 0
+          if (
+            currentStepIndex >= 2 &&
+            currentStepIndex <= 3 &&
+            steps[currentStepIndex - 1].name.indexOf('techpivot/streaming-slack-notify') < 0
           ) {
             currentStepIndex -= 1;
 
@@ -251,7 +249,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
         elements.push({
           type: 'mrkdwn',
-          text: `*${steps[currentStepIndex]}* (${currentStepIndex} of ${steps.length + 1})`,
+          text: `*${steps[currentStepIndex].name}* (${currentStepIndex} of ${steps.length + 1})`,
         });
 
         break;
