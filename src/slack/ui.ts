@@ -132,11 +132,9 @@ export const getCommitBlocks = (): KnownBlock[] => {
 
 export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
-
   const finalStep = isFinalStep();
   const jobStatus = getJobContextStatus();
   const jobName = getJobContextName();
-
 
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
@@ -148,7 +146,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let currentStepIndex = 0;
     let totalActiveSteps = 0;
 
-    for (let i = 0; currentStepIndex < steps.length; i += 1) {
+    for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
         case 'completed':
         case 'in_progress':
@@ -166,9 +164,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       throw new Error('Unable to determine current job step');
     }
 
-    // Reference
-    // =========
-    // status: queued, in_progress, completed
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
@@ -197,6 +192,10 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           break;
       }
     }
+
+    // Reference
+    // =========
+    // status: queued, in_progress, completed
 
     switch (job.status) {
       case 'in_progress':
