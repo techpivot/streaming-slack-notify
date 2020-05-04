@@ -129,7 +129,7 @@ export const getCommitBlocks = (): KnownBlock[] => {
 
   return blocks;
 };
-import { getInput } from '@actions/core';
+
 export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
 
