@@ -220,11 +220,16 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           // to notify multiple slack notifies ... well then we'll just have to display that as that's
           // what we're actually doing.
           name = steps[currentStepIndex + 1].name;
-        } else
+          console.log('updating name: ', name);
+        } else {
+          console.log('leaving name: ', name);
+        }
+
         elements.push({
           type: 'mrkdwn',
           text: `*${name}* (${totalActiveSteps} of ${steps.length})`,
         });
+
         break;
 
       case 'queued':
