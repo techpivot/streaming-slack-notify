@@ -49,10 +49,10 @@ async function run() {
         text: 'test req',
         blocks: [].concat.apply([], [
           getTitleBlocks(),
-          getEventSummaryBlocks(), // migrate to context
-          getDividerBlock(),
+          getEventSummaryBlocks(),
+         // getDividerBlock(),
           getCommitBlocks(),
-          getDividerBlock(),
+        //  getDividerBlock(),
         ] as Array<any>),
         attachments: getJobAttachments(workflowSummary),
         // Optional fields (These are only applicable for the first post)
