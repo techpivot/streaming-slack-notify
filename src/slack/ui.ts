@@ -221,9 +221,16 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
           // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
           // typically are slightly late meaning we should display the subsequent notification.
-
-          name = steps[currentStepIndex + 1].name;
-          console.log('updating name: ', name, currentStepIndex);
+          if (currentStepIndex >= 2 &&
+              currentStepIndex <= 3 &&
+              steps[currentStepIndex - 1].name.indexOf('techpivot/streaming-slack-notify') < 0
+          ) {
+              name = steps[currentStepIndex - 1].name;
+              console.log('updating name A: ', name, currentStepIndex);
+          } else if (steps[currentStepIndex + 1].name.indexOf('techpivot/streaming-slack-notify') < 0) {
+              name = steps[currentStepIndex + 1].name;
+              console.log('updating name B: ', name, currentStepIndex);
+          }
         } else {
           console.log('leaving name: ', name);
         }
