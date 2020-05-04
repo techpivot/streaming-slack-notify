@@ -149,16 +149,15 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let currentStepIndex = 0;
     let totalActiveSteps = 0;
 
-    currentStepLoop:
-    for (; currentStepIndex < steps.length; currentStepIndex += 1) {
-      switch (steps[currentStepIndex].status) {
+    for (let i = 0; currentStepIndex < steps.length; i += 1) {
+      switch (steps[i].status) {
         case 'completed':
         case 'in_progress':
           totalActiveSteps += 1;
-          if (!currentStep || steps[currentStepIndex].number > currentStep.number) {
-            currentStep = steps[currentStepIndex];
+          if (!currentStep || steps[i].number > currentStep.number) {
+            currentStepIndex = i;
+            currentStep = steps[i];
           }
-          break currentStepLoop;
       }
     }
 
