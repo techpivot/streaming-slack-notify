@@ -15,6 +15,7 @@ export interface JobInterface {
   conclusion: string;
   started_at: string;
   steps: Array<JobStepInterface>;
+  id: any;
 }
 
 export interface WorkflowSummaryInterface {
