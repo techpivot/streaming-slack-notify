@@ -9,6 +9,10 @@ import {
   MessageAttachment,
 } from '@slack/types';
 import { JobStepInterface, WorkflowSummaryInterface } from '../github/workflow';
+import {
+  getLastJobOutputIndex,
+  saveLastJobOutputIndex,
+} from '../github/artifacts';
 import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
 import {
   getActionBranch,
@@ -133,43 +137,20 @@ export const getCommitBlocks = (): KnownBlock[] => {
 export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
   const finalStep = isFinalStep();
-  const jobStatus = getJobContextStatus();
-  const jobName = getJobContextName();
+  const contextJobStatus = getJobContextStatus();
+  const contextJobName = getJobContextName();
 
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, started_at, steps } = job;
 
-    let icon = '';
-    let color;
-    let currentStep : JobStepInterface | undefined;
-    let currentStepIndex = 0;
-    let totalActiveSteps = 0;
-
-    for (let i = 0; i < steps.length; i += 1) {
-      switch (steps[i].status) {
-        case 'completed':
-        case 'in_progress':
-          totalActiveSteps += 1;
-          if (!currentStep || steps[i].number > currentStep.number) {
-            currentStepIndex = i;
-            currentStep = steps[i];
-          }
-          break;
-      }
-    }
-
-    if (!currentStep) {
-      // This will never happen just type safety
-      throw new Error('Unable to determine current job step');
-    }
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
     // tidy up the final display and the currently running job.
-    if (finalStep && jobName === currentStep.name) {
-      switch (jobStatus) {
+    if (finalStep && contextJobName === name) {
+      switch (contextJobStatus) {
         case 'Success':
           job.status = 'completed';
           job.conclusion = 'success';
@@ -192,6 +173,33 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       }
     }
 
+
+    let icon = '';
+    let color;
+    let lastJobOutputIndex = getLastJobOutputIndex(job.name);
+    console.log('last job output index', job.name, lastJobOutputIndex);
+    let currentStep : JobStepInterface | undefined;
+    let currentStepIndex = 0;
+    let totalActiveSteps = 0;
+
+    for (let i = 0; i < steps.length; i += 1) {
+      switch (steps[i].status) {
+        case 'completed':
+        case 'in_progress':
+          totalActiveSteps += 1;
+          if (!currentStep || steps[i].number > currentStep.number) {
+            currentStepIndex = i;
+            currentStep = steps[i];
+          }
+          break;
+      }
+    }
+
+    if (!currentStep) {
+      // This will never happen just type safety
+      throw new Error('Unable to determine current job step');
+    }
+
     // Reference
     // =========
     // status: queued, in_progress, completed
@@ -204,12 +212,14 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           type: 'mrkdwn',
           text: '_In Progress_',
         });
+
         // Update the step name to never display our slack notification name. In order to minimize
         // the action YAML our readme/docs don't require naming/IDs. This reduction also allows
         // the default naming to be consistent. In this case, if we're an in progress and the actions
         // is actually on it self (or from 1 + n behind) ... let's bump to the next one which is
         // even more accurate.
-        let name = currentStep.name;
+
+
         console.log("currentStep.name.indexOf('techpivot/streaming-slack-notify')",
         currentStep.name.indexOf('techpivot/streaming-slack-notify'), currentStep.name);
 
@@ -225,11 +235,12 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
               currentStepIndex <= 3 &&
               steps[currentStepIndex - 1].name.indexOf('techpivot/streaming-slack-notify') < 0
           ) {
-              name = steps[currentStepIndex - 1].name;
-              console.log('updating name A: ', name, currentStepIndex);
+            currentStepIndex -= 1;
+
+            console.log('updating name A: ', steps[currentStepIndex], currentStepIndex);
           } else if (steps[currentStepIndex + 1].name.indexOf('techpivot/streaming-slack-notify') < 0) {
-              name = steps[currentStepIndex + 1].name;
-              console.log('updating name B: ', name, currentStepIndex);
+            currentStepIndex += 1;
+            console.log('updating name B: ', name, currentStepIndex);
           }
         } else {
           console.log('leaving name: ', name);
@@ -240,7 +251,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
         elements.push({
           type: 'mrkdwn',
-          text: `*${name}* (${totalActiveSteps} of ${steps.length + 1})`,
+          text: `*${steps[currentStepIndex]}* (${currentStepIndex} of ${steps.length + 1})`,
         });
 
         break;
@@ -317,6 +328,10 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         )}`,
       });
     }
+
+    // Save the current step
+    console.log('saving step index', name, currentStepIndex);
+    saveLastJobOutputIndex(name, currentStepIndex);
 
     attachments.push({
       color,

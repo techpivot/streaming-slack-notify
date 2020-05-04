@@ -7,6 +7,8 @@ interface ArtifactInterface {
   ts: string | null;
 }
 
+const fileOpts = { encoding: 'utf8', flag: 'r' };
+
 /**
  * Returns the string timestamp or null.
  *
@@ -24,8 +26,6 @@ export const getArtifacts = async (): Promise<ArtifactInterface> => {
       // to proxy input/output inbetween all other steps.
       await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
     }
-
-    const fileOpts = { encoding: 'utf8', flag: 'r' };
 
     return {
       channel: fs.readFileSync('/tmp/channel.txt', fileOpts),
@@ -53,5 +53,32 @@ export const saveArtifacts = async (channel: string, timestamp: string): Promise
     return await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/channel.txt', '/tmp/ts.txt'], '/tmp');
   } finally {
     console.timeEnd('Upload artifact');
+  }
+};
+
+/**
+ * Since a single job is run on the same host node we can just safely store these in file system.
+ */
+export const getLastJobOutputIndex = (jobName: string): number | undefined => {
+  try {
+    const jobOutputIndex = fs.readFileSync(`/tmp/${jobName.replace(/[\W_]+/g, '')}.txt`, fileOpts);
+
+    return parseInt(jobOutputIndex, 10);
+  } catch (error) {
+    // Return undefined if unable to get a number
+    console.error('error reading file', error);
+  }
+};
+
+/**
+ * Since a single job is run on the same host node we can just safely store these in file system.
+ */
+export const saveLastJobOutputIndex = (jobName: string, index: number): void => {
+  try {
+    fs.writeFileSync(`/tmp/${jobName.replace(/[\W_]+/g, '')}.txt`, index);
+
+  } catch (error) {
+    // Return undefined if unable to get a number
+    console.error('error writing file', error);
   }
 };
