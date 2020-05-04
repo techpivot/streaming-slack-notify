@@ -2,12 +2,14 @@ import { context, GitHub } from '@actions/github';
 import { getGithubToken, getGithubRunId } from '../utils';
 
 export interface JobStepInterface {
-  completed_at: string;
+  status: string;
   conclusion?: string; // 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
   name: string;
   number: number;
-  started_at: string;
-  status: string;
+  // Currently we need to mock this for the last completed step. Currently ommitting
+  // the last two
+  // started_at: string;
+  // completed_at: string;
 }
 
 export interface JobInterface {
