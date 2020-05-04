@@ -6,7 +6,7 @@ interface GitHubRepositoryInterface {
   repo: string;
 }
 
-type JobContextStatus = 'Success' | 'Failure';
+type JobContextStatus = 'Success' | 'Failure' | 'Cancelled';
 
 export const getGithubToken = (): string => {
   const token = getInput('GITHUB_TOKEN');
@@ -24,6 +24,7 @@ export const getJobContextStatus = (): JobContextStatus => {
   switch (jobStatus) {
     case 'Success':
     case 'Failure':
+      case 'Cancelled':
       break;
 
     case '':
