@@ -42,12 +42,14 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
     if (finalStep && contextJobName === name && status !== 'completed') {
       switch (contextJobStatus) {
         case 'Success':
+          const ts = new Date().toISOString();
+
           job.status = 'completed';
           job.conclusion = 'success';
 
           // The timing delta here is less than a second so it's fine to use current Date as all runners
           // have up-to-date time.
-          job.completed_at = new Date().toISOString();
+          job.completed_at = ts;
 
           // Mock the final step which isn't currently included so we don't have to adjust for this
           // discrepency below
@@ -58,6 +60,14 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
             conclusion: 'success',
             // @todo Timing?
           });
+
+          // Update the workflow
+          workflow.data.status = 'completed';
+          workflow.data.updated_at = ts;
+          break;
+
+        case 'Cancelled':
+          console.debug('in cancelled current, reference', workflow.data);
           break;
 
         case 'Failure':
@@ -81,8 +91,6 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
       }
     }
   });
-
-  console.debug('workflow', workflow.data);
 
   // Quick type guard to coerce the 'conclusion'/'status' update fixes
   if (!isActionsGetWorkflowRunResponse(workflow.data)) {

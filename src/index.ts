@@ -38,7 +38,7 @@ async function run() {
       const payload: ChatUpdateArguments = {
         channel,
         ts,
-        text: getFallbackText(), // fallback when using blocks
+        text: getFallbackText(workflowSummary), // fallback when using blocks
         blocks: [].concat.apply([], [
           getTitleBlocks(workflowSummary),
           getEventSummaryBlocks(),
@@ -53,7 +53,7 @@ async function run() {
     } else {
       const payload: ChatPostMessageArguments = {
         channel,
-        text: getFallbackText(), // fallback when using blocks
+        text: getFallbackText(workflowSummary), // fallback when using blocks
         blocks: [].concat.apply([], [
           getTitleBlocks(workflowSummary),
           getEventSummaryBlocks(),

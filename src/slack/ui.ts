@@ -27,14 +27,24 @@ export const getDividerBlock = (): DividerBlock => {
   };
 };
 
-export const getFallbackText = (): string => {
+/**
+ * For consistency, ensure changes to this function are appropriately reflected in `getTitleBlocks()`
+ * @param workflowSummary
+ */
+export const getFallbackText = (workflowSummary: WorkflowSummaryInterface): string => {
   return `GitHub actions is running workflow: ${getWorkflowName()}`;
 };
 
+/**
+ * For consistency, ensure changes to this function are appropriately reflected in `getFallbackText()`
+ * @param workflowSummary
+ */
 export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): KnownBlock[] => {
   // Theoretically, we should always be in 'in_progress' stage; however, we mock the completed to handle
   // consistent UI output in various parts of the output blocks. (See ../github/workflow)
   let verb;
+  let icon;
+
   switch (workflowSummary.workflow.status) {
     case 'queued':
       verb = 'queued';
@@ -49,16 +59,27 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
 
       switch (workflowSummary.workflow.conclusion) {
         case 'success':
+          icon = ':heavy_check_mark: ';
+          break;
+
         case 'neutral':
+          icon = ':white_check_mark: ';
           break;
 
         case 'failure':
+          icon = ':x: ';
           break;
+
         case 'cancelled':
+          icon = ':x: ';
           break;
+
         case 'timed_out':
+          icon = ':x: ';
           break;
+
         case 'action_required':
+          icon = ':exclamation: ';
           break;
       }
       break;
