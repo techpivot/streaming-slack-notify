@@ -144,15 +144,16 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let icon = '';
     let color;
     let currentStep;
+    let currentStepIndex = 0;
     let totalActiveSteps = 0;
 
-    for (let i = 0; i < steps.length; i += 1) {
-      switch (steps[i].status) {
+    for (; currentStepIndex < steps.length; currentStepIndex += 1) {
+      switch (steps[currentStepIndex].status) {
         case 'completed':
         case 'in_progress':
           totalActiveSteps += 1;
-          if (!currentStep || steps[i].number > currentStep.number) {
-            currentStep = steps[i];
+          if (!currentStep || steps[currentStepIndex].number > currentStep.number) {
+            currentStep = steps[currentStepIndex];
           }
           break;
       }
@@ -203,9 +204,21 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           type: 'mrkdwn',
           text: '_In Progress_',
         });
+        // Update the step name to never display our slack notification name. In order to minimize
+        // the action YAML our readme/docs don't require naming/IDs. This reduction also allows
+        // the default naming to be consistent. In this case, if we're an in progress and the actions
+        // is actually on it self (or from 1 + n behind) ... let's bump to the next one which is
+        // even more accurate.
+        let name = currentStep.name;
+        if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
+          // We could potentially walk this continously; however, that's silly and if the end-user wants
+          // to notify multiple slack notifies ... well then we'll just have to display that as that's
+          // what we're actually doing.
+          name = steps[currentStepIndex + 1].name;
+        } else
         elements.push({
           type: 'mrkdwn',
-          text: `*${currentStep.name}* (${totalActiveSteps} of ${steps.length})`,
+          text: `*${name}* (${totalActiveSteps} of ${steps.length})`,
         });
         break;
 
