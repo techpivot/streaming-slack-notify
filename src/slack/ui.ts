@@ -19,15 +19,16 @@ import {
   getGithubRepositoryFullName,
   getReadableDurationString,
   getWorkflowName,
-  getJobContextName,
-  getJobContextStatus,
-  isFinalStep,
 } from '../utils';
 
 export const getDividerBlock = (): DividerBlock => {
   return {
     type: 'divider',
   };
+};
+
+export const getFallbackText = (): string => {
+  return `GitHub actions is running workflow: ${getWorkflowName()}`;
 };
 
 export const getTitleBlocks = (): KnownBlock[] => {
@@ -163,57 +164,11 @@ export const getCommitBlocks = (): KnownBlock[] => {
 
 export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
-  const finalStep = isFinalStep();
-  const contextJobStatus = getJobContextStatus();
-  const contextJobName = getJobContextName();
 
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
-    const { html_url, name, status, started_at, steps } = job;
-    let { completed_at } = job;
-
-    // console.log(steps);
-
-    // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
-    // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
-    // we rely on input in the action and then also peek the status from the Job context. Using these, we can
-    // tidy up the final display and the currently running job.
-    console.log('finalStep', finalStep);
-    console.log('contextJobName', contextJobName);
-    console.log('contextJobStatus', contextJobStatus);
-    if (finalStep && contextJobName === name && status !== 'completed') {
-      switch (contextJobStatus) {
-        case 'Success':
-          job.status = 'completed';
-          job.conclusion = 'success';
-
-          // Mock the final step which isn't currently included so we don't have to adjust for this
-          // discrepency below
-          steps.push({
-            name: 'Complete job',
-            number: steps.length + 1,
-            status: 'completed',
-            conclusion: 'success',
-          });
-          completed_at = new Date().toISOString();
-          break;
-
-        case 'Failure':
-          // Check to see the current job is ma
-          switch (job.status) {
-            case 'in_progress':
-            case 'queued':
-              // Fix, might need to add generic here depending on UI display below
-              job.status = 'completed';
-              job.conclusion = 'failure';
-              break;
-
-            // leave all other cases
-          }
-          break;
-      }
-    }
-
+    const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
+    const lastJobOutputIndex = getLastJobOutputIndex(name) || 0;
     let icon = '';
     let color;
     let currentStep: JobStepInterface | undefined;
@@ -236,13 +191,11 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       throw new Error('Unable to determine current job step');
     }
 
-    const lastJobOutputIndex = getLastJobOutputIndex(job.name) || 0;
-
     // Reference
     // =========
     // status: queued, in_progress, completed
 
-    switch (job.status) {
+    switch (status) {
       case 'in_progress':
         color = COLOR_IN_PROGRESS;
         icon = ':hourglass_flowing_sand:';
@@ -302,7 +255,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         // =========
         // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
 
-        switch (job.conclusion) {
+        switch (conclusion) {
           case 'success':
             icon = ':heavy_check_mark:';
             color = COLOR_SUCCESS;

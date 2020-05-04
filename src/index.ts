@@ -4,7 +4,14 @@ import { TIMING_EXECUTION_LABEL } from './const';
 import { getArtifacts, saveArtifacts } from './github/artifacts';
 import { getWorkflowSummary } from './github/workflow';
 import { postMessage, update } from './slack/api';
-import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack/ui';
+import {
+  getFallbackText,
+  getTitleBlocks,
+  getDividerBlock,
+  getEventSummaryBlocks,
+  getCommitBlocks,
+  getJobAttachments,
+} from './slack/ui';
 import { validateInputs } from './validation';
 
 async function run() {
@@ -31,7 +38,7 @@ async function run() {
       const payload: ChatUpdateArguments = {
         channel,
         ts,
-        text: 'test req',
+        text: getFallbackText(), // fallback when using blocks
         blocks: [].concat.apply([], [
           getTitleBlocks(),
           getEventSummaryBlocks(),
@@ -46,13 +53,13 @@ async function run() {
     } else {
       const payload: ChatPostMessageArguments = {
         channel,
-        text: 'test req',
+        text: getFallbackText(), // fallback when using blocks
         blocks: [].concat.apply([], [
           getTitleBlocks(),
           getEventSummaryBlocks(),
-         // getDividerBlock(),
+          getDividerBlock(),
           getCommitBlocks(),
-        //  getDividerBlock(),
+          getDividerBlock(),
         ] as Array<any>),
         attachments: getJobAttachments(workflowSummary),
         // Optional fields (These are only applicable for the first post)
