@@ -2,21 +2,29 @@ import { context, GitHub } from '@actions/github';
 import { getGithubToken, getGithubRunId } from '../utils';
 
 export interface JobStepInterface {
-  status: string;
+  completed_at: string;
+  conclusion?: string; // 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
   name: string;
   number: number;
-  conclusion?: string; // 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
+  started_at: string;
+  status: string;
 }
 
 export interface JobInterface {
+  check_run_url: string;
   completed_at: string;
-  html_url: string;
-  name: string;
-  status: string; // 'queued' | 'in_progress' | 'completed';
   conclusion: string;
+  head_sha: string;
+  html_url: string;
+  id: number;
+  name: string;
+  node_id: string;
+  run_id: number;
+  run_url: string;
   started_at: string;
-  steps: Array<JobStepInterface>;
-  id: any;
+  status: string; // 'queued' | 'in_progress' | 'completed';
+  steps: JobStepInterface[];
+  url: string;
 }
 
 export interface WorkflowSummaryInterface {

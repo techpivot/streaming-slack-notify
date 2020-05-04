@@ -139,7 +139,8 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
-    let { completed_at, html_url, name, status, started_at, steps } = job;
+    const { html_url, name, status, started_at, steps } = job;
+    let { completed_at } = job;
 
     // console.log(steps);
 
@@ -205,7 +206,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       throw new Error('Unable to determine current job step');
     }
 
-    let lastJobOutputIndex = getLastJobOutputIndex(job.name) || 0;
+    const lastJobOutputIndex = getLastJobOutputIndex(job.name) || 0;
 
     // Reference
     // =========
