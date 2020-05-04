@@ -164,7 +164,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       throw new Error('Unable to determine current job step');
     }
 
-
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
@@ -218,8 +217,13 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           // We could potentially walk this continously; however, that's silly and if the end-user wants
           // to notify multiple slack notifies ... well then we'll just have to display that as that's
           // what we're actually doing.
+
+          // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
+          // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
+          // typically are slightly late meaning we should display the subsequent notification.
+
           name = steps[currentStepIndex + 1].name;
-          console.log('updating name: ', name);
+          console.log('updating name: ', name, currentStepIndex);
         } else {
           console.log('leaving name: ', name);
         }
