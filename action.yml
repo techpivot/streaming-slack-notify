@@ -40,11 +40,11 @@ inputs:
     description: Secret GitHub API token to use for making API requests.
     default: ${{ github.token }}
     required: true
-  JOB_ID:
-    description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
+  CURRENT_JOB_NAME:
+    description: The current Job name as defined in the shell Job context. This only appears to be specified via the Shell Job context.
     default: ${{ github.job }}
     required: true
-  JOB_STATUS:
+  CURRENT_JOB_STATUS:
     description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
     default: ${{ job.status }}
     required: true

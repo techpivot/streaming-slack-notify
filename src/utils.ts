@@ -18,8 +18,19 @@ export const getGithubToken = (): string => {
   return token;
 };
 
+
+export const getJobContextName = (): string => {
+  const name = getInput('CURRENT_JOB_STATUS');
+  if (name === '') {
+    throw new Error('CURRENT_JOB_STATUS input variable is undefined');
+  }
+
+  return name;
+
+};
+
 export const getJobContextStatus = (): JobContextStatus => {
-  const jobStatus = getInput('JOB_STATUS');
+  const jobStatus = getInput('CURRENT_JOB_STATUS');
 
   switch (jobStatus) {
     case 'Success':
@@ -28,7 +39,7 @@ export const getJobContextStatus = (): JobContextStatus => {
       break;
 
     case '':
-      throw new Error('JOB_STATUS input variable is undefined');
+      throw new Error('CURRENT_JOB_STATUS input variable is undefined');
 
     default:
       throw new Error(`Unexpected JOB_STATUS value: ${jobStatus}`);

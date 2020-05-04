@@ -18,6 +18,7 @@ import {
   getGithubRepositoryFullName,
   getReadableDurationString,
   getWorkflowName,
+  getJobContextName,
   getJobContextStatus,
   isFinalStep,
 } from '../utils';
@@ -134,9 +135,8 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
   const finalStep = isFinalStep();
   const jobStatus = getJobContextStatus();
+  const jobName = getJobContextName();
 
-  console.log('final step', finalStep);
-  console.log('job status', jobStatus);
 
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
@@ -174,7 +174,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
     // tidy up the final display and the currently running job.
-    if (finalStep) {
+    if (finalStep && jobName === currentStep.name) {
       switch (jobStatus) {
         case 'Success':
           job.status = 'completed';
@@ -212,6 +212,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         // is actually on it self (or from 1 + n behind) ... let's bump to the next one which is
         // even more accurate.
         let name = currentStep.name;
+        console.log("currentStep.name.indexOf('techpivot/streaming-slack-notify')",
+        currentStep.name.indexOf('techpivot/streaming-slack-notify'), currentStep.name);
+
         if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
           // We could potentially walk this continously; however, that's silly and if the end-user wants
           // to notify multiple slack notifies ... well then we'll just have to display that as that's
