@@ -45,6 +45,10 @@ jobs:
         run: sleep 5
 
       - uses: techpivot/streaming-slack-notify@master
+        with:
+          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+
+      - uses: techpivot/streaming-slack-notify@master
         if: always()
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}

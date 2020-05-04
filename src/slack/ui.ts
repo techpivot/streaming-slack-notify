@@ -141,7 +141,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     let { completed_at, html_url, name, status, started_at, steps } = job;
 
-   // console.log(steps);
+    // console.log(steps);
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
@@ -161,11 +161,10 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           steps.push({
             name: 'Complete job',
             number: steps.length + 1,
-            status: 'copmleted',
+            status: 'completed',
+            conclusion: 'success',
           });
-          console.log('>>>>>>>>>>>>>', steps);
-          completed_at = (new Date()).toISOString();
-
+          completed_at = new Date().toISOString();
           break;
 
         case 'Failure':

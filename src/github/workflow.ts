@@ -5,13 +5,14 @@ export interface JobStepInterface {
   status: string;
   name: string;
   number: number;
+  conclusion?: string; // 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
 }
 
 export interface JobInterface {
   completed_at: string;
   html_url: string;
   name: string;
-  status: string;
+  status: string; // 'queued' | 'in_progress' | 'completed';
   conclusion: string;
   started_at: string;
   steps: Array<JobStepInterface>;
