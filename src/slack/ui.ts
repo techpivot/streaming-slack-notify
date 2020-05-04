@@ -42,7 +42,7 @@ export const getTitleBlocks = (): KnownBlock[] => {
   ];
 };
 
-export const getEventSummaryBlocks = (): KnownBlock[] => {
+export const getEventSummaryBlocks2 = (): KnownBlock[] => {
   const eventName = getActionEventName();
   const fields = [`*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*`, '*Event*: `' + eventName + '`'];
 
@@ -57,6 +57,36 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
         type: 'mrkdwn',
         text: fields.join('     '),
       },
+    },
+  ];
+};
+
+export const getEventSummaryBlocks = (): KnownBlock[] => {
+  const eventName = getActionEventName();
+  const elements: MrkdwnElement[] = [];
+
+  elements.push({
+    type: 'mrkdwn',
+    text: '*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*',
+  });
+  elements.push({
+    type: 'mrkdwn',
+    text: '*Event*: `' + eventName + '`',
+  });
+
+  switch (eventName) {
+    case 'push':
+      elements.push({
+        type: 'mrkdwn',
+        text: '*Branch*: `' + getActionBranch() + '`',
+      });
+      break;
+  }
+
+  return [
+    {
+      type: 'context',
+      elements,
     },
   ];
 };

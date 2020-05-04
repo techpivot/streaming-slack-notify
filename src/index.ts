@@ -1,11 +1,11 @@
 import { getInput } from '@actions/core';
+import { ChatPostMessageArguments, ChatUpdateArguments } from '@slack/web-api';
 import { TIMING_EXECUTION_LABEL } from './const';
+import { getArtifacts, saveArtifacts } from './github/artifacts';
+import { getWorkflowSummary } from './github/workflow';
 import { postMessage, update } from './slack/api';
 import { getTitleBlocks, getDividerBlock, getEventSummaryBlocks, getCommitBlocks, getJobAttachments } from './slack/ui';
 import { validateInputs } from './validation';
-import { getArtifacts, saveArtifacts } from './github/artifacts';
-import { getWorkflowSummary } from './github/workflow';
-import { ChatPostMessageArguments, ChatUpdateArguments } from '@slack/web-api';
 
 async function run() {
   console.time(TIMING_EXECUTION_LABEL);
@@ -34,7 +34,7 @@ async function run() {
         text: 'test req',
         blocks: [].concat.apply([], [
           getTitleBlocks(),
-          getEventSummaryBlocks(), // migrate to context
+          getEventSummaryBlocks(),
           getDividerBlock(),
           getCommitBlocks(),
           getDividerBlock(),
