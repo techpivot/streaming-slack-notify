@@ -141,8 +141,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
   workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, started_at, steps } = job;
-    console.log('debug', job.id, job.name);
-    console.log('take2', getInput('JOB_ID'));
+
     let icon = '';
     let color;
     let currentStep : JobStepInterface | undefined;
@@ -158,6 +157,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             currentStepIndex = i;
             currentStep = steps[i];
           }
+          break;
       }
     }
 
