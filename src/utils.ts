@@ -6,6 +6,8 @@ interface GitHubRepositoryInterface {
   repo: string;
 }
 
+type JobContextStatus = 'Success' | 'Failure';
+
 export const getGithubToken = (): string => {
   const token = getInput('GITHUB_TOKEN');
 
@@ -16,11 +18,19 @@ export const getGithubToken = (): string => {
   return token;
 };
 
-export const getJobContextStatus = (): string => {
+export const getJobContextStatus = (): JobContextStatus => {
   const jobStatus = getInput('JOB_STATUS');
 
-  if (jobStatus === '') {
-    throw new Error('JOB_STATUS input variable is undefined');
+  switch (jobStatus) {
+    case 'Success':
+    case 'Failure':
+      break;
+
+    case '':
+      throw new Error('JOB_STATUS input variable is undefined');
+
+    default:
+      throw new Error(`Unexpected JOB_STATUS value: ${jobStatus}`);
   }
 
   return jobStatus;

@@ -167,11 +167,32 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     // =========
     // status: queued, in_progress, completed
 
-    // Little bit of some sorcery here. Since there really is no way to tell if the workflow run has finished
+    // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
     // we rely on input in the action and then also peek the status from the Job context. Using these, we can
     // tidy up the final display and the currently running job.
     if (finalStep) {
+      switch (jobStatus) {
+        case 'Success':
+          job.status = 'completed';
+          job.conclusion = 'success';
+          console.debug('Using final step + success() to hint final result');
+          break;
+
+        case 'Failure':
+          // Check to see the current job is ma
+          switch (job.status) {
+            case 'in_progress':
+            case 'queued':
+              // Fix, might need to add generic here depending on UI display below
+              job.status = 'completed';
+              job.conclusion = 'failure';
+              break;
+
+            // leave all other cases
+          }
+          break;
+      }
     }
 
     switch (job.status) {
