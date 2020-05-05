@@ -331,8 +331,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
               type: 'mrkdwn',
               text: `*Cancelled* after *N* steps`,
             });
-            console.log('canelled debug');
-            console.log(workflowSummary);
             break;
 
           case 'failure':

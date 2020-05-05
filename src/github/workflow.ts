@@ -83,6 +83,9 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
         case 'Cancelled':
           addMockCompleteJob(steps);
 
+          console.log('>> cancelled');
+          console.log(steps);
+
           // Update Job
           job.status = 'completed';
           job.conclusion = 'cancelled';
