@@ -67,11 +67,14 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
 
           // Note: There appears to be about a 2-5 second lag time after this step completes and the
           // final workflow update to the run. In order to keep this as close as possible, we will
-          // add 3 seconds in our testing.
-          workflowData.updated_at = (new Date(now.getTime() + 3200)).toISOString();
+          // add 3.6 seconds in our testing.
+          workflowData.updated_at = (new Date(now.getTime() + 3600)).toISOString();
           break;
 
         case 'Cancelled':
+          // The issue with cancelling from the UI is that it actually doesn't run the final step
+          // Thus, we really would never get here; however, if this is somehow updated in the future,
+          // we put the relevant code blocks here.
           console.debug('in cancelled current, reference', workflow);
           break;
 
