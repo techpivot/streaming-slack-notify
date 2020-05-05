@@ -46,7 +46,7 @@ const modifyWorkflowStatus = (
 ): void => {
   const now = new Date();
 
-  workflowData.updated_at = new Date(now.getTime() + 3600).toISOString();
+  workflowData.updated_at = new Date(now.getTime() + 3700).toISOString();
   workflowData.status = status;
   workflowData.conclusion = conclusion;
 };
