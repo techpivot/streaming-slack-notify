@@ -9,7 +9,7 @@ import {
 } from './types';
 
 /**
- * There appears to be about a 0.5 second lag time for the completed job buffer.
+ * There appears to be about a 0.3 second lag time for the completed job buffer.
  *
  * @param workflowData
  */
@@ -20,7 +20,7 @@ const modifyJobStatus = (
 ): void => {
   const now = new Date();
 
-  job.completed_at = new Date(now.getTime() + 500).toISOString();
+  job.completed_at = new Date(now.getTime() + 300).toISOString();
   job.status = status;
   job.conclusion = conclusion;
   job.steps.push({

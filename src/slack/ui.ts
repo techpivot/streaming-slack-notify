@@ -349,7 +349,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             });
             color = COLOR_ERROR;
             console.log('failure debug');
-            console.log(workflowSummary);
+            console.log(job.steps);
             break;
 
           case 'timed_out':
