@@ -79,10 +79,9 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const finalStep: boolean = isFinalStep();
   const contextJobStatus: string = getJobContextStatus();
   const contextJobName: string = getJobContextName();
-  let jobIdLogsToFetch: number | undefined;
 
   jobsData.forEach((job: ActionsListJobsForWorkflowRunResponseJobsItem) => {
-    const { id, name, status } = job;
+    const { name, status } = job;
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
@@ -112,8 +111,9 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
 
               // Unfortunately, the workflow job logs aren't streamed and the
               // [GET /repos/:owner/:repo/actions/jobs/:job_id/logs] endpoint is a flat
-              // file of the logs.
-              jobIdLogsToFetch = id;
+              // file of the logs that is only available immediately after the "Complete job"
+              // phase finishes.
+
               break;
 
             default:
@@ -124,35 +124,6 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
     }
   });
 
-
-
-  if (jobIdLogsToFetch) {
-    console.log('A');
-
-    await sleep(4000);
-    console.log('B');
-    await sleep(4000);
-    console.log('C');
-    await sleep(4000);
-    console.log('D');
-    await sleep(4000);
-    console.log('E');
-
-                // Let's also download the failures
-                try {
-                  console.log('opts', { owner, repo, job_id: jobIdLogsToFetch });
-    const r = await octokit.actions.listWorkflowJobLogs({ owner, repo, job_id: jobIdLogsToFetch })
-    console.log('got response>>>');
-    console.log(r);
-                } catch (error) {
-                  console.error('here');
-                  console.error(error);
-                }
-
-  }
-
-
-  console.log('returning');
   return {
     workflow: workflowData,
     jobs: jobsData,
