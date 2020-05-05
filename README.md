@@ -1,11 +1,28 @@
-[![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
-[![Maintainability](https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability)](https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability)
-![GitHub release](https://img.shields.io/github/v/release/techpivot/streaming-slack-notify)
-[![GitHub issues](https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg)](https://github.com/techpivot/streaming-slack-notify/issues/)
-[![License](https://img.shields.io/github/license/techpivot/streaming-slack-notify)](https://github.com/techpivot/streaming-slack-notify/blob/master/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/techpivot/streaming-slack-notify/stargazers/)
+<h1 align="center">Streaming Slack Notify</h1>
 
-# Streaming Slack Notify
+<h4 align="center">An opinionated GitHub action for streaming workflow job status to Slack.</h4>
+
+<p align="center">
+
+  <a href="https://github.com/techpivot/streaming-slack-notify/actions">
+    <img src="https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master" />
+  </a>
+  <a href="https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability" />
+  </a>
+  <a href="https://github.com/techpivot/streaming-slack-notify/releases">
+    <img src="https://img.shields.io/github/v/release/techpivot/streaming-slack-notify" />
+  </a>
+  <a href="https://github.com/techpivot/streaming-slack-notify/issues">
+    <img src="https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg" />
+  </a>
+  <a href="https://github.com/techpivot/streaming-slack-notify/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/techpivot/streaming-slack-notify" />
+  </a>
+  <a href="https://github.com/techpivot/streaming-slack-notify/stargazers">
+    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" />
+  </a>
+</p>
 
 Maintained by **[TechPivot](https://www.techpivot.net)** and the community.
 
@@ -30,6 +47,17 @@ Please see [API documentation](https://api.slack.com/docs/messages/builder) in a
 ## References
 
 ## License
+
+---
+
+> **[TechPivot](https://www.techpivot.net)**
+&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+GitHub [@techpivot](https://github.com/techpivot)
+&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/)
+&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+Twitter [@techpivot](https://twitter.com/techpivot)
+
 
 ======
 
