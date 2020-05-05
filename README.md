@@ -2,8 +2,11 @@
 
 <h4 align="center">
   An opinionated GitHub action for streaming workflow job status to Slack.<br />
+</h4>
+<h6 align="center">
   Actively maintained by <a href="https://www.techpivot.net">TechPivot</a> and the community.
-</h6>
+</h4>
+  
 
 <p align="center">
   <a href="https://github.com/techpivot/streaming-slack-notify/actions">
