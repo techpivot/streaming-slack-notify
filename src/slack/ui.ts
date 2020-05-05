@@ -167,74 +167,75 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
   ];
 };
 
-export const getCommitBlocks = (): KnownBlock[] => {
+const getCommitBlocksForPush = (payload: WebhookPayloadPush): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
+  const maxCommits = 2;
+  let index = 0;
 
-  switch (getActionEventName()) {
-    case 'push': {
-      const payload = github.context.payload as WebhookPayloadPush;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload.commits.slice(0, maxCommits).forEach((commit: any) => {
+    index += 1;
 
-      const maxCommits = 2;
-      let index = 0;
+    const {
+      id,
+      url,
+      message,
+      author: { username },
+    } = commit;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      payload.commits.slice(0, maxCommits).forEach((commit: any) => {
-        index += 1;
+    if (index > 1) {
+      blocks.push(getDividerBlock());
+    }
 
-        const {
-          id,
-          url,
-          message,
-          author: { username },
-        } = commit;
-
-        if (index > 1) {
-          blocks.push(getDividerBlock());
-        }
-
-        blocks.push(
+    blocks.push(
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*<${url}|${id.substring(0, 7)}>*: ${message}`,
+        },
+      },
+      {
+        type: 'context',
+        elements: [
           {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `*<${url}|${id.substring(0, 7)}>*: ${message}`,
-            },
+            type: 'image',
+            image_url: `https://github.com/${username}.png`,
+            alt_text: username,
           },
           {
-            type: 'context',
-            elements: [
-              {
-                type: 'image',
-                image_url: `https://github.com/${username}.png`,
-                alt_text: username,
-              },
-              {
-                type: 'mrkdwn',
-                text: `*<https://github.com/${username}|${username}>*`,
-              },
-            ],
-          }
-        );
-      });
-
-      if (payload.commits.length > maxCommits) {
-        const extra = payload.commits.length - maxCommits;
-        blocks.push({
-          type: 'context',
-          elements: [
-            {
-              type: 'mrkdwn',
-              text: `Plus *${extra}* more ${extra === 1 ? 'commit' : 'commits'}`,
-            },
-          ],
-        });
+            type: 'mrkdwn',
+            text: `*<https://github.com/${username}|${username}>*`,
+          },
+        ],
       }
+    );
+  });
 
-      break;
-    }
+  if (payload.commits.length > maxCommits) {
+    const extra = payload.commits.length - maxCommits;
+    blocks.push({
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `Plus *${extra}* more ${extra === 1 ? 'commit' : 'commits'}`,
+        },
+      ],
+    });
   }
 
   return blocks;
+};
+
+export const getCommitBlocks = (): KnownBlock[] => {
+  switch (getActionEventName()) {
+    case 'push':
+      return getCommitBlocksForPush(github.context.payload as WebhookPayloadPush);
+
+    default:
+      throw new Error('Unsupported event type');
+  }
 };
 
 export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {

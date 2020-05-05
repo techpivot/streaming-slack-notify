@@ -1,7 +1,9 @@
 <h1 align="center">Streaming Slack Notify</h1>
 
-<h4 align="center">An opinionated GitHub action for streaming workflow job status to Slack.</h4>
-<h6 align="center">Actively maintained by **[TechPivot](https://www.techpivot.net)** and the community.</h6>
+<h4 align="center">
+  An opinionated GitHub action for streaming workflow job status to Slack.<br />
+  Actively maintained by <a href="https://www.techpivot.net">TechPivot</a> and the community.
+</h6>
 
 <p align="center">
   <a href="https://github.com/techpivot/streaming-slack-notify/actions">
@@ -48,12 +50,9 @@ Please see [API documentation](https://api.slack.com/docs/messages/builder) in a
 
 ---
 
-> **[TechPivot](https://www.techpivot.net)**
-> &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> GitHub [@techpivot](https://github.com/techpivot)
-> &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/)
-> &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> **[TechPivot](https://www.techpivot.net)** > &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> GitHub [@techpivot](https://github.com/techpivot) > &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/) > &nbsp;&nbsp;&middot;&nbsp;&nbsp;
 > Twitter [@techpivot](https://twitter.com/techpivot)
 
 ======
