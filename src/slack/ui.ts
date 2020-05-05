@@ -316,7 +316,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             break;
 
           case 'neutral':
-            icon = ':heavy_check_mark:';
+            icon = ':white_check_mark:';
             color = COLOR_SUCCESS;
             elements.push({
               type: 'mrkdwn',
@@ -337,7 +337,13 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
           case 'failure':
             icon = ':x:';
+            elements.push({
+              type: 'mrkdwn',
+              text: `*Failed* after *N* steps`,
+            });
             color = COLOR_ERROR;
+            console.log('failure debug');
+            console.log(workflowSummary);
             break;
 
           case 'timed_out':
