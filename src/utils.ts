@@ -8,23 +8,22 @@ interface GitHubRepositoryInterface {
 
 type JobContextStatus = 'Success' | 'Failure' | 'Cancelled';
 
-export const getGithubToken = (): string => {
-  const token = getInput('GITHUB_TOKEN');
+const getRequiredInputField = (field: string): string => {
+  const value = getInput(field);
 
-  if (token === '') {
-    throw new Error('GITHUB_TOKEN input variable is undefined');
+  if (value === '') {
+    throw new Error(`Input variable "${value}" is required but undefined`);
   }
 
-  return token;
+  return value;
+}
+
+export const getGithubToken = (): string => {
+  return getRequiredInputField('GITHUB_TOKEN');
 };
 
 export const getJobContextName = (): string => {
-  const name = getInput('CURRENT_JOB_NAME');
-  if (name === '') {
-    throw new Error('CURRENT_JOB_NAME input variable is undefined');
-  }
-
-  return name;
+  return getRequiredInputField('CURRENT_JOB_NAME');
 };
 
 export const getJobContextStatus = (): JobContextStatus => {
@@ -47,13 +46,7 @@ export const getJobContextStatus = (): JobContextStatus => {
 };
 
 export const getSlackToken = (): string => {
-  const token = getInput('slack_access_token');
-
-  if (token === '') {
-    throw new Error('slack_access_token input variable is undefined');
-  }
-
-  return token;
+  return getRequiredInputField('slack_access_token');
 };
 
 export const isFinalStep = (): boolean => {
