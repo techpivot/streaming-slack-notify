@@ -1,5 +1,5 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability)](https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability)
 [![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability)](https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability)
 ![GitHub release](https://img.shields.io/github/v/release/techpivot/streaming-slack-notify)
 [![GitHub issues](https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg)](https://github.com/techpivot/streaming-slack-notify/issues/)
 [![License](https://img.shields.io/github/license/techpivot/streaming-slack-notify)](https://github.com/techpivot/streaming-slack-notify/blob/master/LICENSE)
