@@ -1,9 +1,15 @@
 [![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
 ![GitHub release](https://img.shields.io/github/v/release/techpivot/streaming-slack-notify)
-[![Stars](https://img.shields.io/github/stars/techpivot/streaming-slack-notify?style=social)](https://github.com/techpivot/streaming-slack-notify)
+[![GitHub issues](https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg)](https://github.com/techpivot/streaming-slack-notify/issues/)
+[![License](https://img.shields.io/github/license/techpivot/streaming-slack-notify)](https://github.com/techpivot/streaming-slack-notify/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/techpivot/streaming-slack-notify/stargazers/)
+
+# Streaming Slack Notify
+Maintained by **[TechPivot](https://www.techpivot.net)** and the community.
 
 
 ## Motivation
+
 
 ## Usage
 
