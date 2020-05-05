@@ -104,7 +104,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
   // In order to have a better UI for continuous messages in the channel, we need a larger top divider. Currently
   // this is set to width for desktop. Without additional options, there is nothing else we can really do. The
   // divider block is being used in the commit section.
-  const preDivider = '══════════════════════════════════════════════\n';
+  const preDivider = '══════════════════════════════════════════════════════\n';
 
   return [
     {
