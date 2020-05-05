@@ -71,9 +71,10 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const workflowData = workflow.data as ActionsGetWorkflowRunResponse;
 
   // Let's resolve some missing data for improved syncing
-  const finalStep = isFinalStep();
-  const contextJobStatus = getJobContextStatus();
-  const contextJobName = getJobContextName();
+  const finalStep: boolean = isFinalStep();
+  const contextJobStatus: string = getJobContextStatus();
+  const contextJobName: string = getJobContextName();
+  let jobIdLogsToFetch: number | undefined;
 
   jobsData.forEach((job: ActionsListJobsForWorkflowRunResponseJobsItem) => {
     const { id, name, status } = job;
@@ -103,14 +104,7 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
             case 'in_progress':
               modifyWorkflowStatus(workflowData, 'completed', 'failure');
               modifyJobStatus(job, 'completed', 'failure');
-
-              // Let's also download the failures
-              octokit.actions.listWorkflowJobLogs({ owner, repo, job_id: id })
-              .then((r:any) => {
-                console.log('got response>>>');
-                console.log(r);
-              })
-
+              jobIdLogsToFetch = id;
               break;
 
             default:
@@ -120,6 +114,17 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
       }
     }
   });
+
+
+  if (jobIdLogsToFetch) {
+    console.log('A');
+                // Let's also download the failures
+    const r = await octokit.actions.listWorkflowJobLogs({ owner, repo, job_id: jobIdLogsToFetch })
+
+    console.log('got response>>>');
+    console.log(r);
+  }
+
 
   console.log('returning');
   return {
