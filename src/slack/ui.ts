@@ -55,7 +55,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
 
     case 'in_progress':
       action = 'is running';
-      finishTime = (new Date()).toISOString();
+      finishTime = new Date().toISOString();
       break;
 
     case 'completed': {
@@ -74,7 +74,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
 
         case 'failure':
           icon = ':x: ';
-          action = 'completed with errors'
+          action = 'completed with errors';
           break;
 
         case 'cancelled':
@@ -84,7 +84,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
 
         case 'timed_out':
           icon = ':x: ';
-          action = 'timed out'
+          action = 'timed out';
           break;
 
         case 'action_required':
@@ -224,8 +224,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
     let currentStepIndex = 0; // Zero indexed
 
-    stepLoop:
-    for (let i = 0; i < steps.length; i += 1) {
+    stepLoop: for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
         case 'completed':
         case 'in_progress':
@@ -274,9 +273,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       }
     }
 
-
     switch (status) {
-
       case 'in_progress':
         color = COLOR_IN_PROGRESS;
         icon = ':hourglass_flowing_sand:';
@@ -284,7 +281,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           type: 'mrkdwn',
           text: '_In Progress_',
         });
-
 
         // Note: For in progress, the current steps don't include the last step "Complete job".
         // Thus let's increase by one to account for this. Additionally, the ${currentStepIndex}
@@ -297,7 +293,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
         break;
 
-
       case 'queued':
         icon = ':white_circle:';
         color = COLOR_QUEUED;
@@ -307,9 +302,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         });
         break;
 
-
       case 'completed':
-
         switch (conclusion) {
           case 'success':
             icon = ':heavy_check_mark:';
@@ -334,7 +327,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             color = COLOR_ERROR;
             elements.push({
               type: 'mrkdwn',
-              text: `*Cancelled* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length + 1})`,
+              text: `*Cancelled* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
+                steps.length + 1
+              })`,
             });
             break;
 

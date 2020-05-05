@@ -1,6 +1,5 @@
 [![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
 
-
 # Slack - Github Action
 
 A [Github Action](https://github.com/features/actions) to send a message to a Slack channel that supports attachments like images.
@@ -8,7 +7,6 @@ A [Github Action](https://github.com/features/actions) to send a message to a Sl
 ## Configuration
 
 You must set `SLACK_WEBHOOK` environment value in settings page of your repository in order to use without any problem. Please [see here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets#creating-encrypted-secrets) to learn how to do it if you don't know already.
-
 
 ## Usage
 

@@ -1,6 +1,17 @@
+export type ActionsStatus = 'queued' | 'in_progress' | 'completed';
+
+export type ActionsConclusion =
+  | null
+  | 'success'
+  | 'failure'
+  | 'neutral'
+  | 'cancelled'
+  | 'timed_out'
+  | 'action_required';
+
 export type ActionsListJobsForWorkflowRunResponseJobsItemStepsItem = {
-  status: string;
-  conclusion?: string; // 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
+  status: ActionsStatus;
+  conclusion: ActionsConclusion;
   name: string;
   number: number;
   // Currently we need to mock this for the last completed step. Currently ommitting the last two
@@ -11,7 +22,7 @@ export type ActionsListJobsForWorkflowRunResponseJobsItemStepsItem = {
 export type ActionsListJobsForWorkflowRunResponseJobsItem = {
   check_run_url: string;
   completed_at: string;
-  conclusion: string;
+  conclusion: ActionsConclusion;
   head_sha: string;
   html_url: string;
   id: number;
@@ -20,7 +31,7 @@ export type ActionsListJobsForWorkflowRunResponseJobsItem = {
   run_id: number;
   run_url: string;
   started_at: string;
-  status: string; // 'queued' | 'in_progress' | 'completed';
+  status: ActionsStatus;
   steps: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem[];
   url: string;
 };
@@ -189,7 +200,7 @@ export type ActionsGetWorkflowRunResponse = {
   artifacts_url: string;
   cancel_url: string;
   check_suite_id: number;
-  conclusion: null | 'success' | 'failure' | 'neutral' | 'cancelled' | 'timed_out' | 'action_required';
+  conclusion: ActionsConclusion;
   created_at: string;
   event: string;
   head_branch: string;
@@ -207,7 +218,7 @@ export type ActionsGetWorkflowRunResponse = {
   repository: ActionsGetWorkflowRunResponseRepository;
   rerun_url: string;
   run_number: number;
-  status: 'queued' | 'in_progress' | 'completed';
+  status: ActionsStatus;
   updated_at: string;
   url: string;
   workflow_url: string;
