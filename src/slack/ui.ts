@@ -101,12 +101,17 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
     clock = `      :clock3: ${getReadableDurationString(new Date(created_at), new Date(finishTime))}`;
   }
 
+  // In order to have a better UI for continuous messages in the channel, we need a larger top divider. Currently
+  // this is set to width for desktop. Without additional options, there is nothing else we can really do. The
+  // divider block is being used in the commit section.
+  const preDivider = '══════════════════════════════════════════════\n';
+
   return [
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `${icon}Workflow *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}.${clock}`,
+        text: `${preDivider}${icon}Workflow *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}.${clock}`,
       },
     },
   ];

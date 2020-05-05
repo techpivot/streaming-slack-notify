@@ -35,7 +35,7 @@ const modifyJobStatus = (
 /**
  * There appears to be about a 2-5 second lag time after this step completes and the
  * final workflow update to the run. In order to keep this as close as possible, we will
- * add extra time, roughly 4.1 seconds in our testing.
+ * add extra time, roughly 4 seconds in our testing.
  *
  * @param workflowData
  */
@@ -46,7 +46,7 @@ const modifyWorkflowStatus = (
 ): void => {
   const now = new Date();
 
-  workflowData.updated_at = new Date(now.getTime() + 4100).toISOString();
+  workflowData.updated_at = new Date(now.getTime() + 3900).toISOString();
   workflowData.status = status;
   workflowData.conclusion = conclusion;
 };
