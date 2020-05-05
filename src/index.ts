@@ -34,39 +34,32 @@ async function run() {
     const workflowSummary = await getWorkflowSummary();
 
     // Build payload and send to Slack
+    const payloadBase = {
+      channel,
+      text: getFallbackText(workflowSummary), // fallback when using blocks
+      blocks: [].concat.apply([], [
+        getTitleBlocks(workflowSummary),
+        getEventSummaryBlocks(),
+        getDividerBlock(),
+        getCommitBlocks(),
+        getDividerBlock(),
+      ] as Array<any>),
+      attachments: getJobAttachments(workflowSummary),
+    };
+
     if (ts) {
-      const payload: ChatUpdateArguments = {
-        channel,
+      const payload: ChatUpdateArguments = Object.assign({}, payloadBase, {
         ts,
-        text: getFallbackText(workflowSummary), // fallback when using blocks
-        blocks: [].concat.apply([], [
-          getTitleBlocks(workflowSummary),
-          getEventSummaryBlocks(),
-          getDividerBlock(),
-          getCommitBlocks(),
-          getDividerBlock(),
-        ] as Array<any>),
-        attachments: getJobAttachments(workflowSummary),
-      };
+      });
 
       await update(payload);
     } else {
-      const payload: ChatPostMessageArguments = {
-        channel,
-        text: getFallbackText(workflowSummary), // fallback when using blocks
-        blocks: [].concat.apply([], [
-          getTitleBlocks(workflowSummary),
-          getEventSummaryBlocks(),
-          getDividerBlock(),
-          getCommitBlocks(),
-          getDividerBlock(),
-        ] as Array<any>),
-        attachments: getJobAttachments(workflowSummary),
+      const payload: ChatPostMessageArguments = Object.assign({}, payloadBase, {
         // Optional fields (These are only applicable for the first post)
         username: getInput('username'),
         icon_url: getInput('icon_url'),
         icon_emoji: getInput('icon_emoji'),
-      };
+      });
 
       const response = await postMessage(payload);
 

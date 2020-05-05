@@ -125,7 +125,7 @@ export interface ActionsGetWorkflowRunResponseRepositoryOwner {
   url: string;
 }
 
-export type ActionsGetWorkflowRunResponseHeadRepositoryOwner = ActionsGetWorkflowRunResponseRepositoryOwner
+export type ActionsGetWorkflowRunResponseHeadRepositoryOwner = ActionsGetWorkflowRunResponseRepositoryOwner;
 
 export type ActionsGetWorkflowRunResponseRepository = {
   archive_url: string;
