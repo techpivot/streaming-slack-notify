@@ -59,32 +59,37 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
       break;
 
     case 'completed': {
-      action = 'completed';
       finishTime = updated_at;
 
       switch (conclusion) {
         case 'success':
           icon = ':heavy_check_mark: ';
+          action = 'completed successfully';
           break;
 
         case 'neutral':
           icon = ':white_check_mark: ';
+          action = 'successfully (neutral)';
           break;
 
         case 'failure':
           icon = ':x: ';
+          action = 'completed with errors'
           break;
 
         case 'cancelled':
           icon = ':x: ';
+          action = 'was cancelled';
           break;
 
         case 'timed_out':
           icon = ':x: ';
+          action = 'timed out'
           break;
 
         case 'action_required':
           icon = ':exclamation: ';
+          action = 'failed because manual action is required';
           break;
       }
       break;
