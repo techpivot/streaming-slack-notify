@@ -1,6 +1,6 @@
 [![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
-
 [![Stars](https://img.shields.io/github/stars/techpivot/streaming-slack-notify?style=social)](https://github.com/techpivot/streaming-slack-notify)
+![GitHub release](https://img.shields.io/github/v/release/techpivot/streaming-slack-notify)
 
 ## Motivation
 
