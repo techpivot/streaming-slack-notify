@@ -35,10 +35,10 @@
     "@actions/core": "^1.2.4",
     "@actions/github": "^2.1.1",
     "@octokit/webhooks": "7.4.0",
-    "@slack/types": "^1.6.0",
     "@slack/web-api": "5.8.1"
   },
   "devDependencies": {
+    "@slack/types": "^1.6.0",
     "@types/node": "^13.13.4",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.8.0",
