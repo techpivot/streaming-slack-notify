@@ -98,7 +98,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
 
   // Get the duration
   if (finishTime) {
-    clock = `    :clock3:${getReadableDurationString(new Date(created_at), new Date(finishTime))}`;
+    clock = `      :clock3: ${getReadableDurationString(new Date(created_at), new Date(finishTime))}`;
   }
 
   return [
