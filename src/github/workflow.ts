@@ -18,7 +18,7 @@ const modifyJobStatus = (
   status: ActionsStatus,
   conclusion: ActionsConclusion
 ): void => {
-  const now = new Date();
+  const now:Date = new Date();
 
   job.completed_at = new Date(now.getTime() + 300).toISOString();
   job.status = status;
@@ -44,7 +44,7 @@ const modifyWorkflowStatus = (
   status: ActionsStatus,
   conclusion: ActionsConclusion
 ): void => {
-  const now = new Date();
+  const now: Date = new Date();
 
   workflowData.updated_at = new Date(now.getTime() + 3900).toISOString();
   workflowData.status = status;
@@ -52,7 +52,7 @@ const modifyWorkflowStatus = (
 };
 
 export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> => {
-  const token = getGithubToken();
+  const token: string = getGithubToken();
 
   if (token === undefined) {
     throw new Error('Workflow summary requires GITHUB_TOKEN to access actions REST API');
@@ -119,10 +119,16 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   if (jobIdLogsToFetch) {
     console.log('A');
                 // Let's also download the failures
+                try {
+                  console.log('opts', { owner, repo, job_id: jobIdLogsToFetch });
     const r = await octokit.actions.listWorkflowJobLogs({ owner, repo, job_id: jobIdLogsToFetch })
-
     console.log('got response>>>');
     console.log(r);
+                } catch (error) {
+                  console.error('here');
+                  console.error(error);
+                }
+
   }
 
 
