@@ -48,12 +48,15 @@ jobs:
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
+      - name: Building
+        run: sleep 2
+
       - uses: techpivot/streaming-slack-notify@master
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
-      - name: Packaging for deployment
-        run: sleep 1 && echo "THISISERROR" && exit(1)
+      - name: Deploying
+        run: sleep 2
 
       - uses: techpivot/streaming-slack-notify@master
         with:
