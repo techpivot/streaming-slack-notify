@@ -76,7 +76,7 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   const contextJobName = getJobContextName();
 
   jobsData.forEach((job: ActionsListJobsForWorkflowRunResponseJobsItem) => {
-    const { name, status } = job;
+    const { id, name, status } = job;
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
     // from inside the GitHub action (since by definition it we're always in progress unless a another job failed),
@@ -103,6 +103,14 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
             case 'in_progress':
               modifyWorkflowStatus(workflowData, 'completed', 'failure');
               modifyJobStatus(job, 'completed', 'failure');
+
+              // Let's also download the failures
+              octokit.actions.listWorkflowJobLogs({ owner, repo, job_id: id })
+              .then((r:any) => {
+                console.log('got response>>>');
+                console.log(r);
+              })
+
               break;
 
             default:
@@ -113,6 +121,7 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
     }
   });
 
+  console.log('returning');
   return {
     workflow: workflowData,
     jobs: jobsData,

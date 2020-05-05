@@ -345,11 +345,15 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: `*Failed* after *N* steps`,
+              text: `*Failed* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
+                steps.length
+              })`,
             });
             color = COLOR_ERROR;
             console.log('failure debug');
             console.log(job.steps);
+
+
             break;
 
           case 'timed_out':
