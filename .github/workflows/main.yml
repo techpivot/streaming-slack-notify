@@ -42,7 +42,7 @@ jobs:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Packaging for deployment
-        run: sleep 5
+        run: sleep 1 && echo "THISISERROR" && exit(1)
 
       - uses: techpivot/streaming-slack-notify@master
         with:
