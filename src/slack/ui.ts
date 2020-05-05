@@ -224,6 +224,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
     let currentStepIndex = 0; // Zero indexed
 
+    stepLoop:
     for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
         case 'completed':
@@ -233,6 +234,12 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             currentStep = steps[i];
           }
           break;
+
+        // Assume we have 10 steps and we have a failure/cancel after step 4. That means steps 1-4 are filled out
+        // 5-9 are all "queued", but we've already populated the mock "Complete job" step as success. We don't
+        // want to move the active step to this position. Instead, break immediately.
+        default:
+          break stepLoop;
       }
     }
 
@@ -241,11 +248,35 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       throw new Error('Unable to determine current job step');
     }
 
-    // Reference
-    // =========
-    // status: queued, in_progress, completed
+    // Update the step name to never display our slack notification name. In order to minimize
+    // the action YAML, our readme/docs don't require naming/IDs. This reduction also allows
+    // the default naming to be consistent. In this case, if we're inside an "in_progress" step and
+    // the current action is actually on itself (or from 1 + n behind) ... let's bump to the next
+    // one which is even more accurate. We use the lastJobOutputIndex stored/saved to make this
+    // even more accurate.
+
+    if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
+      // We could potentially walk this continously; however, that's silly and if the end-user wants
+      // to notify multiple slack notifies ... well then we'll just have to display that as that's
+      // what we're actually doing.
+
+      // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
+      // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
+      // typically are slightly late meaning we should display the subsequent notification. However, sometimes
+      // we are spot on and thus we do our best to spread out the progress notifications accordingly. We save
+      // the currentStepIndex and will find the NEXT available.
+      for (let i = Math.max(lastJobOutputIndex, currentStepIndex - 1); i <= currentStepIndex + 1; i += 1) {
+        if (steps[i].name.indexOf('techpivot/streaming-slack-notify') < 0) {
+          console.debug(`Updating step display from "${steps[currentStepIndex].name}" to "${steps[i].name}"`);
+          currentStepIndex = i;
+          break;
+        }
+      }
+    }
+
 
     switch (status) {
+
       case 'in_progress':
         color = COLOR_IN_PROGRESS;
         icon = ':hourglass_flowing_sand:';
@@ -254,30 +285,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           text: '_In Progress_',
         });
 
-        // Update the step name to never display our slack notification name. In order to minimize
-        // the action YAML our readme/docs don't require naming/IDs. This reduction also allows
-        // the default naming to be consistent. In this case, if we're an in progress and the actions
-        // is actually on it self (or from 1 + n behind) ... let's bump to the next one which is
-        // even more accurate.
-
-        if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
-          // We could potentially walk this continously; however, that's silly and if the end-user wants
-          // to notify multiple slack notifies ... well then we'll just have to display that as that's
-          // what we're actually doing.
-
-          // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
-          // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
-          // typically are slightly late meaning we should display the subsequent notification. However, sometimes
-          // we are spot on and thus we do our best to spread out the progress notifications accordingly. We save
-          // the currentStepIndex and will find the NEXT available.
-          for (let i = Math.max(lastJobOutputIndex, currentStepIndex - 1); i <= currentStepIndex + 1; i += 1) {
-            if (steps[i].name.indexOf('techpivot/streaming-slack-notify') < 0) {
-              console.debug(`Updating step display from "${steps[currentStepIndex].name}" to "${steps[i].name}"`);
-              currentStepIndex = i;
-              break;
-            }
-          }
-        }
 
         // Note: For in progress, the current steps don't include the last step "Complete job".
         // Thus let's increase by one to account for this. Additionally, the ${currentStepIndex}
@@ -290,6 +297,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
 
         break;
 
+
       case 'queued':
         icon = ':white_circle:';
         color = COLOR_QUEUED;
@@ -297,13 +305,10 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           type: 'mrkdwn',
           text: '_Queued_',
         });
-        console.log('check queue jobs');
         break;
 
+
       case 'completed':
-        // Reference
-        // =========
-        // conclusion: null, success, failure, neutral, cancelled, timed_out or action_required
 
         switch (conclusion) {
           case 'success':
@@ -329,7 +334,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             color = COLOR_ERROR;
             elements.push({
               type: 'mrkdwn',
-              text: `*Cancelled* after *N* steps`,
+              text: `*Cancelled* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length + 1})`,
             });
             break;
 
