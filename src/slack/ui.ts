@@ -101,7 +101,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `${icon}*Workflow* *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}${clock}`,
+        text: `${icon}*Workflow* *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}.${clock}`,
       },
     },
   ];
