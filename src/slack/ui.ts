@@ -1,5 +1,5 @@
 import * as github from '@actions/github';
-import * as Webhooks from '@octokit/webhooks';
+import { WebhookPayloadPush } from '@octokit/webhooks';
 import {
   ImageElement,
   PlainTextElement,
@@ -97,7 +97,7 @@ export const getTitleBlocks = (
   }
 
   // Fallback text
-  outputFallbackText.text = `Workflow ${workflowName} ${action}.  (Duration: )`;
+  outputFallbackText.text = `Workflow ${workflowName} ${action}.`;
 
   // Get the duration
   if (finishTime) {
@@ -172,7 +172,7 @@ export const getCommitBlocks = (): KnownBlock[] => {
 
   switch (getActionEventName()) {
     case 'push': {
-      const payload = github.context.payload as Webhooks.WebhookPayloadPush;
+      const payload = github.context.payload as WebhookPayloadPush;
 
       const maxCommits = 2;
       let index = 0;

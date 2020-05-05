@@ -21,14 +21,14 @@ jobs:
     needs: init
     steps:
       - name: Formatting
-        run: sleep 4
+        run: yarn format
 
       - uses: techpivot/streaming-slack-notify@master
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Linting
-        run: sleep 4
+        run: yarn lint
 
       - uses: techpivot/streaming-slack-notify@master
         with:
