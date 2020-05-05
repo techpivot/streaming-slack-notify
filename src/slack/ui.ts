@@ -324,9 +324,27 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             });
             break;
 
-          case 'failure':
           case 'cancelled':
+            icon = ':x:';
+            color = COLOR_ERROR;
+            elements.push({
+              type: 'mrkdwn',
+              text: `*Cancelled* after *N* steps`,
+            });
+            console.log('canelled debug');
+            console.log(workflowSummary);
+            break;
+
+          case 'failure':
+            icon = ':x:';
+            color = COLOR_ERROR;
+            break;
+
           case 'timed_out':
+            icon = ':x:';
+            color = COLOR_ERROR;
+            break;
+
           case 'action_required':
             icon = ':x:';
             color = COLOR_ERROR;

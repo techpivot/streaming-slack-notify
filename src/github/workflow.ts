@@ -3,8 +3,25 @@ import { getGithubToken, getGithubRunId, getJobContextName, getJobContextStatus,
 import {
   ActionsGetWorkflowRunResponse,
   ActionsListJobsForWorkflowRunResponseJobsItem,
+  ActionsListJobsForWorkflowRunResponseJobsItemStepsItem,
   WorkflowSummaryInterface,
 } from './types';
+
+/**
+ * Since the final "Complete job" won't ever be included via our action since it happens at the conclusion
+ * after the entire run, we mock it for consistency.
+ *
+ * @param steps
+ */
+const addMockCompleteJob = (steps: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem[]) => {
+    steps.push({
+      name: 'Complete job',
+      number: steps.length + 1,
+      status: 'completed',
+      conclusion: 'success',
+      // @todo Timing?
+    });
+}
 
 export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> => {
   const token = getGithubToken();
@@ -40,28 +57,20 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
     // tidy up the final display and the currently running job.
 
     if (finalStep && contextJobName === name && status !== 'completed') {
+      const now = new Date();
+
       switch (contextJobStatus) {
         case 'Success':
-          const now = new Date();
+          addMockCompleteJob(steps);
 
+          // Update Job
           job.status = 'completed';
           job.conclusion = 'success';
-
           // The timing delta here is less than a second so it's fine to use current Date as all runners
           // have up-to-date time.
           job.completed_at = now.toISOString();
 
-          // Mock the final step which isn't currently included so we don't have to adjust for this
-          // discrepency below
-          steps.push({
-            name: 'Complete job',
-            number: steps.length + 1,
-            status: 'completed',
-            conclusion: 'success',
-            // @todo Timing?
-          });
-
-          // Update the workflow
+          // Update workflow
           workflowData.status = 'completed';
           workflowData.conclusion = 'success';
 
@@ -72,28 +81,51 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
           break;
 
         case 'Cancelled':
-          // The issue with cancelling from the UI is that it actually doesn't run the final step
-          // Thus, we really would never get here; however, if this is somehow updated in the future,
-          // we put the relevant code blocks here.
-          console.debug('in cancelled current, reference', workflow);
+          addMockCompleteJob(steps);
+
+          // Update Job
+          job.status = 'completed';
+          job.conclusion = 'cancelled';
+          job.completed_at = now.toISOString();
+
+          // Update the workflow
+          workflowData.status = 'completed';
+          workflowData.conclusion = 'cancelled';
+
+          // Note: There appears to be about a 2-5 second lag time after this step completes and the
+          // final workflow update to the run. In order to keep this as close as possible, we will
+          // add 3.6 seconds in our testing.
+          workflowData.updated_at = (new Date(now.getTime() + 3600)).toISOString();
+
           break;
 
         case 'Failure':
           // Check to see the current job is manually cancelled
           switch (job.status) {
+            // Only adjust jobs that are still in progress. Meaning, in the slight chance that the current job
+            // actually is already complete or not yet run, then we don't touch that.
             case 'in_progress':
-            case 'queued':
-              // Fix, might need to add generic here depending on UI display below
+              addMockCompleteJob(steps);
+
+              // Update Job
               job.status = 'completed';
               job.conclusion = 'failure';
               // The timing delta here is less than a second so it's fine to use current Date as all runners
               // have up-to-date time.
-              job.completed_at = new Date().toISOString();
+              job.completed_at = now.toISOString();
 
-              // We don't need to add a mock step because we won't use it for display purposes in the UI
+              // Update the workflow
+              workflowData.status = 'completed';
+              workflowData.conclusion = 'failure';
+
+              // Note: There appears to be about a 2-5 second lag time after this step completes and the
+              // final workflow update to the run. In order to keep this as close as possible, we will
+              // add 3.6 seconds in our testing.
+              workflowData.updated_at = (new Date(now.getTime() + 3600)).toISOString();
               break;
 
-            // leave all other cases
+            default:
+              // leave all other cases
           }
           break;
       }
