@@ -281,14 +281,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
           type: 'mrkdwn',
           text: '_In Progress_',
         });
-
-        // Note: For in progress, the current steps don't include the last step "Complete job".
-        // Thus let's increase by one to account for this. Additionally, the ${currentStepIndex}
-        // is zero-indexed so convert this to human numbered indexed (+1)
-
         elements.push({
           type: 'mrkdwn',
-          text: `*${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length + 1})`,
+          text: `*${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
         });
 
         break;
@@ -328,7 +323,7 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             elements.push({
               type: 'mrkdwn',
               text: `*Cancelled* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
-                steps.length + 1
+                steps.length
               })`,
             });
             break;
