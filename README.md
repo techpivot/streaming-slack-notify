@@ -1,5 +1,26 @@
 [![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
 
+[https://img.shields.io/github/stars/techpivot/streaming-slack-notify?style=social]
+
+## Motivation
+
+## Usage
+
+## Output
+
+## Configuration Options
+
+## Contributing
+
+Please see [API documentation](https://api.slack.com/docs/messages/builder) in addition to source code in this repository.
+
+## References
+
+
+## License
+
+======
+
 # Slack - Github Action
 
 A [Github Action](https://github.com/features/actions) to send a message to a Slack channel that supports attachments like images.
@@ -87,7 +108,6 @@ If you want to show different messages based on succes or failure of previous st
 
 ## Contributing
 
-Please see [API documentation](https://api.slack.com/docs/messages/builder) in addition to source code in this repository.
 
 ## License
 
