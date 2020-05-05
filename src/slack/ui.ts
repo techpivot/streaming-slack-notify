@@ -313,8 +313,8 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
       case 'completed':
         switch (conclusion) {
           case 'success':
-            icon = ':heavy_check_mark:';
             color = COLOR_SUCCESS;
+            icon = ':heavy_check_mark:';
             elements.push({
               type: 'mrkdwn',
               text: `*${steps.length}* steps completed *successfully*`,
@@ -322,8 +322,8 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             break;
 
           case 'neutral':
-            icon = ':white_check_mark:';
             color = COLOR_SUCCESS;
+            icon = ':white_check_mark:';
             elements.push({
               type: 'mrkdwn',
               text: `*${steps.length}* steps completed *successfully* _(Neutral)_`,
@@ -331,8 +331,8 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             break;
 
           case 'cancelled':
-            icon = ':x:';
             color = COLOR_ERROR;
+            icon = ':x:';
             elements.push({
               type: 'mrkdwn',
               text: `*Cancelled* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
@@ -342,31 +342,33 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             break;
 
           case 'failure':
+            color = COLOR_ERROR;
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: `*Failed* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
-                steps.length
-              })`,
+              text: `*Failed* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
             });
-            color = COLOR_ERROR;
-            console.log('failure debug');
-            console.log(job.steps);
-
-
             break;
 
           case 'timed_out':
-            icon = ':x:';
             color = COLOR_ERROR;
+            icon = ':x:';
+            elements.push({
+              type: 'mrkdwn',
+              text: `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
+            });
             break;
 
           case 'action_required':
-            icon = ':x:';
             color = COLOR_ERROR;
+            icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: `errorn `,
+              text: `*Failed* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
+            });
+            elements.push({
+              type: 'mrkdwn',
+              text: `_Manual Action Required_`,
             });
             break;
         }

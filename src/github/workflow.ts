@@ -8,11 +8,6 @@ import {
   WorkflowSummaryInterface,
 } from './types';
 
-
-function sleep(ms: any) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 /**
  * There appears to be about a 0.3 second lag time for the completed job buffer.
  *
@@ -23,7 +18,7 @@ const modifyJobStatus = (
   status: ActionsStatus,
   conclusion: ActionsConclusion
 ): void => {
-  const now:Date = new Date();
+  const now: Date = new Date();
 
   job.completed_at = new Date(now.getTime() + 300).toISOString();
   job.status = status;
