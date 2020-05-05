@@ -21,6 +21,10 @@ import {
   getWorkflowName,
 } from '../utils';
 
+type outputFallbackText = {
+  text: string;
+};
+
 export const getDividerBlock = (): DividerBlock => {
   return {
     type: 'divider',
@@ -28,21 +32,17 @@ export const getDividerBlock = (): DividerBlock => {
 };
 
 /**
- * For consistency, ensure changes to this function are appropriately reflected in `getTitleBlocks()`
+ *
  * @param workflowSummary
  */
-export const getFallbackText = (workflowSummary: WorkflowSummaryInterface): string => {
-  return `GitHub actions is running workflow: ${getWorkflowName()}`;
-};
-
-/**
- * For consistency, ensure changes to this function are appropriately reflected in `getFallbackText()`
- * @param workflowSummary
- */
-export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): KnownBlock[] => {
+export const getTitleBlocks = (
+  workflowSummary: WorkflowSummaryInterface,
+  outputFallbackText: outputFallbackText = { text: '' }
+): KnownBlock[] => {
   // Theoretically, we should always be in 'in_progress' stage; however, we mock the completed to handle
   // consistent UI output in various parts of the output blocks. (See ../github/workflow)
   const { status, conclusion, created_at, updated_at } = workflowSummary.workflow;
+  const workflowName = getWorkflowName();
   let action;
   let icon = '';
   let clock = '';
@@ -96,9 +96,14 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
     }
   }
 
+  // Fallback text
+  outputFallbackText.text = `Workflow ${workflowName} ${action}.  (Duration: )`;
+
   // Get the duration
   if (finishTime) {
-    clock = `      :clock3: ${getReadableDurationString(new Date(created_at), new Date(finishTime))}`;
+    const duration = getReadableDurationString(new Date(created_at), new Date(finishTime));
+    clock = `      :clock3: ${duration}`;
+    outputFallbackText.text += `  (Duration: ${duration})`;
   }
 
   // In order to have a better UI for continuous messages in the channel, we need a larger top divider. Currently
@@ -114,10 +119,22 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `${preDivider}${icon}Workflow *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}.${clock}`,
+        text: `${preDivider}${icon}Workflow *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${workflowName}>* ${action}.${clock}`,
       },
     },
   ];
+};
+
+/**
+ * For consistency, we proxy this into the getTitleBlocks() so it's a little more clear and less duplication
+ *
+ * @param workflowSummary
+ */
+export const getFallbackText = (workflowSummary: WorkflowSummaryInterface): string => {
+  const outputFallbackText = { text: '' };
+  getTitleBlocks(workflowSummary, outputFallbackText);
+
+  return outputFallbackText.text;
 };
 
 export const getEventSummaryBlocks = (): KnownBlock[] => {
@@ -355,7 +372,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
+              text: `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
+                steps.length
+              })`,
             });
             break;
 
