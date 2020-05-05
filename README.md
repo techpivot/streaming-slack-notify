@@ -8,6 +8,7 @@ A [Github Action](https://github.com/features/actions) to send a message to a Sl
 
 You must set `SLACK_WEBHOOK` environment value in settings page of your repository in order to use without any problem. Please [see here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets#creating-encrypted-secrets) to learn how to do it if you don't know already.
 
+
 ## Usage
 
 Create a workflow, set a step that uses this action and don't forget to specify `SLACK_WEBHOOK` environment value.
