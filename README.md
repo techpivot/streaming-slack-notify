@@ -1,5 +1,6 @@
 [![Actions Status](https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master)](https://github.com/techpivot/streaming-slack-notify/actions)
 
+
 # Slack - Github Action
 
 A [Github Action](https://github.com/features/actions) to send a message to a Slack channel that supports attachments like images.
