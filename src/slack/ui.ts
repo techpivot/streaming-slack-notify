@@ -42,20 +42,25 @@ export const getFallbackText = (workflowSummary: WorkflowSummaryInterface): stri
 export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): KnownBlock[] => {
   // Theoretically, we should always be in 'in_progress' stage; however, we mock the completed to handle
   // consistent UI output in various parts of the output blocks. (See ../github/workflow)
-  let verb;
-  let icon;
+  const { status, conclusion, created_at, updated_at } = workflowSummary.workflow;
+  let action;
+  let icon = '';
+  let clock = '';
+  let finishTime;
 
-  switch (workflowSummary.workflow.status) {
+  switch (status) {
     case 'queued':
-      verb = 'queued';
+      action = 'is queued';
       break;
 
     case 'in_progress':
-      verb = 'is running';
+      action = 'is running';
+      finishTime = (new Date()).toISOString();
       break;
 
     case 'completed': {
-      verb = 'completed';
+      action = 'completed';
+      finishTime = updated_at;
 
       switch (workflowSummary.workflow.conclusion) {
         case 'success':
@@ -86,12 +91,17 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
     }
   }
 
+  // Get the duration
+  if (finishTime) {
+    clock = `    :clock3:${getReadableDurationString(new Date(created_at), new Date(finishTime))}`;
+  }
+
   return [
     {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `GitHub actions ${verb} *workflow*: *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>*`,
+        text: `${icon}*Workflow* *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}${clock}`,
       },
     },
   ];
