@@ -6,9 +6,6 @@ import {
   WorkflowSummaryInterface,
 } from './types';
 
-// eslint-disable-next-line
-const isActionsGetWorkflowRunResponse = (payload: any): payload is ActionsGetWorkflowRunResponse => true;
-
 export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> => {
   const token = getGithubToken();
 
@@ -18,20 +15,23 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
 
   const octokit = new GitHub(token);
   const { owner, repo } = context.repo;
-
   const opts = { run_id: getGithubRunId(), owner, repo };
 
-  const [workflow, jobs] = await Promise.all([
+  const [workflow , jobs] = await Promise.all([
     octokit.actions.getWorkflowRun(opts),
     octokit.actions.listJobsForWorkflowRun(opts),
   ]);
+
+  const jobsData = jobs.data.jobs;
+  const workflowData = workflow.data as ActionsGetWorkflowRunResponse;
+
 
   // Let's resolve some missing data for improved syncing
   const finalStep = isFinalStep();
   const contextJobStatus = getJobContextStatus();
   const contextJobName = getJobContextName();
 
-  jobs.data.jobs.forEach((job: ActionsListJobsForWorkflowRunResponseJobsItem) => {
+  jobsData.forEach((job: ActionsListJobsForWorkflowRunResponseJobsItem) => {
     const { name, status, steps } = job;
 
     // Little bit of sorcery here. Since there really is no way to tell if the workflow run has finished
@@ -42,14 +42,14 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
     if (finalStep && contextJobName === name && status !== 'completed') {
       switch (contextJobStatus) {
         case 'Success':
-          const ts = new Date().toISOString();
+          const now = new Date();
 
           job.status = 'completed';
           job.conclusion = 'success';
 
           // The timing delta here is less than a second so it's fine to use current Date as all runners
           // have up-to-date time.
-          job.completed_at = ts;
+          job.completed_at = now.toISOString();
 
           // Mock the final step which isn't currently included so we don't have to adjust for this
           // discrepency below
@@ -62,12 +62,17 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
           });
 
           // Update the workflow
-          workflow.data.status = 'completed';
-          workflow.data.updated_at = ts;
+          workflowData.status = 'completed';
+          workflowData.conclusion = 'success';
+
+          // Note: There appears to be about a 2-5 second lag time after this step completes and the
+          // final workflow update to the run. In order to keep this as close as possible, we will
+          // add 3 seconds in our testing.
+          workflowData.updated_at = (new Date(now.getMilliseconds() + 3200)).toISOString();
           break;
 
         case 'Cancelled':
-          console.debug('in cancelled current, reference', workflow.data);
+          console.debug('in cancelled current, reference', workflow);
           break;
 
         case 'Failure':
@@ -92,13 +97,8 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
     }
   });
 
-  // Quick type guard to coerce the 'conclusion'/'status' update fixes
-  if (!isActionsGetWorkflowRunResponse(workflow.data)) {
-    throw new Error();
-  }
-
   return {
-    workflow: workflow.data,
-    jobs: jobs.data.jobs,
+    workflow: workflowData,
+    jobs: jobsData,
   };
 };

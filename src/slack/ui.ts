@@ -62,7 +62,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
       action = 'completed';
       finishTime = updated_at;
 
-      switch (workflowSummary.workflow.conclusion) {
+      switch (conclusion) {
         case 'success':
           icon = ':heavy_check_mark: ';
           break;
@@ -101,7 +101,7 @@ export const getTitleBlocks = (workflowSummary: WorkflowSummaryInterface): Known
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `${icon}*Workflow* *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}.${clock}`,
+        text: `${icon}Workflow *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${getWorkflowName()}>* ${action}.${clock}`,
       },
     },
   ];
