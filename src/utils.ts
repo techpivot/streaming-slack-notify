@@ -16,7 +16,7 @@ const getRequiredInputField = (field: string): string => {
   }
 
   return value;
-}
+};
 
 export const getGithubToken = (): string => {
   return getRequiredInputField('GITHUB_TOKEN');

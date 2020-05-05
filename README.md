@@ -5,11 +5,10 @@
 [![GitHub stars](https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/techpivot/streaming-slack-notify/stargazers/)
 
 # Streaming Slack Notify
+
 Maintained by **[TechPivot](https://www.techpivot.net)** and the community.
 
-
 ## Motivation
-
 
 ## Usage
 
@@ -21,7 +20,6 @@ Default output if you've not set any attachment will look like this.
 
 If you've set an attachment, you should see it in addition to default message.
 
-
 ## Configuration Options
 
 ## Contributing
@@ -29,7 +27,6 @@ If you've set an attachment, you should see it in addition to default message.
 Please see [API documentation](https://api.slack.com/docs/messages/builder) in addition to source code in this repository.
 
 ## References
-
 
 ## License
 
@@ -121,7 +118,6 @@ If you want to show different messages based on succes or failure of previous st
 ```
 
 ## Contributing
-
 
 ## License
 

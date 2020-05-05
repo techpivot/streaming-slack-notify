@@ -10,10 +10,10 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-        uses: techpivot/streaming-slack-notify@master
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-          channel: '#builds'
+      uses: techpivot/streaming-slack-notify@master
+      with:
+        slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+        channel: '#builds'
 
   build:
     runs-on: ubuntu-latest
