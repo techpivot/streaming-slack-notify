@@ -8,6 +8,11 @@ import {
   WorkflowSummaryInterface,
 } from './types';
 
+
+function sleep(ms: any) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * There appears to be about a 0.3 second lag time for the completed job buffer.
  *
@@ -104,6 +109,10 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
             case 'in_progress':
               modifyWorkflowStatus(workflowData, 'completed', 'failure');
               modifyJobStatus(job, 'completed', 'failure');
+
+              // Unfortunately, the workflow job logs aren't streamed and the
+              // [GET /repos/:owner/:repo/actions/jobs/:job_id/logs] endpoint is a flat
+              // file of the logs.
               jobIdLogsToFetch = id;
               break;
 
@@ -116,8 +125,19 @@ export const getWorkflowSummary = async (): Promise<WorkflowSummaryInterface> =>
   });
 
 
+
   if (jobIdLogsToFetch) {
     console.log('A');
+
+    await sleep(4000);
+    console.log('B');
+    await sleep(4000);
+    console.log('C');
+    await sleep(4000);
+    console.log('D');
+    await sleep(4000);
+    console.log('E');
+
                 // Let's also download the failures
                 try {
                   console.log('opts', { owner, repo, job_id: jobIdLogsToFetch });
