@@ -16,7 +16,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - uses: ./.github/actions/main
+      - uses: .
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           channel: '#builds'
