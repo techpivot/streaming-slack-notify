@@ -1,5 +1,5 @@
 import * as github from '@actions/github';
-import { WebhookPayloadPush } from '@octokit/webhooks';
+import { WebhookPayloadPullRequest, WebhookPayloadPush } from '@octokit/webhooks';
 import {
   ImageElement,
   PlainTextElement,
@@ -232,6 +232,10 @@ export const getCommitBlocks = (): KnownBlock[] => {
   switch (getActionEventName()) {
     case 'push':
       return getCommitBlocksForPush(github.context.payload as WebhookPayloadPush);
+
+    case 'pull_request':
+      console.log(github.context.payload);
+      return [];
 
     default:
       throw new Error('Unsupported event type');
