@@ -16,7 +16,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - uses: ./.github/workflows/main
+      - uses: ./.github/actions/main
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           channel: '#builds'
@@ -26,7 +26,7 @@ jobs:
     needs: init
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
 
       - uses: techpivot/streaming-slack-notify@master
         with:
