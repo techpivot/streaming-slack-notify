@@ -1,4 +1,4 @@
-version: "2"         # required to adjust maintainability checks
+version: '2' # required to adjust maintainability checks
 checks:
   argument-count:
     config:
@@ -24,5 +24,5 @@ checks:
     config:
       threshold: 4
 exclude_patterns:
-  - "**/node_modules/"
-  - "dist/"
+  - '**/node_modules/'
+  - 'dist/'

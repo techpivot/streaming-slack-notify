@@ -58,12 +58,7 @@ Please see [Slack API documentation](https://api.slack.com/docs/messages/builder
 > LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
 > Twitter [@techpivot](https://twitter.com/techpivot)
 
-
-
-
-
 ======
-
 
 ## Configuration
 
@@ -145,4 +140,3 @@ If you want to show different messages based on succes or failure of previous st
     username: 'slack username'
     image_url: 'http://my-website.com/path/to/success.jpg'
 ```
-

@@ -229,6 +229,7 @@ const getCommitBlocksForPush = (payload: WebhookPayloadPush): KnownBlock[] => {
 };
 
 export const getCommitBlocks = (): KnownBlock[] => {
+  console.log(getActionEventName());
   switch (getActionEventName()) {
     case 'push':
       return getCommitBlocksForPush(github.context.payload as WebhookPayloadPush);
