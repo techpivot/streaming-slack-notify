@@ -157,6 +157,16 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
         text: '*Branch*: `' + getActionBranch() + '`',
       });
       break;
+
+    case 'pull_request':
+      {
+        const payload = github.context.payload as WebhookPayloadPullRequest;
+        elements.push({
+          type: 'mrkdwn',
+          text: `*Number*: \`${payload.number}\``,
+        });
+      }
+      break;
   }
 
   return [
@@ -233,24 +243,29 @@ const getPullRequestEventDetailBlocks = (payload: WebhookPayloadPullRequest): Kn
 
   const {
     pull_request: {
-      number,
+      draft,
       commits,
       title,
       body,
-      url,
+      html_url: prUrl,
       head: { ref: headRef },
       base: { ref: baseRef },
       user: { login, html_url },
     },
   } = payload;
 
-  // Extra useful fields -- number, draft: boolean
+  // Note 1: We're currently putting the number in the top part. Could potentially be put adjacent
+  // to the title; however, in UI testing I couldn't get it to look good. Specifically, either too bold
+  // or not displayed with muted contrast which is what I was going for.
+
+  // Note 2: It appears the mergeable/rebasable information is marked as null or 'unknown' while
+  // running. (Makes sense)
 
   blocks.push({
     type: 'section',
     text: {
       type: 'mrkdwn',
-      text: `*<${url}|${title}>*: ${body}`,
+      text: `${draft ? '`DRAFT` ' : ''}*<${prUrl}|${title}>*: ${body}`,
     },
   });
   blocks.push({
@@ -274,13 +289,11 @@ const getPullRequestEventDetailBlocks = (payload: WebhookPayloadPullRequest): Kn
 };
 
 export const getEventDetailBlocks = (): KnownBlock[] => {
-  console.log(getActionEventName());
   switch (getActionEventName()) {
     case 'push':
       return getPushEventDetailBlocks(github.context.payload as WebhookPayloadPush);
 
     case 'pull_request':
-      console.log(github.context.payload.pull_request);
       return getPullRequestEventDetailBlocks(github.context.payload as WebhookPayloadPullRequest);
 
     default:
