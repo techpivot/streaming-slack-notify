@@ -13,6 +13,9 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
