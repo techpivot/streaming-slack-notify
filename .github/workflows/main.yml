@@ -15,7 +15,7 @@ jobs:
     steps:
       - run: echo ${GITHUB_REF##*/}
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./.github/actions/main
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           channel: '#builds'
