@@ -13,7 +13,7 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - run: ${GITHUB_REF##*/}
+      - run: echo ${GITHUB_REF##*/}
 
       - uses: techpivot/streaming-slack-notify@master
         with:
