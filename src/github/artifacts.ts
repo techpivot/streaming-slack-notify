@@ -24,6 +24,10 @@ export const getArtifacts = async (): Promise<ArtifactInterface> => {
       // Note: We call this every load and thus the very first time, there may not exist
       // an artifact yet. This allows us to write simpler Github actions without having
       // to proxy input/output inbetween all other steps.
+      // Would really love to see a PR here. There doesn't appear to be any external
+      // options for this client. Would need to deconstruct and use our own http client
+      // and send the post. Shouldn't be too hard and since we're already using axios
+      // under the hood for Slack might as well use that.
       await artifactClient.downloadArtifact(ARTIFACT_NAME, '/tmp');
     }
 
@@ -50,6 +54,11 @@ export const saveArtifacts = async (channel: string, timestamp: string): Promise
     fs.writeFileSync('/tmp/ts.txt', timestamp);
     const artifactClient = create();
 
+    // Note. Github actions API endpoint times out. The default timeout is 30 seconds.
+    // Potential error: ERROR: connect ETIMEDOUT 13.107.42.16:443
+    // Generally, it appears it's just a GitHub issue, perhaps because the endpoint is
+    // ready by the time the first step kicks off which requires to save artifacts.
+    // This seems to happen about 1 in 200 tries during internal testing.
     return await artifactClient.uploadArtifact(ARTIFACT_NAME, ['/tmp/channel.txt', '/tmp/ts.txt'], '/tmp');
   } finally {
     console.timeEnd('Upload artifact');

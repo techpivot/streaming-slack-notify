@@ -4,13 +4,19 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
       - develop
 
 jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - uses: techpivot/streaming-slack-notify@master
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           channel: '#builds'
@@ -20,48 +26,48 @@ jobs:
     needs: init
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.1.0
+        uses: actions/checkout@v2
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Installing dependencies
         run: yarn install
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Formatting
-        run: yarn run format
+        run: yarn format
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Linting
-        run: yarn run lint
+        run: yarn lint
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Building
-        run: sleep 2
+        run: yarn build
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Deploying
         run: sleep 2
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         if: always()
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}

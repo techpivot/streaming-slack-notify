@@ -1,5 +1,5 @@
 import * as github from '@actions/github';
-import { WebhookPayloadPush } from '@octokit/webhooks';
+import { WebhookPayloadPullRequest, WebhookPayloadPush } from '@octokit/webhooks';
 import {
   ImageElement,
   PlainTextElement,
@@ -157,6 +157,16 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
         text: '*Branch*: `' + getActionBranch() + '`',
       });
       break;
+
+    case 'pull_request':
+      {
+        const payload = github.context.payload as WebhookPayloadPullRequest;
+        elements.push({
+          type: 'mrkdwn',
+          text: `*Number*: \`${payload.number}\``,
+        });
+      }
+      break;
   }
 
   return [
@@ -167,7 +177,7 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
   ];
 };
 
-const getCommitBlocksForPush = (payload: WebhookPayloadPush): KnownBlock[] => {
+const getPushEventDetailBlocks = (payload: WebhookPayloadPush): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
   const maxCommits = 2;
   let index = 0;
@@ -228,10 +238,63 @@ const getCommitBlocksForPush = (payload: WebhookPayloadPush): KnownBlock[] => {
   return blocks;
 };
 
-export const getCommitBlocks = (): KnownBlock[] => {
+const getPullRequestEventDetailBlocks = (payload: WebhookPayloadPullRequest): KnownBlock[] => {
+  const blocks: KnownBlock[] = [];
+
+  const {
+    pull_request: {
+      draft,
+      commits,
+      title,
+      body,
+      html_url: prUrl,
+      head: { ref: headRef },
+      base: { ref: baseRef },
+      user: { login, html_url },
+    },
+  } = payload;
+
+  // Note 1: We're currently putting the number in the top part. Could potentially be put adjacent
+  // to the title; however, in UI testing I couldn't get it to look good. Specifically, either too bold
+  // or not displayed with muted contrast which is what I was going for.
+
+  // Note 2: It appears the mergeable/rebasable information is marked as null or 'unknown' while
+  // running. (Makes sense)
+
+  blocks.push({
+    type: 'section',
+    text: {
+      type: 'mrkdwn',
+      text: `${draft ? '`DRAFT` ' : ''}*<${prUrl}|${title}>*: ${body}`,
+    },
+  });
+  blocks.push({
+    type: 'context',
+    elements: [
+      {
+        type: 'image',
+        image_url: `${html_url}.png`,
+        alt_text: login,
+      },
+      {
+        type: 'mrkdwn',
+        text: `*<${html_url}|${login}>* wants to merge *${commits}* commit${
+          commits !== 1 ? 's' : ''
+        } into \`${baseRef}\` from \`${headRef}\``,
+      },
+    ],
+  });
+
+  return blocks;
+};
+
+export const getEventDetailBlocks = (): KnownBlock[] => {
   switch (getActionEventName()) {
     case 'push':
-      return getCommitBlocksForPush(github.context.payload as WebhookPayloadPush);
+      return getPushEventDetailBlocks(github.context.payload as WebhookPayloadPush);
+
+    case 'pull_request':
+      return getPullRequestEventDetailBlocks(github.context.payload as WebhookPayloadPullRequest);
 
     default:
       throw new Error('Unsupported event type');

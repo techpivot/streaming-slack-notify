@@ -9,7 +9,7 @@ import {
   getTitleBlocks,
   getDividerBlock,
   getEventSummaryBlocks,
-  getCommitBlocks,
+  getEventDetailBlocks,
   getJobAttachments,
 } from './slack/ui';
 import { validateInputs } from './validation';
@@ -41,7 +41,7 @@ async function run() {
         getTitleBlocks(workflowSummary),
         getEventSummaryBlocks(),
         getDividerBlock(),
-        getCommitBlocks(),
+        getEventDetailBlocks(),
         getDividerBlock(),
       ] as Array<any>),
       attachments: getJobAttachments(workflowSummary),

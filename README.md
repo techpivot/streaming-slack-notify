@@ -1,7 +1,8 @@
 <h1 align="center">Streaming Slack Notify</h1>
 
 <h4 align="center">
-  An opinionated GitHub action for streaming workflow job status to Slack.<br />
+  The definitive <a href="https://github.com/features/actions">Github Action</a>
+  for streaming workflow job status to Slack.
 </h4>
 <h6 align="center">
   Actively maintained by <a href="https://www.techpivot.net">TechPivot</a> and the community.
@@ -44,11 +45,11 @@ If you've set an attachment, you should see it in addition to default message.
 
 ## Contributing
 
-Please see [API documentation](https://api.slack.com/docs/messages/builder) in addition to source code in this repository.
-
-## References
+Please see [Slack API documentation](https://api.slack.com/docs/messages/builder) in addition to source code in this repository.
 
 ## License
+
+[MIT](LICENSE) © 2020 TechPivot
 
 ---
 
@@ -58,10 +59,6 @@ Please see [API documentation](https://api.slack.com/docs/messages/builder) in a
 > Twitter [@techpivot](https://twitter.com/techpivot)
 
 ======
-
-# Slack - Github Action
-
-A [Github Action](https://github.com/features/actions) to send a message to a Slack channel that supports attachments like images.
 
 ## Configuration
 
@@ -143,13 +140,3 @@ If you want to show different messages based on succes or failure of previous st
     username: 'slack username'
     image_url: 'http://my-website.com/path/to/success.jpg'
 ```
-
-## Contributing
-
-## License
-
-[MIT](LICENSE) © 2019 Cem Kıy
-
-## Does this interest you?
-
-Join us at <a href="https://arge.biges.com/">Biges R&D</a> where we create software and hardware for physical security needs.
