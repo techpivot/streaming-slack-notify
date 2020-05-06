@@ -13,6 +13,8 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
+      - run: ${GITHUB_REF##*/}
+
       - uses: techpivot/streaming-slack-notify@master
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
