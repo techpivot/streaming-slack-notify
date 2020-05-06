@@ -7,7 +7,6 @@
   Actively maintained by <a href="https://www.techpivot.net">TechPivot</a> and the community.
 </h4>
 
-
 <p align="center">
   <a href="https://github.com/techpivot/streaming-slack-notify/actions">
     <img src="https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master" />
@@ -53,9 +52,9 @@ Please see [API documentation](https://api.slack.com/docs/messages/builder) in a
 
 ---
 
-> **[TechPivot](https://www.techpivot.net)** > &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> GitHub [@techpivot](https://github.com/techpivot) > &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/) > &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> **[TechPivot](https://www.techpivot.net)** &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> GitHub [@techpivot](https://github.com/techpivot) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
 > Twitter [@techpivot](https://twitter.com/techpivot)
 
 ======
