@@ -5,6 +5,9 @@ on:
     branches:
       - master
       - develop
+  pull_request:
+    branches:
+      - master
 
 jobs:
   init:
@@ -34,21 +37,21 @@ jobs:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Formatting
-        run: yarn run format
+        run: yarn format
 
       - uses: techpivot/streaming-slack-notify@master
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Linting
-        run: yarn run lint
+        run: yarn lint
 
       - uses: techpivot/streaming-slack-notify@master
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Building
-        run: sleep 2
+        run: yarn build
 
       - uses: techpivot/streaming-slack-notify@master
         with:
