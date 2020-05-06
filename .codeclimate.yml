@@ -24,8 +24,7 @@ checks:
     config:
       threshold: 4
 plugins:
-  eslint:
-    enabled: true
+
 exclude_patterns:
   - "**/node_modules/"
   - "dist/"
