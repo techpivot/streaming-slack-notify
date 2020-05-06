@@ -28,46 +28,46 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Installing dependencies
         run: yarn install
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Formatting
         run: yarn format
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Linting
         run: yarn lint
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Building
         run: yarn build
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Deploying
         run: sleep 2
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
-      - uses: techpivot/streaming-slack-notify@master
+      - uses: ./
         if: always()
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}

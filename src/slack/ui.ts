@@ -167,7 +167,7 @@ export const getEventSummaryBlocks = (): KnownBlock[] => {
   ];
 };
 
-const getCommitBlocksForPush = (payload: WebhookPayloadPush): KnownBlock[] => {
+const getPushEventDetailBlocks = (payload: WebhookPayloadPush): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
   const maxCommits = 2;
   let index = 0;
@@ -228,15 +228,35 @@ const getCommitBlocksForPush = (payload: WebhookPayloadPush): KnownBlock[] => {
   return blocks;
 };
 
-export const getCommitBlocks = (): KnownBlock[] => {
+
+const getPullRequestEventDetailBlocks = (payload: WebhookPayloadPullRequest): KnownBlock[] => {
+  const blocks: KnownBlock[] = [];
+  const maxCommits = 2;
+  let index = 0;
+
+  blocks.push({
+    type: 'context',
+    elements: [
+      {
+        type: 'mrkdwn',
+        text: `pr`,
+      },
+    ],
+  });
+
+
+  return blocks;
+};
+
+export const getEventDetailBlocks = (): KnownBlock[] => {
   console.log(getActionEventName());
   switch (getActionEventName()) {
     case 'push':
-      return getCommitBlocksForPush(github.context.payload as WebhookPayloadPush);
+      return getPushEventDetailBlocks(github.context.payload as WebhookPayloadPush);
 
     case 'pull_request':
       console.log(github.context.payload);
-      return [];
+      return getPullRequestEventDetailBlocks(github.context.payload as WebhookPayloadPullRequest);
 
     default:
       throw new Error('Unsupported event type');
@@ -254,6 +274,9 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let color;
     let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
     let currentStepIndex = 0; // Zero indexed
+
+    console.log('determing job steps');
+    console.log(job.steps);
 
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
