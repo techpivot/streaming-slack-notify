@@ -228,22 +228,47 @@ const getPushEventDetailBlocks = (payload: WebhookPayloadPush): KnownBlock[] => 
   return blocks;
 };
 
-
 const getPullRequestEventDetailBlocks = (payload: WebhookPayloadPullRequest): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
-  const maxCommits = 2;
-  let index = 0;
 
+  const {
+    pull_request: {
+      number,
+      commits,
+      title,
+      body,
+      url,
+      head: { ref: headRef },
+      base: { ref: baseRef },
+      user: { login, html_url },
+    },
+  } = payload;
+
+  // Extra useful fields -- number, draft: boolean
+
+  blocks.push({
+    type: 'section',
+    text: {
+      type: 'mrkdwn',
+      text: `*<${url}|${title}>*: ${body}`,
+    },
+  });
   blocks.push({
     type: 'context',
     elements: [
       {
+        type: 'image',
+        image_url: `${html_url}.png`,
+        alt_text: login,
+      },
+      {
         type: 'mrkdwn',
-        text: `pr`,
+        text: `*<${html_url}|${login}>* wants to merge *${commits}* commit${
+          commits !== 1 ? 's' : ''
+        } into \`${baseRef}\` from \`${headRef}\``,
       },
     ],
   });
-
 
   return blocks;
 };
@@ -255,7 +280,7 @@ export const getEventDetailBlocks = (): KnownBlock[] => {
       return getPushEventDetailBlocks(github.context.payload as WebhookPayloadPush);
 
     case 'pull_request':
-      console.log(github.context.payload);
+      console.log(github.context.payload.pull_request);
       return getPullRequestEventDetailBlocks(github.context.payload as WebhookPayloadPullRequest);
 
     default:
@@ -274,9 +299,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     let color;
     let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
     let currentStepIndex = 0; // Zero indexed
-
-    console.log('determing job steps');
-    console.log(job.steps);
 
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
