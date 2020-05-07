@@ -35,21 +35,124 @@
 
 ## Motivation
 
-## Usage
+The existing Slack actions were only displayed at the conclusion of
+workflow runs, which results in ambiguous job status for long-running workflows. Additionally, existing actions contained limited information and often prioritized the wrong data elements. This GitHub action attempts to solve those issues.
+
+## Features
+
+- Ability to display job step status from beginning of workflow to end
+- Support for **push**, **pull_request** events
+- Clean and consistent Slack UI
+- Lightweight, minimal dependencies, and pure TypeScript/JavaScript
+- Minimal configuration options
+- Fast: Typically completes in 500-700ms
 
 ## Output
 
-Default output if you've not set any attachment will look like this.
+## Usage
 
-![Image of screenshot](https://raw.githubusercontent.com/cemkiy/action-slacker/master/screnshot.png)
+Incorporate this
+### Create Slack API Token
 
-If you've set an attachment, you should see it in addition to default message.
+### Save API Token in GitHub Secrets
+
+1. On GitHub, navigate to the main page of the repository.
+1. Under your repository name, click **Settings**.
+   Repository settings button
+1. In the left sidebar, click **Secrets**.
+1. In the **Name** field, specify: `SLACK_ACCESS_TOKEN`
+1. In the **Value** field, paste the Slack API Token generated in the previous section.
+1. Click **Add secret**.
+
+> Additional Reference: [GitHub Storing Encrypted Secrets](https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#creating-encrypted-secrets)
+
+### Update Workflow Action YAML
+
+Incorporate this action into your workflow by copying and pasting the snippets below into workflow .yml file accordingly.
+
+Currently, this action needs to be injected inbetween every step to achieve the best results.
+
+At the **very first part of your workflow**, add this action. The **first time** the action is run, the **channel** field is required as well as any of the optional [configuration settings](#user-content-configuration-options). Add the following snippet at the very beginning of a single job, or in an initialization job that is a pre-req for a multi-job workflow.
+
+**First Action**
+```yaml
+- uses: techpivot/streaming-slack-notify@v1
+  with:
+    slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+    channel: #builds
+```
+
+Next, copy the same snippet without any configuration options in between every other step as such:
+
+**Actions In Between Other Steps**
+```yaml
+- uses: techpivot/streaming-slack-notify@v1
+  with:
+    slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+
+- run: echo "My custom step 1"
+
+- uses: techpivot/streaming-slack-notify@v1
+  with:
+    slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+
+- run: echo "My custom step 2"
+
+### ... continued
+```
+
+In order to handle failures and properly simulate the conclusion of the workflow _(while running inside the workflow)_, the **final** action needs to include the `if: always()` block and an additional variable: `is_final_step: true`.
+
+**Final Action**
+```yaml
+- uses: techpivot/streaming-slack-notify@v1
+  if: always()
+  with:
+    slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+    is_final_step: true
+```
 
 ## Configuration Options
 
+All configuration options are action inputs and should be used inside the YAML `with:` section as key/value pairs.
+
+| Parameter | Description | Required | When to use? |
+| -- | -- | -- | -- | -- |
+| `slack_access_token` | The Slack API token | **Yes** | Always |
+| `channel` | Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity | **Yes** | First Action only (Not required otherwise) |
+| `username` | The slack bot user name | No | First Action |
+| `icon_url` | URL to an image to use as the icon for this message | No | First Action |
+| `icon_emoji` | Emoji to use as the icon for this message. Overrides "icon_url" | No | First Action |
+| `is_final_step` | Flag that defines the last Slack notify step in your workflow. This step should be run with the "if: always()" condition to ensure that it always gets executed. | Yes | Last Step (Not required otherwise) |
+
+## How It Works
+
 ## Contributing
 
-Please see [Slack API documentation](https://api.slack.com/docs/messages/builder) in addition to source code in this repository.
+Bug reports and feature requests via [issues](https://github.com/techpivot/streaming-slack-notify/issues) are welcome. Additionally, [pull requests](https://github.com/techpivot/streaming-slack-notify/pulls) are also welcome!
+
+### Helping Out
+
+1. Fork this repo
+2. Modify the `./src` as necessary.
+3. Ensure to `format:write`, `lint`, and `build` _(See `package.json` scripts for more info)_
+4. Submit a PR
+
+### Developer Reference
+
+- If you need to run any of the the NPM/Yarn commands on a system
+  that may not have anything installed, we provide a docker-compose
+  helper.
+
+  ```bash
+  docker-compose up
+
+  # Then in another terminal:
+  docker exec -it streaming-slack-notify bash
+  ```
+
+- [Slack Message Builder](https://api.slack.com/docs/messages/builder)
+  > Use the Slack debug payload from existing actions to seed a message builder and then iterate as necessary.
 
 ## License
 
@@ -61,86 +164,3 @@ Please see [Slack API documentation](https://api.slack.com/docs/messages/builder
 > GitHub [@techpivot](https://github.com/techpivot) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
 > LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
 > Twitter [@techpivot](https://twitter.com/techpivot)
-
-======
-
-## Configuration
-
-You must set `SLACK_WEBHOOK` environment value in settings page of your repository in order to use without any problem. Please [see here](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets#creating-encrypted-secrets) to learn how to do it if you don't know already.
-
-## Usage
-
-Create a workflow, set a step that uses this action and don't forget to specify `SLACK_WEBHOOK` environment value.
-
-```yaml
-name: Notification on push
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Slack notification
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        uses: cemkiy/action-slacker@master
-        with:
-          # requirements fields for slack
-          channel: '#channel-name'
-          icon_url: 'slack user icon url'
-          username: 'slack username'
-          # attachment fields(not required)
-          fallback: 'Required plain-text summary of the attachment.'
-          color: '#36a64f'
-          pretext: 'Optional text that appears above the attachment block'
-          author_name: 'John Doe'
-          author_link: 'http://jdoe.com/me/'
-          author_icon: 'http://imageurl.com/icons/icon.jpg'
-          title: 'Slack API Documentation'
-          title_link: 'https://api.slack.com/'
-          text: 'Optional text that appears within the attachment'
-          image_url: 'http://my-website.com/path/to/image.jpg'
-          thumb_url: 'http://example.com/path/to/thumb.png'
-          footer: 'Slack API'
-          footer_icon: 'https://platform.slack-edge.com/img/default_application_icon.png'
-```
-
-## Output
-
-Default output if you've not set any attachment will look like this.
-
-![Image of screenshot](https://raw.githubusercontent.com/cemkiy/action-slacker/master/screnshot.png)
-
-If you've set an attachment, you should see it in addition to default message.
-
-## Advanced Usage
-
-If you want to show different messages based on succes or failure of previous steps in your workflow, use success and failure functions.
-
-```yaml
-- name: Slack notification Failure
-  if: failure()
-  env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  uses: cemkiy/action-slacker@master
-  with:
-    channel: '#channel-name'
-    icon_url: 'slack user icon url'
-    username: 'slack username'
-    image_url: 'http://my-website.com/path/to/failure.jpg'
-
-- name: Slack notification Success
-  if: success()
-  env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  uses: cemkiy/action-slacker@master
-  with:
-    channel: '#channel-name'
-    icon_url: 'slack user icon url'
-    username: 'slack username'
-    image_url: 'http://my-website.com/path/to/success.jpg'
-```
