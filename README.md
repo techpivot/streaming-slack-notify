@@ -117,7 +117,7 @@ In order to handle failures and properly simulate the conclusion of the workflow
 All configuration options are action inputs and should be used inside the YAML `with:` section as key/value pairs.
 
 | Parameter | Description | Required | When to use? |
-| -- | -- | -- | -- | -- |
+| -- | -- | -- | -- |
 | `slack_access_token` | The Slack API token | **Yes** | Always |
 | `channel` | Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity | **Yes** | First Action only (Not required otherwise) |
 | `username` | The slack bot user name | No | First Action |
