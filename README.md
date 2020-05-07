@@ -82,6 +82,8 @@ At the **very first part of your workflow**, add this action. The **first time**
     channel: '#builds'
 ```
 
+> **Note**: Ensure the `channel` value is enclosed in quotes.
+
 Next, copy the same snippet without any configuration options in between every other step as such:
 
 **Actions In Between Other Steps**
