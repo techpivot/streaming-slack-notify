@@ -74,16 +74,18 @@ Currently, this action needs to be injected inbetween every step to achieve the 
 At the **very first part of your workflow**, add this action. The **first time** the action is run, the **channel** field is required as well as any of the optional [configuration settings](#user-content-configuration-options). Add the following snippet at the very beginning of a single job, or in an initialization job that is a pre-req for a multi-job workflow.
 
 **First Action**
+
 ```yaml
 - uses: techpivot/streaming-slack-notify@v1
   with:
     slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-    channel: #builds
+    channel: '#builds'
 ```
 
 Next, copy the same snippet without any configuration options in between every other step as such:
 
 **Actions In Between Other Steps**
+
 ```yaml
 - uses: techpivot/streaming-slack-notify@v1
   with:
@@ -96,13 +98,13 @@ Next, copy the same snippet without any configuration options in between every o
     slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
 - run: echo "My custom step 2"
-
 ### ... continued
 ```
 
 In order to handle failures and properly simulate the conclusion of the workflow _(while running inside the workflow)_, the **final** action needs to include the `if: always()` block and an additional variable: `is_final_step: true`.
 
 **Final Action**
+
 ```yaml
 - uses: techpivot/streaming-slack-notify@v1
   if: always()
@@ -115,14 +117,14 @@ In order to handle failures and properly simulate the conclusion of the workflow
 
 All configuration options are action inputs and should be used inside the YAML `with:` section as key/value pairs.
 
-| Parameter | Description | Required | When to use? |
-| -- | -- | -- | -- |
-| `slack_access_token` | The Slack API token | **Yes** | Always |
-| `channel` | Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity | **Yes** | First Action only (Not required otherwise) |
-| `username` | The slack bot user name | No | First Action |
-| `icon_url` | URL to an image to use as the icon for this message | No | First Action |
-| `icon_emoji` | Emoji to use as the icon for this message. Overrides "icon_url" | No | First Action |
-| `is_final_step` | Flag that defines the last Slack notify step in your workflow. | **Yes** | Last Step (ONLY include on last step; otherwise, omit) |
+| Parameter            | Description                                                                                                                                                                                                        | Required | When to use?                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------ |
+| `slack_access_token` | The Slack API token                                                                                                                                                                                                | **Yes**  | Always                                                 |
+| `channel`            | Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity | **Yes**  | First Action only (Not required otherwise)             |
+| `username`           | The slack bot user name                                                                                                                                                                                            | No       | First Action                                           |
+| `icon_url`           | URL to an image to use as the icon for this message                                                                                                                                                                | No       | First Action                                           |
+| `icon_emoji`         | Emoji to use as the icon for this message. Overrides "icon_url"                                                                                                                                                    | No       | First Action                                           |
+| `is_final_step`      | Flag that defines the last Slack notify step in your workflow.                                                                                                                                                     | **Yes**  | Last Step (ONLY include on last step; otherwise, omit) |
 
 ## How It Works
 

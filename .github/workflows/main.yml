@@ -19,7 +19,7 @@ jobs:
       - uses: ./
         with:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-          channel: #builds
+          channel: '#builds'
 
   build:
     runs-on: ubuntu-latest
