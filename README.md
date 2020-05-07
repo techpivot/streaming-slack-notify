@@ -51,7 +51,6 @@ workflow runs, which results in ambiguous job status for long-running workflows.
 
 ## Usage
 
-Incorporate this
 ### Create Slack API Token
 
 ### Save API Token in GitHub Secrets
@@ -123,7 +122,7 @@ All configuration options are action inputs and should be used inside the YAML `
 | `username` | The slack bot user name | No | First Action |
 | `icon_url` | URL to an image to use as the icon for this message | No | First Action |
 | `icon_emoji` | Emoji to use as the icon for this message. Overrides "icon_url" | No | First Action |
-| `is_final_step` | Flag that defines the last Slack notify step in your workflow. This step should be run with the "if: always()" condition to ensure that it always gets executed. | Yes | Last Step (Not required otherwise) |
+| `is_final_step` | Flag that defines the last Slack notify step in your workflow. | **Yes** | Last Step (ONLY include on last step; otherwise, omit) |
 
 ## How It Works
 
