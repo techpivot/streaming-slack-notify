@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/techpivot-streaming-slack-notifier-logo.png" alt="TechPivot Streaming Slack Notifier Logo" />
+</p>
+
 <h1 align="center">Streaming Slack Notify</h1>
 
 <h4 align="center">
