@@ -33,8 +33,11 @@
 
 ## Usage
 
-## Output
+## Sample Output
 
+### Event: `push`
+
+### Event: `pull_request`
 Default output if you've not set any attachment will look like this.
 
 ![Image of screenshot](https://raw.githubusercontent.com/cemkiy/action-slacker/master/screnshot.png)
@@ -42,6 +45,8 @@ Default output if you've not set any attachment will look like this.
 If you've set an attachment, you should see it in addition to default message.
 
 ## Configuration Options
+
+
 
 ## Contributing
 
