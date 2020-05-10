@@ -1,7 +1,7 @@
 {
   "name": "streaming-slack-notify",
   "version": "1.0.0",
-  "description": "send slack notification with advanced message format",
+  "description": "The definitive Github Action for streaming workflow job status to Slack.",
   "main": "src/index.ts",
   "scripts": {
     "lint": "eslint src/**/*.ts",
