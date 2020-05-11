@@ -43,7 +43,9 @@ workflow runs, which results in ambiguous job status for long-running workflows.
 ### Event: `push`
 
 ### Event: `pull_request`
+
 Default output if you've not set any attachment will look like this.
+
 ## Features
 
 - Ability to display job step status from beginning of workflow to end
@@ -59,9 +61,8 @@ Default output if you've not set any attachment will look like this.
 
 ### Create Slack API Token
 
-
-
 ## Contributing
+
 ### Save API Token in GitHub Secrets
 
 1. On GitHub, navigate to the main page of the repository.
