@@ -6,8 +6,6 @@ terraform {
     bucket         = "techpivot-streaming-slack-notify-terraform-state"
     key            = "terraform.tfstate"
     dynamodb_table = "techpivot-streaming-slack-notify-terraform-state-lock"
-    profile        = ""
-    role_arn       = ""
     encrypt        = "true"
   }
 }

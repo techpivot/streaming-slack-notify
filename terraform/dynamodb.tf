@@ -1,20 +1,18 @@
-
-module "base_label" {
+module "dynamodb_label" {
   source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
-  name               = local.dynamodb_table_name
-  delimiter          = var.delimiter
-  attributes         = var.attributes
-  tags               = var.tags
+  name               = var.name
+  attributes         = ["slack-teams"]
+  tags               = local.tags
   additional_tag_map = var.additional_tag_map
 }
 
 resource "aws_dynamodb_table" "default" {
-  name           = local.dynamodb_table_name
-  read_capacity  = var.read_capacity
-  write_capacity = var.write_capacity
+  name           = module.dynamodb_label.id
+  read_capacity  = var.dynamodb_read_capacity
+  write_capacity = var.dynamodb_write_capacity
   hash_key       = "Id"
 
   server_side_encryption {
@@ -44,5 +42,5 @@ resource "aws_dynamodb_table" "default" {
   }
   */
 
-  tags = module.base_label.tags
+  tags = module.dynamodb_label.tags
 }

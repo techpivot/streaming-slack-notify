@@ -1,13 +1,10 @@
-
 module "vpc_label" {
   source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
   name               = "vpc"
-  delimiter          = var.delimiter
-  attributes         = var.attributes
-  tags               = var.tags
+  tags               = local.tags
   additional_tag_map = var.additional_tag_map
 }
 
