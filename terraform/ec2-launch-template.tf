@@ -20,7 +20,7 @@ data "aws_ami" "ecs" {
 }
 
 data "template_file" "user_data" {
-  template = file("${path.module}/scripts/user-data.sh")
+  template = file("${path.module}/data/user-data.sh")
 
   vars = {
     aws_ecs_cluster = aws_ecs_cluster.default.name
@@ -70,7 +70,7 @@ resource "aws_launch_template" "default" {
   image_id                             = data.aws_ami.ecs.id
   vpc_security_group_ids               = [aws_security_group.ecs_instance.id]
   user_data                            = base64encode(data.template_file.user_data.rendered)
-  #key_name = "test"
+  key_name                             = aws_key_pair.default.key_name
 
   # We include this in the base template; however, override as necessary when incorporating with
   # a spot fleet request.

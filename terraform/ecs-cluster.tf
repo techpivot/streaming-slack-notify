@@ -9,33 +9,24 @@ module "ecs_label" {
   additional_tag_map = var.additional_tag_map
 }
 
+data "template_file" "task_definition" {
+  template = file("${path.module}/data/task-definition.json.tpl")
+
+  vars = {}
+}
+
 resource "aws_ecs_cluster" "default" {
   name = "${module.ecs_label.id}-cluster"
   tags = module.ecs_label.tags
 }
 
 resource "aws_ecs_task_definition" "default" {
-  family = "${module.ecs_label.name}-task"
-  tags   = module.ecs_label.tags
-
-  container_definitions = <<EOF
-[
-  {
-    "name": "hello_world",
-    "image": "hello-world",
-    "cpu": 0,
-    "memory": 128,
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region": "us-west-2",
-        "awslogs-group": "hello_world",
-        "awslogs-stream-prefix": "complete-ecs"
-      }
-    }
-  }
-]
-EOF
+  family                = "${module.ecs_label.name}-task"
+  tags                  = module.ecs_label.tags
+  network_mode          = "awsvpc"
+  memory                = 461
+  cpu                   = 2048
+  container_definitions = data.template_file.task_definition.rendered
 }
 
 resource "aws_ecs_service" "default" {
@@ -47,7 +38,14 @@ resource "aws_ecs_service" "default" {
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
 
+  network_configuration {
+    subnets = module.vpc.public_subnets
+    security_groups = [
+      aws_security_group.task.id
+    ]
+  }
+
   lifecycle {
-    ignore_changes = [task_definition]
+    ignore_changes = [desired_count]
   }
 }
