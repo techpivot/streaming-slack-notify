@@ -1,4 +1,4 @@
-type Event = { a: string; b: number };
+import { Event } from './types';
 
 export const handler = async (event: Event): Promise<any> => {
   console.log('==> ', event);
@@ -13,7 +13,7 @@ export const handler = async (event: Event): Promise<any> => {
     isBase64Encoded: false,
     cookies: [],
     headers: {
-      "X-Test": "customval1",
+      "Server": "TechPivot",
     },
     body: JSON.stringify(body),
   };
