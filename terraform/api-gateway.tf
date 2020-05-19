@@ -22,10 +22,16 @@ resource "aws_apigatewayv2_integration" "api_integration_slack_authorize_lambda"
   connection_type        = "INTERNET"
   description            = "Lambda example"
   integration_method     = "POST"
-  integration_uri        = aws_lambda_function.lambda_slack_oauth2.invoke_arn
+  integration_uri        = aws_lambda_function.lambda_slack_authorize.invoke_arn
   payload_format_version = "2.0"
   timeout_milliseconds   = (var.lambda_slack_oauth_authorize_timeout * 1000) + 250
   passthrough_behavior   = "WHEN_NO_MATCH"
+
+  # Remove the following snippet once this PR is merged:
+  # https://github.com/terraform-providers/terraform-provider-aws/pull/13062
+  lifecycle {
+    ignore_changes = [passthrough_behavior]
+  }
 }
 
 resource "aws_apigatewayv2_route" "route_get_authorize" {
