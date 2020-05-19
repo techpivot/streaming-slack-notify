@@ -5,10 +5,13 @@ variable "namespace" {
   default     = "techpivot"
 }
 
+# Note: We are currently using us-east-1 because
+#  1) GitHub and Slack both have the lowest pings to their primary masters in this region
+#  2) Largest AZ pool for optimum spot instances capacity + pricing
 variable "region" {
   type        = string
   description = "The primary region for the organization and default regional resources"
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "environment" {
@@ -53,6 +56,15 @@ variable "dynamodb_write_capacity" {
   description = "DynamoDB write capacity units"
 }
 
+variable "ecs_instance_types_with_max_price" {
+  description = "A map of allowed ECS instance types with corresponding max price"
+  type        = map
+  default = {
+    "t3a.nano" = 0.002
+    "t3.nano"  = 0.002
+  }
+}
+
 variable "ecs_asg_max_size" {
   type    = number
   default = 1
@@ -66,4 +78,10 @@ variable "ecs_asg_min_size" {
 variable "ecs_asg_desired_capacity" {
   type    = number
   default = 0
+}
+
+variable "lambda_slack_oauth_authorize_timeout" {
+  type = number
+  description = "The number of seconds before the Lambda function times out"
+  default = 5
 }

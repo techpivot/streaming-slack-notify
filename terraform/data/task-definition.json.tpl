@@ -1,9 +1,9 @@
 [
   {
-    "name": "streaming-slack-notify",
+    "name": "server",
     "image": "nginx",
     "cpu": 0,
-    "memory": 461,
+    "memory": 458,
     "networkMode": "awsvpc",
     "essential": true,
     "portMappings": [
@@ -16,9 +16,9 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-region": "us-west-2",
-        "awslogs-group": "hello_world",
-        "awslogs-stream-prefix": "complete-ecs"
+        "awslogs-region": "${region}",
+        "awslogs-group": "${logsGroup}",
+        "awslogs-stream-prefix": "${streamPrefix}"
       }
     }
   }

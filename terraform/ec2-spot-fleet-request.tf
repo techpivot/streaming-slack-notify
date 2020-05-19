@@ -27,45 +27,15 @@ resource "aws_spot_fleet_request" "default" {
       id      = aws_launch_template.default.id
       version = aws_launch_template.default.latest_version
     }
-    overrides {
-      instance_type = "t3a.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[0]
-    }
-    overrides {
-      instance_type = "t3a.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[1]
-    }
-    overrides {
-      instance_type = "t3a.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[2]
-    }
-    overrides {
-      instance_type = "t3a.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[3]
-    }
-    overrides {
-      instance_type = "t3.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[0]
-    }
-    overrides {
-      instance_type = "t3.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[1]
-    }
-    overrides {
-      instance_type = "t3.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[2]
-    }
-    overrides {
-      instance_type = "t3.nano"
-      spot_price    = 0.002
-      subnet_id     = module.vpc.public_subnets[3]
+
+    dynamic "overrides" {
+      for_each = local.ecs_launch_config_overrides
+
+      content {
+        instance_type = overrides.value.instance_type
+        spot_price    = overrides.value.spot_price
+        subnet_id     = overrides.value.subnet_id
+      }
     }
   }
 }

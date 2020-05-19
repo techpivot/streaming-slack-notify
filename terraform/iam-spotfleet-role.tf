@@ -10,8 +10,13 @@ data "aws_iam_policy_document" "spotfleet_assume_role_policy" {
 }
 
 resource "aws_iam_role" "spotfleet_role" {
-  name               = "aws-ec2-spot-fleet-tagging-role"
-  assume_role_policy = data.aws_iam_policy_document.spotfleet_assume_role_policy.json
+  name                  = "aws-ec2-spot-fleet-tagging-role"
+  assume_role_policy    = data.aws_iam_policy_document.spotfleet_assume_role_policy.json
+  force_detach_policies = true
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "spotfleet_role_policy_attachment" {

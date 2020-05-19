@@ -1,0 +1,23 @@
+{
+  "name": "techpivot-streaming-slack-notify-api-slack-oauth2",
+  "version": "0.0.0",
+  "description": "Lambda function that responds to new Slack OAuth2 application requests",
+  "main": "index.js",
+  "author": "TechPivot",
+  "keywords": [
+    "TechPivot",
+    "streaming-slack-notify",
+    "node",
+    "typescript",
+    "lambda"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "package": "tsc && node-lambda package"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.1",
+    "node-lambda": "^0.16.0",
+    "typescript": "^3.6.4"
+  }
+}

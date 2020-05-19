@@ -8,6 +8,10 @@ module "vpc_label" {
   additional_tag_map = var.additional_tag_map
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 locals {
   tags_without_name = {
     for key in keys(module.vpc_label.tags) :
@@ -24,11 +28,11 @@ module "vpc" {
   private_subnet_suffix = "private"
   public_subnet_suffix  = "public"
 
-  cidr = "10.0.0.0/16"
+  cidr = local.cidr
 
-  azs             = ["us-west-2a", "us-west-2b", "us-west-2c", "us-west-2d"]
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24", "10.0.4.0/24"]
-  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24", "10.0.104.0/24"]
+  azs             = local.vpc_azs
+  private_subnets = local.vpc_private_subnets
+  public_subnets  = local.vpc_public_subnets
 
   enable_nat_gateway   = false
   enable_vpn_gateway   = false

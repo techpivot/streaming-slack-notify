@@ -32,7 +32,9 @@ data "aws_iam_policy_document" "ecs_instance_policy" {
       "logs:DescribeLogStreams",
     ]
 
-    resources = [ aws_cloudwatch_log_group.ecs_instance.arn ]
+    resources = [
+      aws_cloudwatch_log_group.ecs_instance.arn
+    ]
   }
 }
 
@@ -43,8 +45,13 @@ resource "aws_iam_policy" "ecs_instance_policy" {
 }
 
 resource "aws_iam_role" "ecs_instance" {
-  name = "${var.name}-ecs-instance-role"
-  assume_role_policy = data.aws_iam_policy_document.ecs_instance_assume_role_policy.json
+  name                  = "${var.name}-ecs-instance-role"
+  assume_role_policy    = data.aws_iam_policy_document.ecs_instance_assume_role_policy.json
+  force_detach_policies = true
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_iam_role_policy_attachment_ecs" {

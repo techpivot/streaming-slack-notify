@@ -12,11 +12,19 @@ module "ecs_label" {
 data "template_file" "task_definition" {
   template = file("${path.module}/data/task-definition.json.tpl")
 
-  vars = {}
+  vars = {
+    region       = var.region
+    logsGroup    = module.ecs_cloudwatch_label.id,
+    streamPrefix = var.name
+  }
 }
 
 resource "aws_ecs_cluster" "default" {
   name = "${module.ecs_label.id}-cluster"
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
   tags = module.ecs_label.tags
 }
 
