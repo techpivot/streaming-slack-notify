@@ -2,7 +2,7 @@
   "name": "techpivot-streaming-slack-notify-api-slack-authorize",
   "version": "0.0.0",
   "description": "Lambda function that responds and authorizes new Slack OAuth2 application requests",
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": "TechPivot",
   "keywords": [
     "TechPivot",
@@ -13,10 +13,18 @@
   ],
   "license": "MIT",
   "scripts": {
-    "package": "tsc && node-lambda package"
+    "package": "tsc && rm -rf lib/templates && cp -Rf src/templates lib/templates && node-lambda package",
+    "test": "tsc && rm -rf lib/templates && cp -Rf src/templates lib/templates && node-lambda run"
+  },
+  "dependencies": {
+    "@slack/web-api": "^5.8.1",
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
+    "@slack/types": "^1.6.0",
     "@types/node": "^14.0.1",
+    "@types/uuid": "3.4.3",
+    "aws-sdk": "^2.679.0",
     "node-lambda": "^0.16.0",
     "typescript": "^3.6.4"
   }

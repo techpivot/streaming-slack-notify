@@ -18,7 +18,7 @@ resource "aws_spot_fleet_request" "default" {
   instance_interruption_behaviour     = "terminate"
   fleet_type                          = "maintain"
 
-  target_capacity     = 2 # instances
+  target_capacity     = var.spot_fleet_target_capacity
   spot_price          = 0.002
   allocation_strategy = "lowestPrice" # [ "diversified", "lowestPrice" ]
 

@@ -31,4 +31,6 @@ locals {
 
       }
   ]
+
+  ssm_prefix = "/${var.namespace}/${var.name}/prod/slack"
 }

@@ -20,7 +20,7 @@ resource "aws_lambda_function" "lambda_slack_authorize" {
   function_name    = module.lambda_slack_authorize_label.id
   description      = "Lambda function that responds to new Slack OAuth2 application requests"
   role             = aws_iam_role.lambda_slack_authorize_role.arn
-  handler          = "index.handler"
+  handler          = "lib/index.handler"
   memory_size      = 128
   timeout          = var.lambda_slack_oauth_authorize_timeout
   runtime          = "nodejs12.x"

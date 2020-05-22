@@ -11,5 +11,5 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/src/api/lambda-slack-authorize
+      - /app/src/api/lambda-slack-authorize/node_modules
     working_dir: /app

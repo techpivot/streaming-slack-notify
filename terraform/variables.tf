@@ -56,12 +56,18 @@ variable "dynamodb_write_capacity" {
   description = "DynamoDB write capacity units"
 }
 
+variable "spot_fleet_target_capacity" {
+  description = "Default target capacity for the spot fleet"
+  type        = number
+  default     = 1
+}
+
 variable "ecs_instance_types_with_max_price" {
   description = "A map of allowed ECS instance types with corresponding max price"
   type        = map
   default = {
-    "t3a.nano" = 0.002
-    "t3.nano"  = 0.002
+    "t3a.nano" = 0.0017
+    "t3.nano"  = 0.0016
   }
 }
 
@@ -81,7 +87,7 @@ variable "ecs_asg_desired_capacity" {
 }
 
 variable "lambda_slack_oauth_authorize_timeout" {
-  type = number
-  description = "The number of seconds before the Lambda function times out"
-  default = 5
+  type        = number
+  description = "The number of seconds before the Lambda function times out (Needs to query Slack + Dynamo)"
+  default     = 15
 }

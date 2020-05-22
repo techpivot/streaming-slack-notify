@@ -41,7 +41,7 @@ resource "aws_ecs_service" "default" {
   name                               = "${module.ecs_label.id}-service"
   cluster                            = aws_ecs_cluster.default.id
   task_definition                    = aws_ecs_task_definition.default.arn
-  desired_count                      = 1
+  desired_count                      = 1 # @todo fix potentially
   launch_type                        = "EC2"
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
