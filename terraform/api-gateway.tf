@@ -70,3 +70,40 @@ resource "aws_apigatewayv2_stage" "stage_prod" {
     ignore_changes = [deployment_id, default_route_settings]
   }
 }
+
+module "api_gateway_domain_label" {
+  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  namespace          = var.namespace
+  environment        = var.environment
+  stage              = var.stage
+  name               = var.name
+  attributes         = ["api-gateway", "custom-domain"]
+  tags               = local.tags
+  additional_tag_map = var.additional_tag_map
+}
+
+resource "aws_api_gateway_domain_name" "api_streaming_slack_notify" {
+  domain_name              = "api.${var.dns_zone_name}"
+  regional_certificate_arn = aws_acm_certificate.api_gateway_custom_domain_cert.arn
+  security_policy          = "TLS_1_2"
+
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+
+  tags = module.api_gateway_domain_label.tags
+}
+
+resource "aws_route53_record" "api_gateway_custom_domain_cname" {
+  name    = "api.${var.dns_zone_name}"
+  zone_id = data.aws_route53_zone.zone.id
+  type    = "CNAME"
+  records = [aws_api_gateway_domain_name.api_streaming_slack_notify.regional_domain_name]
+  ttl     = 300
+}
+
+resource "aws_apigatewayv2_api_mapping" "api_gateway_prod_stage_mapping" {
+  api_id      = aws_apigatewayv2_api.default.id
+  stage       = aws_apigatewayv2_stage.stage_prod.id
+  domain_name = aws_api_gateway_domain_name.api_streaming_slack_notify.domain_name
+}

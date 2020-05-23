@@ -44,6 +44,12 @@ variable "additional_tag_map" {
   description = "Additional tags for appending to each tag map"
 }
 
+variable "dns_zone_name" {
+  type        = string
+  default     = "streaming-slack-notify.techpivot.com"
+  description = "The name of the DNS zone name for this account has permissions to add records"
+}
+
 variable "dynamodb_read_capacity" {
   default     = 3
   type        = number
