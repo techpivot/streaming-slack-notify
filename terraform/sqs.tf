@@ -18,3 +18,22 @@ resource "aws_sqs_queue" "default" {
   receive_wait_time_seconds  = 20
   tags                       = module.sqs_label.tags
 }
+
+module "ssm_parameter_queue_url" {
+  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  namespace          = var.namespace
+  environment        = var.environment
+  stage              = var.stage
+  name               = var.name
+  attributes         = ["ssm", "queue", "url"]
+  tags               = local.tags
+  additional_tag_map = var.additional_tag_map
+}
+
+resource "aws_ssm_parameter" "queue_url" {
+  name        = "${local.ssm_prefix}/queue-url"
+  description = "The SQS queue URL endpoint"
+  type        = "SecureString"
+  value       = aws_sqs_queue.default.id
+  tags        = module.ssm_parameter_client_secret_label.tags
+}

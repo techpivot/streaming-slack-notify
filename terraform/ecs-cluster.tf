@@ -32,7 +32,17 @@ resource "aws_ecs_task_definition" "default" {
   family                = "${module.ecs_label.name}-task"
   tags                  = module.ecs_label.tags
   network_mode          = "awsvpc"
-  memory                = 461
+  # The amount (in MiB) of memory to present to the container.
+  # If your container attempts to exceed the memory specified here,
+  # the container is killed. The total amount of memory reserved for
+  # all containers within a task must be lower than the task memory
+  # value, if one is specified. This parameter maps to Memory in the
+  # Create a container section of the Docker Remote API and the
+  # --memory option to docker run.
+  # memory                = 459
+  #
+  # Need to specify container or task. For now, let's put this on the container.
+
   cpu                   = 2048
   container_definitions = data.template_file.task_definition.rendered
 }

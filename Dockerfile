@@ -1,6 +1,6 @@
 FROM node:12
 
-ENV TERRAFORM_VERSION=0.12.24
+ARG TERRAFORM_VERSION
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \

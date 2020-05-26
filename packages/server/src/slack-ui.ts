@@ -1,5 +1,6 @@
-import * as github from '@actions/github';
+/*import * as github from '@actions/github';
 import { WebhookPayloadPullRequest, WebhookPayloadPush } from '@octokit/webhooks';
+*/
 import {
   ImageElement,
   PlainTextElement,
@@ -8,10 +9,10 @@ import {
   KnownBlock,
   MessageAttachment,
 } from '@slack/types';
-import { ActionsListJobsForWorkflowRunResponseJobsItemStepsItem, WorkflowSummaryInterface } from '../github/types';
-import { getLastJobOutputIndex, saveLastJobOutputIndex } from '../github/artifacts';
-import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
-import {
+import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
+import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from './const';
+import { getReadableDurationString } from './utils';
+/*import {
   getActionBranch,
   getActionEventName,
   getGithubRunId,
@@ -19,7 +20,8 @@ import {
   getGithubRepositoryFullName,
   getReadableDurationString,
   getWorkflowName,
-} from '../utils';
+} from '../../utils';
+*/
 
 type outputFallbackText = {
   text: string;
@@ -36,12 +38,10 @@ export const getDividerBlock = (): DividerBlock => {
  * @param workflowSummary
  */
 export const getTitleBlocks = (
-  workflowSummary: WorkflowSummaryInterface,
+  workflowData: ActionsGetWorkflowRunResponseData,
   outputFallbackText: outputFallbackText = { text: '' }
 ): KnownBlock[] => {
-  // Theoretically, we should always be in 'in_progress' stage; however, we mock the completed to handle
-  // consistent UI output in various parts of the output blocks. (See ../github/workflow)
-  const { status, conclusion, created_at, updated_at } = workflowSummary.workflow;
+  const { status, conclusion, created_at, updated_at } = workflowData;
   const workflowName = getWorkflowName();
   let action;
   let icon = '';
@@ -130,9 +130,9 @@ export const getTitleBlocks = (
  *
  * @param workflowSummary
  */
-export const getFallbackText = (workflowSummary: WorkflowSummaryInterface): string => {
+export const getFallbackText = (workflowData: ActionsGetWorkflowRunResponseData): string => {
   const outputFallbackText = { text: '' };
-  getTitleBlocks(workflowSummary, outputFallbackText);
+  getTitleBlocks(workflowData, outputFallbackText);
 
   return outputFallbackText.text;
 };
@@ -301,16 +301,15 @@ export const getEventDetailBlocks = (): KnownBlock[] => {
   }
 };
 
-export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
+export const getJobAttachments = (jobData: ActionsListJobsForWorkflowRunResponseData): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
 
-  workflowSummary.jobs.forEach((job) => {
+  jobData.jobs.forEach((job: any) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
-    const lastJobOutputIndex = getLastJobOutputIndex(name) || 0;
     let icon = '';
     let color;
-    let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
+    let currentStep;
     let currentStepIndex = 0; // Zero indexed
 
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
@@ -334,32 +333,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
     if (!currentStep) {
       // This will never happen just type safety
       throw new Error('Unable to determine current job step');
-    }
-
-    // Update the step name to never display our slack notification name. In order to minimize
-    // the action YAML, our readme/docs don't require naming/IDs. This reduction also allows
-    // the default naming to be consistent. In this case, if we're inside an "in_progress" step and
-    // the current action is actually on itself (or from 1 + n behind) ... let's bump to the next
-    // one which is even more accurate. We use the lastJobOutputIndex stored/saved to make this
-    // even more accurate.
-
-    if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
-      // We could potentially walk this continously; however, that's silly and if the end-user wants
-      // to notify multiple slack notifies ... well then we'll just have to display that as that's
-      // what we're actually doing.
-
-      // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
-      // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
-      // typically are slightly late meaning we should display the subsequent notification. However, sometimes
-      // we are spot on and thus we do our best to spread out the progress notifications accordingly. We save
-      // the currentStepIndex and will find the NEXT available.
-      for (let i = Math.max(lastJobOutputIndex, currentStepIndex - 1); i <= currentStepIndex + 1; i += 1) {
-        if (steps[i].name.indexOf('techpivot/streaming-slack-notify') < 0) {
-          console.debug(`Updating step display from "${steps[currentStepIndex].name}" to "${steps[i].name}"`);
-          currentStepIndex = i;
-          break;
-        }
-      }
     }
 
     switch (status) {
@@ -481,9 +454,6 @@ export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Ar
         )}`,
       });
     }
-
-    // Save the current step
-    saveLastJobOutputIndex(name, currentStepIndex);
 
     attachments.push({
       color,

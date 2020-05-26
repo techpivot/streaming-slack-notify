@@ -10,7 +10,7 @@ module "lambda_slack_authorize_label" {
 }
 
 locals {
-  lambda_slack_authorize_file = "${path.module}/../src/api/lambda-slack-authorize/dist/techpivot-streaming-slack-notify-api-slack-authorize.zip"
+  lambda_slack_authorize_file = "${path.module}/../packages/api/lambda-slack-authorize/dist/techpivot-streaming-slack-notify-api-slack-authorize.zip"
   lambda_slack_authorize_function_name = module.lambda_slack_authorize_label.id
 }
 

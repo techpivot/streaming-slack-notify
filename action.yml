@@ -4,7 +4,7 @@ description: 'The definitive Github Action for streaming workflow job status to 
 
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'packages/github-action/dist/index.js'
 
 branding:
   icon: 'slack'

@@ -6,10 +6,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        TERRAFORM_VERSION: ${TERRAFORM_VERSION}
     stdin_open: true
     tty: true
     volumes:
       - .:/app
       - /app/node_modules
-      - /app/src/api/lambda-slack-authorize/node_modules
+      - /app/packages/github-action/node_modules
+      - /app/packages/server/node_modules
+      - /app/packages/api/lambda-slack-authorize/node_modules
     working_dir: /app

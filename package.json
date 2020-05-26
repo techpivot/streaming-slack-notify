@@ -1,14 +1,15 @@
 {
   "name": "streaming-slack-notify",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "The definitive Github Action for streaming workflow job status to Slack.",
-  "main": "src/index.ts",
+  "main": "packages/github-action/index.ts",
   "scripts": {
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts",
-    "build": "ncc build --minify --out dist src/index.ts",
-    "format": "prettier --check **/*.{ts,js,json,yml,md}",
-    "format:write": "prettier --write -l **/*.{ts,js,json,yml,md}"
+    "build:action": "cd packages/github-action && yarn build",
+    "format:check": "prettier --check **/*.{ts,js,json,yml,md}",
+    "format": "prettier --write -l **/*.{ts,js,json,yml,md}",
+    "postinstall": "cd packages/api/lambda-slack-authorize && yarn install && cd ../../github-action && yarn install"
   },
   "repository": {
     "type": "git",

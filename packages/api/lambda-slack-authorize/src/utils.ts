@@ -147,6 +147,7 @@ export const saveOauthV2AccessResponse = async (region: string, response: any): 
       Item: {
         id: uuid,
         team_id: response.team.id,
+        team_name: response.team.name,
         created_at: timestamp,
         app_id: response.app_id,
         scope: response.scope,
