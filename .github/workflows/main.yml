@@ -10,7 +10,7 @@ on:
       - develop
 
 jobs:
-  init:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,54 +21,17 @@ jobs:
           slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
           channel: '#builds'
 
-  build:
-    runs-on: ubuntu-latest
-    needs: init
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - uses: ./
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-
       - name: Installing dependencies
         run: yarn install
-
-      - uses: ./
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Formatting
         run: yarn format
 
-      - uses: ./
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-
       - name: Linting
         run: yarn lint
-
-      - uses: ./
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
 
       - name: Building
         run: yarn build
 
-      - uses: ./
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-
       - name: Deploying
         run: sleep 2
-
-      - uses: ./
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-
-      - uses: ./
-        if: always()
-        with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
-          is_final_step: true

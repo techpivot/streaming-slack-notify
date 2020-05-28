@@ -2,23 +2,7 @@
 # yarn lockfile v1
 
 
-"@actions/artifact@^0.3.1":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@actions/artifact/-/artifact-0.3.2.tgz#46f6a14d8daac4503448a115ab21a9bb4efcdbe2"
-  integrity sha512-KzUe5DEeVXprAodxfGKtx9f7ukuVKE6V6pge6t5GDGk0cdkfiMEfahoq7HfBsOsmVy4J7rr1YZQPUTvXveYinw==
-  dependencies:
-    "@actions/core" "^1.2.1"
-    "@actions/http-client" "^1.0.7"
-    "@types/tmp" "^0.1.0"
-    tmp "^0.1.0"
-    tmp-promise "^2.0.2"
-
-"@actions/core@^1.2.1", "@actions/core@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.2.4.tgz#96179dbf9f8d951dd74b40a0dbd5c22555d186ab"
-  integrity sha512-YJCEq8BE3CdN8+7HPZ/4DxJjk/OkZV2FFIf+DlZTC/4iBlzYCD5yjRR6eiOS5llO11zbRltIRuKAjMKaWTE6cg==
-
-"@actions/github@^2.1.1", "@actions/github@^2.2.0":
+"@actions/github@^2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@actions/github/-/github-2.2.0.tgz#8952fe96b12b881fa39340f0e7202b04dc5c3e71"
   integrity sha512-9UAZqn8ywdR70n3GwVle4N8ALosQs4z50N7XMXrSTUVOmVpaBC5kE3TRTT7qQdi3OaQV24mjGuJZsHUmhD+ZXw==
@@ -27,7 +11,7 @@
     "@octokit/graphql" "^4.3.1"
     "@octokit/rest" "^16.43.1"
 
-"@actions/http-client@^1.0.3", "@actions/http-client@^1.0.7":
+"@actions/http-client@^1.0.3":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@actions/http-client/-/http-client-1.0.8.tgz#8bd76e8eca89dc8bcf619aa128eba85f7a39af45"
   integrity sha512-G4JjJ6f9Hb3Zvejj+ewLLKLf99ZC+9v+yCxoYf9vSyH+WkzPLB2LuUtRMGNkooMqdugGBFStIKXOuvH1W+EctA==
@@ -224,23 +208,6 @@
   resolved "https://registry.yarnpkg.com/@slack/types/-/types-1.6.0.tgz#7b5f08db824d9853cbf6c2de1c08865ba6ce346f"
   integrity sha512-SrrAD/ZxDN4szQ35V/mY2TvKSyGsUWP8def1C8NMg9AvdYG0VyaL5f+Dd6jw8STosMFXd3zqjekMowT9LB9/IQ==
 
-"@slack/web-api@5.8.1":
-  version "5.8.1"
-  resolved "https://registry.yarnpkg.com/@slack/web-api/-/web-api-5.8.1.tgz#90daba7ee2fb5a928a5d34c57fff0cf9ba5ada8c"
-  integrity sha512-MONzkjWOXV39Dejo8B9WSl/F0dxcVh9wyeW6R0jf6T6BhwN4f24iErYtTh19g+MRhb0oiyeKfnFsJTSKQulfDA==
-  dependencies:
-    "@slack/logger" ">=1.0.0 <3.0.0"
-    "@slack/types" "^1.2.1"
-    "@types/is-stream" "^1.1.0"
-    "@types/node" ">=8.9.0"
-    "@types/p-queue" "^2.3.2"
-    axios "^0.19.0"
-    eventemitter3 "^3.1.0"
-    form-data "^2.5.0"
-    is-stream "^1.1.0"
-    p-queue "^2.4.2"
-    p-retry "^4.0.0"
-
 "@slack/web-api@^5.9.0":
   version "5.9.0"
   resolved "https://registry.yarnpkg.com/@slack/web-api/-/web-api-5.9.0.tgz#13ce1eecc405c3972e6037d54338344d7859a3b5"
@@ -304,11 +271,6 @@
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.0.tgz#2b35eccfcee7d38cd72ad99232fbd58bffb3c84d"
   integrity sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==
-
-"@types/tmp@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@types/tmp/-/tmp-0.1.0.tgz#19cf73a7bcf641965485119726397a096f0049bd"
-  integrity sha512-6IwZ9HzWbCq6XoQWhxLpDjuADodH/MKXRUIDFudvgjcVdjFknvmR+DNsoUeer4XPrEnrZs04Jj+kfV9pFsrhmA==
 
 "@typescript-eslint/eslint-plugin@^3.0.1":
   version "3.0.2"
@@ -1340,13 +1302,6 @@ rimraf@2.6.3:
   dependencies:
     glob "^7.1.3"
 
-rimraf@^2.6.3:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.7.1.tgz#35797f13a7fdadc566142c29d4f07ccad483e3ec"
-  integrity sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==
-  dependencies:
-    glob "^7.1.3"
-
 run-async@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.4.1.tgz#8440eccf99ea3e70bd409d49aab88e10c189a455"
@@ -1502,20 +1457,6 @@ through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
-
-tmp-promise@^2.0.2:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/tmp-promise/-/tmp-promise-2.1.1.tgz#eb97c038995af74efbfe8156f5e07fdd0c935539"
-  integrity sha512-Z048AOz/w9b6lCbJUpevIJpRpUztENl8zdv1bmAKVHimfqRFl92ROkmT9rp7TVBnrEw2gtMTol/2Cp2S2kJa4Q==
-  dependencies:
-    tmp "0.1.0"
-
-tmp@0.1.0, tmp@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.1.0.tgz#ee434a4e22543082e294ba6201dcc6eafefa2877"
-  integrity sha512-J7Z2K08jbGcdA1kkQpJSqLF6T0tdQqpR2pnSUXsIchbPdTI9v3e85cLW0d6WDhwuAleOV71j2xWs8qMPfK7nKw==
-  dependencies:
-    rimraf "^2.6.3"
 
 tmp@^0.0.33:
   version "0.0.33"
