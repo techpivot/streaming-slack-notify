@@ -1,3 +1,5 @@
+import * as github from '@actions/github';
+import { WebhookPayloadPullRequest, WebhookPayloadPush } from '@octokit/webhooks';
 import {
   ImageElement,
   PlainTextElement,
@@ -6,9 +8,18 @@ import {
   KnownBlock,
   MessageAttachment,
 } from '@slack/types';
-import Webhooks from '@octokit/webhooks';
-import { getReadableDurationString } from '../../common/lib/utils';
-import { GitHubWorkflowRunSummary } from './interfaces';
+import { ActionsListJobsForWorkflowRunResponseJobsItemStepsItem, WorkflowSummaryInterface } from '../src/github/types';
+import { getLastJobOutputIndex, saveLastJobOutputIndex } from '../src/github/artifacts';
+import { COLOR_SUCCESS, COLOR_ERROR, COLOR_IN_PROGRESS, COLOR_QUEUED } from '../const';
+import {
+  getActionBranch,
+  getActionEventName,
+  getGithubRunId,
+  getGithubRepositoryUrl,
+  getGithubRepositoryFullName,
+  getReadableDurationString,
+  getWorkflowName,
+} from '../../utils';
 
 type outputFallbackText = {
   text: string;
@@ -22,18 +33,16 @@ export const getDividerBlock = (): DividerBlock => {
 
 /**
  *
- * @param summary
+ * @param workflowSummary
  */
 export const getTitleBlocks = (
-  summary: GitHubWorkflowRunSummary,
+  workflowSummary: WorkflowSummaryInterface,
   outputFallbackText: outputFallbackText = { text: '' }
 ): KnownBlock[] => {
-  const { status, conclusion, created_at, updated_at } = summary.workflowData;
-  const {
-    workflowName,
-    runId,
-    repository: { owner, repo },
-  } = summary;
+  // Theoretically, we should always be in 'in_progress' stage; however, we mock the completed to handle
+  // consistent UI output in various parts of the output blocks. (See ../github/workflow)
+  const { status, conclusion, created_at, updated_at } = workflowSummary.workflow;
+  const workflowName = getWorkflowName();
   let action;
   let icon = '';
   let clock = '';
@@ -110,7 +119,7 @@ export const getTitleBlocks = (
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `${preDivider}${icon}Workflow *<https://www.github.com/${owner}/${repo}/actions/runs/${runId}|${workflowName}>* ${action}.${clock}`,
+        text: `${preDivider}${icon}Workflow *<${getGithubRepositoryUrl()}/actions/runs/${getGithubRunId()}|${workflowName}>* ${action}.${clock}`,
       },
     },
   ];
@@ -121,23 +130,20 @@ export const getTitleBlocks = (
  *
  * @param workflowSummary
  */
-export const getFallbackText = (summary: GitHubWorkflowRunSummary): string => {
+export const getFallbackText = (workflowSummary: WorkflowSummaryInterface): string => {
   const outputFallbackText = { text: '' };
-  getTitleBlocks(summary, outputFallbackText);
+  getTitleBlocks(workflowSummary, outputFallbackText);
 
   return outputFallbackText.text;
 };
 
-export const getEventSummaryBlocks = (summary: GitHubWorkflowRunSummary): KnownBlock[] => {
-  const {
-    eventName,
-    repository: { owner, repo },
-  } = summary;
+export const getEventSummaryBlocks = (): KnownBlock[] => {
+  const eventName = getActionEventName();
   const elements: MrkdwnElement[] = [];
 
   elements.push({
     type: 'mrkdwn',
-    text: `*<https://www.github.com/${owner}/${repo}|${owner}/${repo}>*`,
+    text: `*<${getGithubRepositoryUrl()}|${getGithubRepositoryFullName()}>*`,
   });
   elements.push({
     type: 'mrkdwn',
@@ -146,18 +152,15 @@ export const getEventSummaryBlocks = (summary: GitHubWorkflowRunSummary): KnownB
 
   switch (eventName) {
     case 'push':
-      {
-        const payload = summary.payload as Webhooks.WebhookPayloadPush;
-        elements.push({
-          type: 'mrkdwn',
-          text: '*Branch*: `' + payload.ref.replace('refs/heads/', '') + '`',
-        });
-      }
+      elements.push({
+        type: 'mrkdwn',
+        text: '*Branch*: `' + getActionBranch() + '`',
+      });
       break;
 
     case 'pull_request':
       {
-        const payload = summary.payload as Webhooks.WebhookPayloadPullRequest;
+        const payload = github.context.payload as WebhookPayloadPullRequest;
         elements.push({
           type: 'mrkdwn',
           text: `*Number*: \`${payload.number}\``,
@@ -174,7 +177,7 @@ export const getEventSummaryBlocks = (summary: GitHubWorkflowRunSummary): KnownB
   ];
 };
 
-const getPushEventDetailBlocks = (payload: Webhooks.WebhookPayloadPush): KnownBlock[] => {
+const getPushEventDetailBlocks = (payload: WebhookPayloadPush): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
   const maxCommits = 2;
   let index = 0;
@@ -235,7 +238,7 @@ const getPushEventDetailBlocks = (payload: Webhooks.WebhookPayloadPush): KnownBl
   return blocks;
 };
 
-const getPullRequestEventDetailBlocks = (payload: Webhooks.WebhookPayloadPullRequest): KnownBlock[] => {
+const getPullRequestEventDetailBlocks = (payload: WebhookPayloadPullRequest): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
 
   const {
@@ -285,31 +288,29 @@ const getPullRequestEventDetailBlocks = (payload: Webhooks.WebhookPayloadPullReq
   return blocks;
 };
 
-export const getEventDetailBlocks = (summary: GitHubWorkflowRunSummary): KnownBlock[] => {
-  const { payload, eventName } = summary;
-
-  switch (eventName) {
+export const getEventDetailBlocks = (): KnownBlock[] => {
+  switch (getActionEventName()) {
     case 'push':
-      return getPushEventDetailBlocks(payload as Webhooks.WebhookPayloadPush);
+      return getPushEventDetailBlocks(github.context.payload as WebhookPayloadPush);
 
     case 'pull_request':
-      return getPullRequestEventDetailBlocks(payload as Webhooks.WebhookPayloadPullRequest);
+      return getPullRequestEventDetailBlocks(github.context.payload as WebhookPayloadPullRequest);
 
     default:
       throw new Error('Unsupported event type');
   }
 };
 
-export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<MessageAttachment> => {
-  const { jobsData } = summary;
+export const getJobAttachments = (workflowSummary: WorkflowSummaryInterface): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
 
-  jobsData.jobs.forEach((job: any) => {
+  workflowSummary.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
+    const lastJobOutputIndex = getLastJobOutputIndex(name) || 0;
     let icon = '';
     let color;
-    let currentStep;
+    let currentStep: ActionsListJobsForWorkflowRunResponseJobsItemStepsItem | undefined;
     let currentStepIndex = 0; // Zero indexed
 
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
@@ -335,9 +336,35 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
       throw new Error('Unable to determine current job step');
     }
 
+    // Update the step name to never display our slack notification name. In order to minimize
+    // the action YAML, our readme/docs don't require naming/IDs. This reduction also allows
+    // the default naming to be consistent. In this case, if we're inside an "in_progress" step and
+    // the current action is actually on itself (or from 1 + n behind) ... let's bump to the next
+    // one which is even more accurate. We use the lastJobOutputIndex stored/saved to make this
+    // even more accurate.
+
+    if (currentStep.name.indexOf('techpivot/streaming-slack-notify') >= 0 && steps[currentStepIndex + 1]) {
+      // We could potentially walk this continously; however, that's silly and if the end-user wants
+      // to notify multiple slack notifies ... well then we'll just have to display that as that's
+      // what we're actually doing.
+
+      // Now, in terms of updating the step: Our current observations are as follows. In a multi-step job,
+      // the first techpivot/streaming-slack-notify will occur spot on; however, subsequent notifications,
+      // typically are slightly late meaning we should display the subsequent notification. However, sometimes
+      // we are spot on and thus we do our best to spread out the progress notifications accordingly. We save
+      // the currentStepIndex and will find the NEXT available.
+      for (let i = Math.max(lastJobOutputIndex, currentStepIndex - 1); i <= currentStepIndex + 1; i += 1) {
+        if (steps[i].name.indexOf('techpivot/streaming-slack-notify') < 0) {
+          console.debug(`Updating step display from "${steps[currentStepIndex].name}" to "${steps[i].name}"`);
+          currentStepIndex = i;
+          break;
+        }
+      }
+    }
+
     switch (status) {
       case 'in_progress':
-        color = '#d2942c';
+        color = COLOR_IN_PROGRESS;
         icon = ':hourglass_flowing_sand:';
         elements.push({
           type: 'mrkdwn',
@@ -357,7 +384,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
 
       case 'queued':
         icon = ':white_circle:';
-        color = '#d2d2d2';
+        color = COLOR_QUEUED;
         elements.push({
           type: 'mrkdwn',
           text: '_Queued_',
@@ -367,7 +394,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
       case 'completed':
         switch (conclusion) {
           case 'success':
-            color = '#28a745';
+            color = COLOR_SUCCESS;
             icon = ':heavy_check_mark:';
             elements.push({
               type: 'mrkdwn',
@@ -376,7 +403,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
             break;
 
           case 'neutral':
-            color = '#28a745';
+            color = COLOR_SUCCESS;
             icon = ':white_check_mark:';
             elements.push({
               type: 'mrkdwn',
@@ -385,7 +412,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
             break;
 
           case 'cancelled':
-            color = '#ea3131';
+            color = COLOR_ERROR;
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
@@ -396,7 +423,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
             break;
 
           case 'failure':
-            color = '#ea3131';
+            color = COLOR_ERROR;
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
@@ -405,7 +432,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
             break;
 
           case 'timed_out':
-            color = '#ea3131';
+            color = COLOR_ERROR;
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
@@ -416,7 +443,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
             break;
 
           case 'action_required':
-            color = '#ea3131';
+            color = COLOR_ERROR;
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
@@ -454,6 +481,9 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
         )}`,
       });
     }
+
+    // Save the current step
+    saveLastJobOutputIndex(name, currentStepIndex);
 
     attachments.push({
       color,

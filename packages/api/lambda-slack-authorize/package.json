@@ -1,5 +1,5 @@
 {
-  "name": "techpivot-streaming-slack-notify-api-slack-authorize",
+  "name": "@techpivot/streaming-slack-notify-api-slack-authorize",
   "version": "0.0.0",
   "description": "Lambda function that responds and authorizes new Slack OAuth2 application requests",
   "repository": {

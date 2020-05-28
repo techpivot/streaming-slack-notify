@@ -1,10 +1,9 @@
 import { Octokit } from '@octokit/rest';
 import { ChatPostMessageArguments, ChatUpdateArguments, WebClient, WebAPICallResult } from '@slack/web-api';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
-import { DynamoDB, SQS } from 'aws-sdk';
+import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
 import Debug from 'debug';
-import { DB_NAME, REGION } from './const';
 import { GitHubWorkflowComplete } from './errors';
 import {
   getFallbackText,
@@ -14,25 +13,21 @@ import {
   getEventDetailBlocks,
   getJobAttachments,
 } from './slack-ui';
-import { getMemoryUsageMb, getReadableElapsedTime, sleep } from './utils';
-import { GitHubWorkflowSummary } from './types';
-const debug = Debug('poller');
+import { GitHubWorkflowRunSummary } from './interfaces';
+import { SQSBody } from '../../common/lib/interfaces';
+import { getMemoryUsageMb, getReadableElapsedTime, sleep } from '../../common/lib/utils';
 
-type SQSBody = {
-  tokenId: string;
-};
+const debug = Debug('poller');
 
 export default class Poller {
   startTime: Date;
+
+  // SQS
   sqs: SQS;
   queueUrl: string;
-  dynamoDbClient: DynamoDB.DocumentClient;
-  tokenId: string;
-  messageBody: string;
-  slackAccessToken?: string;
-  teamName?: string;
-  teamId?: string;
-  slackMessageTimestamp?: string;
+  messageBody: SQSBody;
+
+  // Clients
   octokit?: Octokit;
   slack?: WebClient;
 
@@ -42,17 +37,13 @@ export default class Poller {
       throw new Error('No message body for SQS payload');
     }
 
-    const { tokenId }: SQSBody = JSON.parse(Body);
-    if (!tokenId) {
-      throw new Error('No "tokenId" parameter specified');
-    }
+    // Validate Body
+    const messageBody = JSON.parse(Body);
 
     this.startTime = new Date();
     this.sqs = sqs;
     this.queueUrl = queueUrl;
-    this.messageBody = Body;
-    this.tokenId = tokenId;
-    this.dynamoDbClient = new DynamoDB.DocumentClient({ region: REGION });
+    this.messageBody = messageBody;
   }
 
   async run(ee: EventEmitter): Promise<void> {
@@ -62,142 +53,116 @@ export default class Poller {
 
     try {
       ee.on('drain', drain);
-      await this.initializeRecordData();
-      console.log(this.teamId, `Starting GitHub actions workflow polling for Slack Team: ${this.teamName}`);
-      console.log(this.teamId, `Current Node Memory Usage: ${getMemoryUsageMb()} MB`);
+
+      this.log(`Starting GitHub actions workflow polling for Slack Team: ${this.messageBody.slack.teamName}`);
+      this.log(`Current Node Memory Usage: ${getMemoryUsageMb()} MB`);
 
       let i = 0;
       while (true) {
         debug('Poll Loop #', ++i);
-        const { workflowData, jobsData }: GitHubWorkflowSummary = await this.queryGitHub();
-        await this.updateSlack(workflowData, jobsData);
+        const summary: GitHubWorkflowRunSummary = await this.queryGitHub();
+        await this.updateSlack(summary);
         sleep(2500);
       }
-
     } catch (err) {
       if (err instanceof GitHubWorkflowComplete) {
         debug('GitHub workflow complete');
       } else {
         // This error could potentially be streamed back into the MESSAGE
-        console.error(this.teamId, err);
+        this.logError(err);
       }
     } finally {
       ee.off('drain', drain);
-      console.log(
-        this.teamId,
-        `Completed GitHub actions workflow polling for Slack Team ${this.teamName} in`,
-        getReadableElapsedTime(this.startTime, new Date())
-      );
+
+      const slackTeamName = this.messageBody.slack.teamName;
+      const duration = getReadableElapsedTime(this.startTime, new Date());
+
+      this.log(`Completed GitHub actions workflow polling for Slack Team ${slackTeamName} in ${duration}`);
     }
+  }
+
+  log(message: string): void {
+    console.log(this.messageBody.slack.teamId, message);
+  }
+
+  logError(message: string): void {
+    console.error(this.messageBody.slack.teamId, message);
   }
 
   async drain(signal: string): Promise<void> {
-    console.log(this.teamId, `Active polling thread received ${signal}. Restoring message to queue`);
-    const result = await this.sqs.sendMessage(
-      {
-        MessageBody: this.messageBody,
-        QueueUrl: this.queueUrl,
-      },
-      () => {
-        console.log(arguments);
-      }
-    );
-    console.log(this.teamId, `Successfully restored active workflow job in queue`);
+    this.log(`Active polling thread received ${signal}. Restoring message to queue`);
+    await this.sqs.sendMessage({
+      MessageBody: JSON.stringify(this.messageBody),
+      QueueUrl: this.queueUrl,
+    });
+    this.log(`Successfully restored active workflow job in queue`);
   }
 
-  async initializeRecordData(): Promise<void> {
-    if (this.slackAccessToken && this.teamName && this.teamId) {
-      return;
-    }
-
-    const result = await this.dynamoDbClient
-      .get({
-        TableName: DB_NAME,
-        Key: { id: this.tokenId },
-        ProjectionExpression: 'id, access_token, team_name, team_id',
-      })
-      .promise();
-    if (!result.Item) {
-      throw new Error(`Unable to retrieve database record for token id: ${this.tokenId}:`);
-    }
-
-    this.slackAccessToken = result.Item['access_token'];
-    this.teamName = result.Item['team_name'];
-    this.teamId = result.Item['team_id'];
-
-    // Update the workflow count
-    await this.dynamoDbClient
-      .update({
-        TableName: DB_NAME,
-        Key: { id: this.tokenId },
-        UpdateExpression: 'set workflow_run_count = workflow_run_count + :val',
-        ExpressionAttributeValues: { ':val': 1 },
-      })
-      .promise();
-  }
-
-  async queryGitHub(): Promise<GitHubWorkflowSummary> {
-    debug('Querying GitHub');
+  async queryGitHub(): Promise<GitHubWorkflowRunSummary> {
     if (!this.octokit) {
       this.octokit = new Octokit({
         auth: 'dcf631b9c0d5274a26d6779843afcfe1306966d7',
       });
     }
 
+    const {
+      runId,
+      repository: { owner, repo },
+    } = this.messageBody.github;
     const opts = {
-      run_id: 113438925,
-      owner: 'techpivot',
-      repo: 'streaming-slack-notify',
+      // Currently, GitHub likes this to be a number per there TypeScript definitions. I have a feeling
+      // this will change in the future which is why we have this is a string.
+      run_id: parseInt(runId, 10),
+      owner,
+      repo,
     };
+
+    debug('Querying GitHub');
+
     const [workflow, jobs] = await Promise.all([
       this.octokit.actions.getWorkflowRun(opts),
       this.octokit.actions.listJobsForWorkflowRun(opts),
     ]);
 
-    const jobsData = jobs.data as ActionsListJobsForWorkflowRunResponseData;
-    const workflowData = workflow.data as ActionsGetWorkflowRunResponseData;
+    // Rate Limits: Currently, we query 2 endpoints using REST API v3. Thus, take into account the
+    // poll frequency based on the follwing data:
+    // workflow.headers
+    //      "x-ratelimit-limit": "5000",
+    //      "x-ratelimit-remaining": "4995",
+    //      "x-ratelimit-reset": "1590444834",
+
+    return {
+      ...this.messageBody.github,
+      jobsData: jobs.data as ActionsListJobsForWorkflowRunResponseData,
+      workflowData: workflow.data as ActionsGetWorkflowRunResponseData,
+    };
+  }
+
+  async updateSlack(summary: GitHubWorkflowRunSummary): Promise<void> {
+    if (!this.slack) {
+      this.slack = new WebClient(this.messageBody.slack.accessToken);
+    }
+
+    debug('Building Slack payload');
 
     // Build payload and send to Slack
     const payloadBase = {
       channel: '#builds', //channel,
-      text: getFallbackText(workflowData), // fallback when using blocks
+      text: getFallbackText(summary), // fallback when using blocks
       blocks: [].concat.apply([], [
-        getTitleBlocks(workflowData),
-        getEventSummaryBlocks(),
+        getTitleBlocks(summary),
+        getEventSummaryBlocks(summary),
         getDividerBlock(),
-        getEventDetailBlocks(),
+        getEventDetailBlocks(summary),
         getDividerBlock(),
       ] as Array<any>),
-      attachments: getJobAttachments(jobsData),
+      attachments: getJobAttachments(summary),
     };
 
-    // Check Rate Limits
-    // workflow.headers
-    // poller     "x-ratelimit-limit": "5000",
-    // poller     "x-ratelimit-remaining": "4995",
-    // poller     "x-ratelimit-reset": "1590444834",
+    debug('Sending Slack payload');
 
-    //debug(JSON.stringify(workflow, null, 2));
-    //debug(JSON.stringify(jobs, null, 2));
-
-
-
-    return {
-      workflowData,
-      jobsData,
-    };
-  }
-
-  async updateSlack(workflowData: ActionsGetWorkflowRunResponseData, jobsData: ActionsListJobsForWorkflowRunResponseData): Promise<void> {
-    debug('Posting to Slack');
-    if (!this.slack) {
-      this.slack = new WebClient(this.slackAccessToken);
-    }
-
-    if (workflowData.status === 'completed') {
+    if (summary.workflowData.status === 'completed') {
       throw new GitHubWorkflowComplete();
     }
   }
 }
-
-// { "tokenId": "143cba0f-e40c-4bd2-a8a9-33f190e0c300" }

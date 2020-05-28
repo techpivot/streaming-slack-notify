@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    // Node12 is 100% on ES2019 - https://node.green/#ES2019
+    "target": "ES2019",
+    "module": "commonjs",
+    "strict": true,
+    "noImplicitAny": true,
+    "sourceMap": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules", "dist", "lib", "__tests__", "**/*.test*", "**/*.spec*"]
+}

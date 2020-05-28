@@ -1,14 +1,21 @@
 {
-  "name": "streaming-slack-notify",
+  "name": "@techpivot/streaming-slack-notify",
   "version": "0.0.0",
   "description": "The definitive Github Action for streaming workflow job status to Slack.",
+  "author": "TechPivot",
+  "license": "MIT",
+  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "main": "packages/github-action/index.ts",
   "scripts": {
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint --fix src/**/*.ts",
-    "build:action": "cd packages/github-action && yarn build",
+    "lint": "eslint packages/**/*.ts",
+    "lint:fix": "eslint --fix packages/**/*.ts",
     "format:check": "prettier --check **/*.{ts,js,json,yml,md}",
     "format": "prettier --write -l **/*.{ts,js,json,yml,md}",
+    "build:action": "cd packages/github-action && yarn build",
     "postinstall": "cd packages/api/lambda-slack-authorize && yarn install && cd ../../github-action && yarn install"
   },
   "repository": {
@@ -28,26 +35,19 @@
     "singleQuote": true,
     "printWidth": 120
   },
-  "author": "TechPivot",
-  "license": "MIT",
-  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
   "dependencies": {
-    "@actions/artifact": "^0.3.1",
-    "@actions/core": "^1.2.4",
-    "@actions/github": "^2.1.1",
-    "@octokit/webhooks": "7.4.0",
-    "@slack/web-api": "5.8.1"
+    "@octokit/webhooks": "^7.6.2",
+    "aws-sdk": "^2.679.0"
   },
   "devDependencies": {
-    "@slack/types": "^1.6.0",
-    "@types/node": "^13.13.4",
-    "@typescript-eslint/eslint-plugin": "^2.30.0",
-    "@typescript-eslint/parser": "^2.8.0",
-    "@zeit/ncc": "^0.22.1",
-    "eslint": "6.8.0",
-    "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-prettier": "3.1.3",
-    "prettier": "2.0.5",
-    "typescript": "^3.6.4"
+    "@types/node": "^14.0.5",
+    "@typescript-eslint/eslint-plugin": "^3.0.1",
+    "@typescript-eslint/parser": "^3.0.1",
+    "@octokit/types": "^4.0.2",
+    "eslint": "^7.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.3"
   }
 }

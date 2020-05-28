@@ -2,9 +2,15 @@ import { AWSError, SQS } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import Debug from 'debug';
 import { EventEmitter } from 'events';
-import { autoBind } from './utils';
+import { autoBind } from '../../common/lib/utils';
 import { SQSError, TimeoutError } from './errors';
-import { ConsumerOptions, ReceiveMessageRequest, ReceieveMessageResponse, SQSMessage, TimeoutResponse } from './types';
+import {
+  ConsumerOptions,
+  ReceiveMessageRequest,
+  ReceieveMessageResponse,
+  SQSMessage,
+  TimeoutResponse,
+} from './interfaces';
 
 const debug = Debug('sqs-consumer');
 

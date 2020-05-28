@@ -1,7 +1,3 @@
-import { SSM } from 'aws-sdk';
-import { GetParameterResult } from 'aws-sdk/clients/ssm';
-import { REGION, SSM_PARAMETER_QUEUE_URL } from './const';
-
 export const sleep = async (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
@@ -10,15 +6,11 @@ export const getMemoryUsageMb = () => {
   return Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
 };
 
-const isMethod = (propertyName: string, value: any): boolean => {
-  return propertyName !== 'constructor' && typeof value === 'function';
-};
-
 export const autoBind = (obj: any): void => {
   const propertyNames = Object.getOwnPropertyNames(obj.constructor.prototype);
   propertyNames.forEach((propertyName) => {
     const value = obj[propertyName];
-    if (isMethod(propertyName, value)) {
+    if (propertyName !== 'constructor' && typeof value === 'function') {
       obj[propertyName] = value.bind(obj);
     }
   });
@@ -87,31 +79,4 @@ export const getReadableDurationString = (dateOne: Date, dateTwo: Date): string 
   }
 
   return result.join(' ');
-};
-
-export const getSqsQueueUrl = async (): Promise<string> => {
-  const ssm = new SSM({ region: REGION });
-
-  try {
-    const response: GetParameterResult = await ssm
-      .getParameter({
-        Name: SSM_PARAMETER_QUEUE_URL,
-        WithDecryption: true,
-      })
-      .promise();
-
-    if (!response.Parameter) {
-      throw new Error('Successfully queried parameter store but no Parameter was received');
-    }
-
-    if (!response.Parameter.Value) {
-      throw new Error('Successfully queried parameter store but no Parameter value was received');
-    }
-
-    return response.Parameter.Value;
-  } catch (err) {
-    console.error('Error: Unable to connect to AWS Parameter Store to retrieve queue URL');
-    console.error(err);
-    process.exit(1);
-  }
 };

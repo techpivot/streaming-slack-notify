@@ -1,0 +1,32 @@
+{
+  "name": "@techpivot/streaming-slack-notify-common",
+  "version": "0.0.0",
+  "description": "Shared and common functionality amongst different packages",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/techpivot/streaming-slack-notify.git",
+    "directory": "packages/common"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build --incremental"
+  },
+  "author": "TechPivot",
+  "keywords": [
+    "TechPivot",
+    "GitHub",
+    "Actions",
+    "Slack",
+    "Notify",
+    "Streaming",
+    "Common"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
+  "dependencies": {
+    "@actions/github": "^2.2.0",
+    "aws-sdk": "^2.685.0"
+  },
+  "devDependencies": {}
+}

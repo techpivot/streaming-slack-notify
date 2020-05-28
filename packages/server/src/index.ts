@@ -1,12 +1,11 @@
 import { SQS } from 'aws-sdk';
-import { Consumer } from './consumer';
 import { EventEmitter } from 'events';
-import https from 'https';
-import { REGION } from './const';
+import * as https from 'https';
+import { Consumer } from './consumer';
 import Poller from './poller';
-import { getSqsQueueUrl } from './utils';
+import { REGION } from '../../common/lib/const';
+import { getSqsQueueUrl } from '../../common/lib/ssm';
 
-let queueUrl: string;
 let globalEmitter = new EventEmitter({ captureRejections: true });
 
 const sqs = new SQS({
@@ -21,13 +20,20 @@ const sqs = new SQS({
 });
 
 async function run(): Promise<void> {
-  queueUrl = await getSqsQueueUrl();
+  let queueUrl: string;
+
+  try {
+    queueUrl = await getSqsQueueUrl();
+  } catch (err) {
+    console.error('Error: Unable to connect to AWS Parameter Store to retrieve queue URL');
+    console.error(err);
+    process.exit(1);
+  }
 
   const app = Consumer.create({
     queueUrl,
     batchSize: 10,
     waitTimeSeconds: 20,
-    //visibilityTimeout:
     authenticationErrorTimeout: 10000,
     pollingWaitTimeMs: 0,
     sqs,

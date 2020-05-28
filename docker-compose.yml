@@ -12,8 +12,8 @@ services:
     tty: true
     volumes:
       - .:/app
-      - /app/node_modules
-      - /app/packages/github-action/node_modules
-      - /app/packages/server/node_modules
-      - /app/packages/api/lambda-slack-authorize/node_modules
+      #- /app/node_modules
+      #- /app/packages/github-action/node_modules
+      ##- /app/packages/server/node_modules
+      #- /app/packages/api/lambda-slack-authorize/node_modules
     working_dir: /app
