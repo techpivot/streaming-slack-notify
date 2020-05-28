@@ -7,7 +7,8 @@
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
     "directory": "packages/server"
   },
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
   "scripts": {
     "build": "tsc --build",
     "start": "node dist"

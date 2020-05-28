@@ -1,5 +1,8 @@
 import { WebhookPayload } from '@actions/github/lib/interfaces';
 
+export interface test {
+  ab: string;
+}
 export interface GitHubWorkflowRunData {
   // GitHub Action payload. It's up to the caller to switch on the eventName and cast appropriately.
   payload: WebhookPayload;

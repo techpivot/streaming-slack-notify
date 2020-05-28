@@ -7,9 +7,10 @@
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
     "directory": "packages/github-action"
   },
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "source": "src/index.ts",
   "scripts": {
-    "build": "ncc build --minify --out dist src/index.ts"
+    "build": "tsc --build --incremental && ncc build --minify --out dist src/index.ts"
   },
   "author": "TechPivot",
   "keywords": [
