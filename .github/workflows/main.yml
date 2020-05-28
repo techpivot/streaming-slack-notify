@@ -18,7 +18,7 @@ jobs:
 
       - uses: ./
         with:
-          slack_access_token: ${{ secrets.SLACK_ACCESS_TOKEN }}
+          slack_app_token: ${{ secrets.SLACK_APP_TOKEN }}
           channel: '#builds'
 
       - name: Installing dependencies

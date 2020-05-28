@@ -14,7 +14,7 @@ inputs:
   ###
   ### User configurable options
   ###
-  slack_access_token:
+  slack_app_token:
     description: 'The Slack API token'
     required: true
   channel:
@@ -34,17 +34,9 @@ inputs:
     required: false
 
   ###
-  ### These do not need to be specified from your action references
+  ### Does not need to be specified from your action references
   ###
   GITHUB_TOKEN:
     description: Secret GitHub API token to use for making API requests.
     default: ${{ github.token }}
-    required: true
-  CURRENT_JOB_NAME:
-    description: The current Job name as defined in the shell Job context. This only appears to be specified via the Shell Job context.
-    default: ${{ github.job }}
-    required: true
-  CURRENT_JOB_STATUS:
-    description: The status result as defined in the shell Job context. This is more accurate than the context currently running inside the worker node and thus we specify this as well.
-    default: ${{ job.status }}
     required: true

@@ -1,5 +1,6 @@
+import { getInput } from '@actions/core';
 import * as github from '@actions/github';
-import { GitHubWorkflowRunData } from '../../common/lib/interfaces';
+import { ApiGithubActionRequestData } from '../../common/lib/interfaces';
 
 async function run() {
   const { GITHUB_REPOSITORY } = process.env;
@@ -15,18 +16,22 @@ async function run() {
 
   const repoArr = GITHUB_REPOSITORY.split('/', 2);
 
-  const gitHubRunData: GitHubWorkflowRunData = {
-    payload: github.context.payload,
-    eventName: github.context.eventName,
-    workflowName: github.context.workflow,
-    runId: GITHUB_RUN_ID,
-    repository: {
-      owner: repoArr[0],
-      repo: repoArr[1],
-    }
+  const post: ApiGithubActionRequestData = {
+    githubToken: getInput('GITHUB_TOKEN', { required: true }),
+    appToken: getInput('slack_app_token', { required: true }),
+    github: {
+      payload: github.context.payload,
+      eventName: github.context.eventName,
+      workflowName: github.context.workflow,
+      runId: GITHUB_RUN_ID,
+      repository: {
+        owner: repoArr[0],
+        repo: repoArr[1],
+      },
+    },
   };
 
-  console.log('gitHubRunData', gitHubRunData);
+  console.log('ApiGithubActionRequestData', post);
 }
 
 run();

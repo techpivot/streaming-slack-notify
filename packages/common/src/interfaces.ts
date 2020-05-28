@@ -1,8 +1,5 @@
 import { WebhookPayload } from '@actions/github/lib/interfaces';
 
-export interface test {
-  ab: string;
-}
 export interface GitHubWorkflowRunData {
   // GitHub Action payload. It's up to the caller to switch on the eventName and cast appropriately.
   payload: WebhookPayload;
@@ -35,6 +32,15 @@ export interface SlackTeamData {
   teamId: string;
   // Slack Message timestamp of the original message for the workflow.
   messageTs?: string;
+}
+
+export interface ApiGithubActionRequestData {
+  github: GitHubWorkflowRunData;
+  // This is the TechPivot token ID we use to exchange for the secret slack_access_token stored securely. We
+  // purposely don't use the legacy style "SLACK_ACCESS_TOKEN" verbiage to help prevent confusion.
+  appToken: string;
+  // The GitHub {{github.token}} that is generated for each action which has API access.
+  githubToken: string;
 }
 
 /**

@@ -1,7 +1,6 @@
 import { AWSError, SQS } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
-import { WebhookPayload } from '@actions/github/lib/interfaces';
 import { GitHubWorkflowRunData } from '../../common/src/interfaces';
 
 export interface ConsumerOptions {

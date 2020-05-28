@@ -24,6 +24,7 @@
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
   "dependencies": {
+    "@actions/core": "^1.2.4",
     "@actions/github": "^2.2.0"
   },
   "devDependencies": {

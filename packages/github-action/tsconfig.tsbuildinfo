@@ -186,6 +186,11 @@
         "signature": "1f03b495671c3a1bd24510f38b8947f0991dfd6bf0278c68eca14af15b306e1f",
         "affectsGlobalScope": false
       },
+      "../../node_modules/@actions/core/lib/core.d.ts": {
+        "version": "7fe45e7b7ca127995115e541f53d8867c95d33abcd0343263f349840a4361be1",
+        "signature": "7fe45e7b7ca127995115e541f53d8867c95d33abcd0343263f349840a4361be1",
+        "affectsGlobalScope": false
+      },
       "../../node_modules/@octokit/types/dist-types/RequestMethod.d.ts": {
         "version": "54160aaec4f72e2045e7341301c096344b9e5162a1e48333a531117af5938713",
         "signature": "54160aaec4f72e2045e7341301c096344b9e5162a1e48333a531117af5938713",
@@ -572,12 +577,12 @@
         "affectsGlobalScope": false
       },
       "../common/lib/interfaces.d.ts": {
-        "version": "fd392ab0eb10781edc2d0ff7953e429878b320e0b70acd53394325033ef95aec",
-        "signature": "fd392ab0eb10781edc2d0ff7953e429878b320e0b70acd53394325033ef95aec",
+        "version": "3d411eb397876fb8b65b5b1cfafcbed783acf422de621b9240161a8299f0dc78",
+        "signature": "3d411eb397876fb8b65b5b1cfafcbed783acf422de621b9240161a8299f0dc78",
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "72dc412c28779160db8296fe9c36488bfaf0e018ed9c16d08dac72e381fa21e3",
+        "version": "f4810d1204078d7687f38bd2ec3b849551095dc4ed79dfe4b28639295352b034",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
@@ -631,6 +636,12 @@
       "configFilePath": "./tsconfig.json"
     },
     "referencedMap": {
+      "../../node_modules/@actions/core/lib/core.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@actions/github/lib/context.d.ts": [
         "../../node_modules/@actions/github/lib/interfaces.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
@@ -1530,6 +1541,7 @@
         "../../node_modules/@types/node/util.d.ts"
       ],
       "./src/index.ts": [
+        "../../node_modules/@actions/core/lib/core.d.ts",
         "../../node_modules/@actions/github/lib/github.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
         "../../node_modules/@types/node/ts3.2/fs.d.ts",
@@ -1539,6 +1551,12 @@
       ]
     },
     "exportedModulesMap": {
+      "../../node_modules/@actions/core/lib/core.d.ts": [
+        "../../node_modules/@types/node/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/fs.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts",
+        "../../node_modules/@types/node/util.d.ts"
+      ],
       "../../node_modules/@actions/github/lib/context.d.ts": [
         "../../node_modules/@actions/github/lib/interfaces.d.ts",
         "../../node_modules/@types/node/fs.d.ts",
@@ -2439,6 +2457,7 @@
       ]
     },
     "semanticDiagnosticsPerFile": [
+      "../../node_modules/@actions/core/lib/core.d.ts",
       "../../node_modules/@actions/github/lib/context.d.ts",
       "../../node_modules/@actions/github/lib/github.d.ts",
       "../../node_modules/@actions/github/lib/interfaces.d.ts",
