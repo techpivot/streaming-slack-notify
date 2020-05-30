@@ -1,10 +1,9 @@
 {
-  "callbackWaitsForEmptyEventLoop": true,
   "functionVersion": "$LATEST",
-  "functionName": "techpivot-streaming-slack-notify-slack-authorize",
+  "functionName": "techpivot-streaming-slack-notify-github-action",
   "memoryLimitInMB": "128",
-  "logGroupName": "/aws/lambda/techpivot-streaming-slack-notify-slack-authorize",
-  "logStreamName": "2020/05/19/[$LATEST]186166d0f6e14eac9f37a57a2711eaf7",
-  "invokedFunctionArn": "arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:techpivot-streaming-slack-notify-slack-authorize",
-  "awsRequestId": "41c78673-1a24-4a69-b5d2-dc69a13e7b54"
+  "logGroupName": "/aws/lambda/techpivot-streaming-slack-notify-github-action",
+  "logStreamName": "2020/05/30/[$LATEST]bf0eaebbf664426b9f5d22aa8c376838",
+  "invokedFunctionArn": "arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:techpivot-streaming-slack-notify-github-action",
+  "awsRequestId": "d9988ed5-cd67-4c4a-9edf-76c29ab57cae"
 }

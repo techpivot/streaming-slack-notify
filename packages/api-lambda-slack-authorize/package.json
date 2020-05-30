@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@slack/types": "^1.6.0",
+    "@types/aws-lambda": "^8.10.3",
     "@types/uuid": "^8.0.0"
   }
 }

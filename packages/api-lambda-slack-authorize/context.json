@@ -1,5 +1,4 @@
 {
-  "callbackWaitsForEmptyEventLoop": true,
   "functionVersion": "$LATEST",
   "functionName": "techpivot-streaming-slack-notify-slack-authorize",
   "memoryLimitInMB": "128",
