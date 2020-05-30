@@ -34,3 +34,9 @@ resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_slack_authoriz
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/authorize"
 }
+
+resource "aws_lambda_function_event_invoke_config" "lambda_slack_authorize_invoke_config" {
+  function_name                = aws_lambda_function.lambda_slack_authorize.function_name
+  maximum_event_age_in_seconds = 60
+  maximum_retry_attempts       = 0
+}
