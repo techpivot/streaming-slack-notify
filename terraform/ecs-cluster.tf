@@ -29,9 +29,9 @@ resource "aws_ecs_cluster" "default" {
 }
 
 resource "aws_ecs_task_definition" "default" {
-  family                = "${module.ecs_label.name}-task"
-  tags                  = module.ecs_label.tags
-  network_mode          = "awsvpc"
+  family       = "${module.ecs_label.name}-task"
+  tags         = module.ecs_label.tags
+  network_mode = "awsvpc"
   # The amount (in MiB) of memory to present to the container.
   # If your container attempts to exceed the memory specified here,
   # the container is killed. The total amount of memory reserved for

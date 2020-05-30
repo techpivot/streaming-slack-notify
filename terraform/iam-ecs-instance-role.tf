@@ -1,14 +1,3 @@
-data "aws_iam_policy_document" "ecs_instance_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
 data "aws_iam_policy_document" "ecs_instance_policy" {
   statement {
     sid = "CloudwatchPutMetricData"
@@ -46,7 +35,7 @@ resource "aws_iam_policy" "ecs_instance_policy" {
 
 resource "aws_iam_role" "ecs_instance" {
   name                  = "${var.name}-ecs-instance-role"
-  assume_role_policy    = data.aws_iam_policy_document.ecs_instance_assume_role_policy.json
+  assume_role_policy    = data.aws_iam_policy_document.ec2_assume_role_policy.json
   force_detach_policies = true
 
   lifecycle {

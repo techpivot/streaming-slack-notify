@@ -153,6 +153,11 @@ Bug reports and feature requests via [issues](https://github.com/techpivot/strea
 
 ### Developer Reference
 
+- Project setup is a Monorepo using Yarn workspaces. This works fairly well for shared dependencies,
+  specifically, the `common` package. We resolve using relative paths and not aliases (e.g. `../../common`)
+  as this works 100% of the time cross platform. When using aliases/path resolves it works when
+  compiling but not currently in VSCode. _More investigation is needed to migrate to aliases._
+
 - If you need to run any of the the NPM/Yarn commands on a system
   that may not have anything installed, we provide a docker-compose
   helper.

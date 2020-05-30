@@ -1,5 +1,8 @@
 node_modules/
+lib/
 dist/
 yarn-error.log
 .terraform
+*.d.ts
 *.tfvars
+*.tsbuildinfo

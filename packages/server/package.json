@@ -2,6 +2,9 @@
   "name": "@techpivot/streaming-slack-notify-server",
   "version": "0.0.0",
   "description": "Backend server that polls SQS for new jobs and queries GitHub action status, posting results to Slack",
+  "license": "MIT",
+  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
@@ -29,12 +32,11 @@
     "Streaming",
     "Server"
   ],
-  "license": "MIT",
-  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
   "dependencies": {
     "@actions/github": "^2.2.0",
     "@octokit/rest": "^17.9.2",
     "@slack/web-api": "^5.9.0",
+    "@techpivot/streaming-slack-notify-common": "0.0.0",
     "debug": "^4.1.1",
     "io-ts": "^2.2.3",
     "fp-ts": "^2.6.1"

@@ -35,11 +35,11 @@ resource "aws_dynamodb_table" "default" {
   }
 
   global_secondary_index {
-    name               = "TeamIdIndex"
-    hash_key           = "team_id"
-    write_capacity     = 3
-    read_capacity      = 3
-    projection_type    = "KEYS_ONLY"
+    name            = "TeamIdIndex"
+    hash_key        = "team_id"
+    write_capacity  = 3
+    read_capacity   = 3
+    projection_type = "KEYS_ONLY"
   }
 
   global_secondary_index {

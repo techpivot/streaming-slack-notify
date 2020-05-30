@@ -6,8 +6,7 @@
     "strict": true,
     "noImplicitAny": true,
     "sourceMap": false,
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "moduleResolution": "node"
   },
   "exclude": ["node_modules", "dist", "lib", "__tests__", "**/*.test*", "**/*.spec*"]
 }

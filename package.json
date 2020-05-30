@@ -6,23 +6,28 @@
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/techpivot/streaming-slack-notify.git"
+  },
   "workspaces": [
-    "packages/common",
-    "packages/github-action",
-    "packages/server"
+    "packages/*"
   ],
-  "main": "packages/github-action/index.ts",
+  "main": "packages/github-action/dist/index.ts",
+  "source": "packages/github-action/src/index.ts",
   "scripts": {
     "lint": "eslint packages/**/*.ts",
     "lint:fix": "eslint --fix packages/**/*.ts",
     "format:check": "prettier --check **/*.{ts,js,json,yml,md}",
     "format": "prettier --write -l **/*.{ts,js,json,yml,md}",
-    "build:action": "cd packages/github-action && yarn build",
-    "postinstall": "cd packages/api/lambda-slack-authorize && yarn install && cd ../../github-action && yarn install"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/techpivot/streaming-slack-notify.git"
+    "build:api-lambda-github-action": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-action build",
+    "build:api-lambda-slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize build",
+    "build:github-action": "yarn workspace @techpivot/streaming-slack-notify-github-action build",
+    "build": "npm-run-all --parallel build:*",
+    "package:api-lambda-github-action": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-action package",
+    "package:api-lambda-slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize package",
+    "package:github-action": "yarn workspace @techpivot/streaming-slack-notify-github-action package",
+    "package": "npm-run-all --parallel package:*"
   },
   "keywords": [
     "GitHub",
@@ -42,13 +47,16 @@
     "aws-sdk": "^2.679.0"
   },
   "devDependencies": {
-    "@octokit/types": "^4.0.2",
+    "@octokit/types": "^4.1.1",
     "@types/node": "^14.0.5",
     "@typescript-eslint/eslint-plugin": "^3.0.1",
     "@typescript-eslint/parser": "^3.0.1",
+    "@zeit/ncc": "^0.22.3",
     "eslint": "^7.1.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.3",
+    "node-lambda": "^0.16.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
     "typescript": "^3.9.3"
   }

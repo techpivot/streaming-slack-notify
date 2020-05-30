@@ -10,7 +10,7 @@ module "lambda_slack_authorize_label" {
 }
 
 locals {
-  lambda_slack_authorize_file = "${path.module}/../packages/api/lambda-slack-authorize/dist/techpivot-streaming-slack-notify-api-slack-authorize.zip"
+  lambda_slack_authorize_file          = "${path.module}/../packages/api-lambda-slack-authorize/dist/api-lambda-slack-authorize.zip"
   lambda_slack_authorize_function_name = module.lambda_slack_authorize_label.id
 }
 
@@ -18,9 +18,9 @@ resource "aws_lambda_function" "lambda_slack_authorize" {
   filename         = local.lambda_slack_authorize_file
   source_code_hash = filebase64sha256(local.lambda_slack_authorize_file)
   function_name    = module.lambda_slack_authorize_label.id
-  description      = "Lambda function that responds to new Slack OAuth2 application requests"
+  description      = "Handles the payload from Slack OAuth2 application requests and responds with appropriate success/error templates."
   role             = aws_iam_role.lambda_slack_authorize_role.arn
-  handler          = "lib/index.handler"
+  handler          = "index.handler"
   memory_size      = 128
   timeout          = var.lambda_slack_oauth_authorize_timeout
   runtime          = "nodejs12.x"
@@ -29,7 +29,7 @@ resource "aws_lambda_function" "lambda_slack_authorize" {
 
 resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_slack_authorize" {
   statement_id  = "AllowExecutionFromApiGateway"
-  function_name =  aws_lambda_function.lambda_slack_authorize.function_name
+  function_name = aws_lambda_function.lambda_slack_authorize.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/authorize"

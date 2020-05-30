@@ -1,5 +1,2 @@
-node_modules/
+# We need to checkin dist for the action. Build ahead of time
 !dist/
-yarn-error.log
-.terraform
-*.tfvars

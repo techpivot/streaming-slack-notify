@@ -18,20 +18,20 @@ locals {
     cidrsubnet(local.cidr, 8, index + 100)
   ]
 
-  public_vpc_subnet_ids = module.vpc.public_subnets
-  public_vpc_subnet_ids_length = length(local.public_vpc_subnet_ids)
-  ecs_instance_type_keys = keys(var.ecs_instance_types_with_max_price)
+  public_vpc_subnet_ids         = module.vpc.public_subnets
+  public_vpc_subnet_ids_length  = length(local.public_vpc_subnet_ids)
+  ecs_instance_type_keys        = keys(var.ecs_instance_types_with_max_price)
   ecs_instance_type_keys_length = length(local.ecs_instance_type_keys)
   ecs_launch_config_overrides = [
-    for index in range(local.public_vpc_subnet_ids_length * local.ecs_instance_type_keys_length):
-      {
-        subnet_id     = local.public_vpc_subnet_ids[index % local.public_vpc_subnet_ids_length]
-        instance_type = local.ecs_instance_type_keys[floor(index / local.public_vpc_subnet_ids_length)]
-        spot_price    = var.ecs_instance_types_with_max_price[local.ecs_instance_type_keys[floor(index / local.public_vpc_subnet_ids_length)]]
+    for index in range(local.public_vpc_subnet_ids_length * local.ecs_instance_type_keys_length) :
+    {
+      subnet_id     = local.public_vpc_subnet_ids[index % local.public_vpc_subnet_ids_length]
+      instance_type = local.ecs_instance_type_keys[floor(index / local.public_vpc_subnet_ids_length)]
+      spot_price    = var.ecs_instance_types_with_max_price[local.ecs_instance_type_keys[floor(index / local.public_vpc_subnet_ids_length)]]
 
-      }
+    }
   ]
 
-  ssm_prefix = "/${var.namespace}/${var.name}"
+  ssm_prefix       = "/${var.namespace}/${var.name}"
   ssm_slack_prefix = "${local.ssm_prefix}/prod/slack"
 }

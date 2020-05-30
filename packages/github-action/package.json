@@ -2,6 +2,9 @@
   "name": "@techpivot/streaming-slack-notify-github-action",
   "version": "0.0.0",
   "description": "The GitHub Action that is used for initiating the streaming notifications to Slack",
+  "license": "MIT",
+  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
@@ -10,7 +13,8 @@
   "main": "dist/index.js",
   "source": "src/index.ts",
   "scripts": {
-    "build": "tsc --build --incremental && ncc build --minify --out dist src/index.ts"
+    "build": "tsc --build --incremental",
+    "package": "ncc build --minify --out dist src/index.ts"
   },
   "author": "TechPivot",
   "keywords": [
@@ -21,13 +25,11 @@
     "Notify",
     "Streaming"
   ],
-  "license": "MIT",
-  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
   "dependencies": {
     "@actions/core": "^1.2.4",
-    "@actions/github": "^2.2.0"
+    "@actions/github": "^2.2.0",
+    "axios": "^0.19.2"
   },
   "devDependencies": {
-    "@zeit/ncc": "^0.22.3"
   }
 }

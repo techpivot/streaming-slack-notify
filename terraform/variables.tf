@@ -94,6 +94,12 @@ variable "ecs_asg_desired_capacity" {
 
 variable "lambda_slack_oauth_authorize_timeout" {
   type        = number
-  description = "The number of seconds before the Lambda function times out (Needs to query Slack + Dynamo)"
+  description = "The number of seconds before the Lambda function times out (Needs to query Slack + DynamoDB)"
   default     = 15
+}
+
+variable "lambda_github_action_timeout" {
+  type        = number
+  description = "The number of seconds before the Lambda function times out (Needs to query DynamoDB + SQS)"
+  default     = 10
 }

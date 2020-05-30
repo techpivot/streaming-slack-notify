@@ -1,0 +1,43 @@
+{
+  "name": "@techpivot/streaming-slack-notify-api-lambda-slack-authorize",
+  "version": "0.0.0",
+  "description": "Lambda function that responds and authorizes new Slack OAuth2 application requests",
+  "author": "TechPivot",
+  "license": "MIT",
+  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/techpivot/streaming-slack-notify.git",
+    "directory": "packages/api-lambda-slack-authorize"
+  },
+  "scripts": {
+    "build": "tsc --build && rm -rf ./dist && ncc build --minify --out dist src/index.ts",
+    "package": "node-lambda package --prebuiltDirectory ./dist -n api-lambda-slack-authorize",
+    "test": "yarn build && node-lambda run"
+  },
+  "engines": {
+    "node": "=12"
+  },
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "keywords": [
+    "TechPivot",
+    "streaming-slack-notify",
+    "api",
+    "node",
+    "typescript",
+    "lambda",
+    "slack",
+    "authorize"
+  ],
+  "dependencies": {
+    "@slack/web-api": "^5.8.1",
+    "@techpivot/streaming-slack-notify-common": "0.0.0",
+    "uuid": "^8.1.0"
+  },
+  "devDependencies": {
+    "@slack/types": "^1.6.0",
+    "@types/uuid": "^8.0.0"
+  }
+}
