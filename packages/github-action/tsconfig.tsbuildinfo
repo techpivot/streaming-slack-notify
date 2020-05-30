@@ -592,7 +592,7 @@
         "affectsGlobalScope": false
       },
       "./src/index.ts": {
-        "version": "eb9fe20e95802cb8662e05513556f159414d63bf1d26ce633d55b6f898f8283c",
+        "version": "5d0c844f789397bd35157346f668c82f0c1ff4e3596e71a5a16e237b364e6092",
         "signature": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
         "affectsGlobalScope": false
       },
