@@ -139,7 +139,7 @@ export default class Poller {
   }
 
   async updateSlack(summary: GitHubWorkflowRunSummary): Promise<void> {
-    const { accessToken, ts, username, iconUrl, iconEmoji } = this.messageBody.slack;
+    const { accessToken, channel, ts, username, iconUrl, iconEmoji } = this.messageBody.slack;
 
     if (!this.slack) {
       this.slack = new WebClient(accessToken);
@@ -149,7 +149,7 @@ export default class Poller {
 
     // Build payload and send to Slack
     const payloadBase  = {
-      channel: '#builds', //channel,
+      channel,
       text: getFallbackText(summary), // fallback when using blocks
       blocks: [].concat.apply([], [
         getTitleBlocks(summary),
@@ -166,6 +166,8 @@ export default class Poller {
     let response;
     if (ts) {
       const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts });
+      debug('Slack: update');
+      debug(payload);
 
       response = await this.slack.chat.update(payload) as ChatResponse;
     } else {
@@ -175,10 +177,15 @@ export default class Poller {
         icon_emoji: iconEmoji,
       });
 
+      debug('Slack: postMessage');
+      debug(payload);
+
       response = await this.slack.chat.postMessage(payload) as ChatResponse;
 
-      // Store the ts for future updates
+      // Store the "ts" and "channel" for future updates. The channel gets is searchable in the initial postMessage
+      // request but update requires the channel id which is returned in the response.
       this.messageBody.slack.ts = response.ts;
+      this.messageBody.slack.channel = response.channel;
     }
 
     let error;
