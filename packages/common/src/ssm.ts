@@ -2,8 +2,13 @@ import { SSM } from 'aws-sdk';
 import { GetParameterResult } from 'aws-sdk/clients/ssm';
 import { REGION, SSM_PARAMETER_QUEUE_URL } from './const';
 
+const ssm = new SSM({ region: REGION });
+let queueUrl: string = '';
+
 export const getSqsQueueUrl = async (): Promise<string> => {
-  const ssm = new SSM({ region: REGION });
+  if (queueUrl !== '') {
+    return queueUrl;
+  }
 
   const response: GetParameterResult = await ssm
     .getParameter({
@@ -20,5 +25,7 @@ export const getSqsQueueUrl = async (): Promise<string> => {
     throw new Error('Successfully queried parameter store but no Parameter value was received');
   }
 
-  return response.Parameter.Value;
+  queueUrl = response.Parameter.Value;
+
+  return queueUrl;
 };

@@ -13,9 +13,21 @@ export class BaseError extends Error {
   }
 }
 
-export class BadRequest extends BaseError {
+export class InvalidJsonError extends BaseError {
   constructor(message: string) {
-    super(message, 'BadRequest', 400);
+    super(message, 'InvalidJsonError', 400);
+  }
+}
+
+export class ValidationError extends BaseError {
+  constructor(message: string) {
+    super(message, 'ValidationError', 400);
+  }
+}
+
+export class NotFoundError extends BaseError {
+  constructor(message: string) {
+    super(message, 'NotFoundError', 400);
   }
 }
 

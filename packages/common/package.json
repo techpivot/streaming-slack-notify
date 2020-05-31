@@ -27,7 +27,7 @@
   ],
   "dependencies": {
     "@actions/github": "^2.2.0",
-    "aws-sdk": "^2.685.0"
+    "io-ts": "^2.2.4"
   },
   "devDependencies": {}
 }

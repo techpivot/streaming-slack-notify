@@ -14,7 +14,7 @@ import {
   getJobAttachments,
 } from './slack-ui';
 import { GitHubWorkflowRunSummary } from './interfaces';
-import { SQSBody } from '../../common/lib/interfaces';
+import { SQSBody } from '../../common/lib/types';
 import { getMemoryUsageMb, getReadableElapsedTime, sleep } from '../../common/lib/utils';
 
 const debug = Debug('poller');

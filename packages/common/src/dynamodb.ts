@@ -1,10 +1,12 @@
 import { DynamoDB } from 'aws-sdk';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { REGION, DYNAMODB_TABLE_NAME } from './const';
+import { NotFoundError } from './errors';
+import { DynamoDbGetRecordItem } from './types';
 
 const dynamodb = new DynamoDB.DocumentClient({ region: REGION });
 
-export const getRecordById = async (id: string): Promise<DocumentClient.GetItemOutput> => {
+export const getRecordById = async (id: string): Promise<DynamoDbGetRecordItem> => {
   const result: DocumentClient.GetItemOutput = await dynamodb
     .get({
       TableName: DYNAMODB_TABLE_NAME,
@@ -13,11 +15,17 @@ export const getRecordById = async (id: string): Promise<DocumentClient.GetItemO
     })
     .promise();
 
-  if (!result.Item) {
-    throw new Error(`Unable to retrieve database record for token id: ${id}:`);
+  const { Item } = result;
+  if (!Item) {
+    throw new NotFoundError(`Unable to retrieve database record for token id: ${id}:`);
   }
 
-  return result;
+  return {
+    teamName: Item.team_name,
+    teamId: Item.team_id,
+    id,
+    accessToken: Item.access_token,
+  };
 };
 
 export const incrementWorkflowRunCount = async (id: string, amount: number = 1): Promise<void> => {

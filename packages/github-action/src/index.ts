@@ -1,12 +1,8 @@
 import { setFailed, getInput } from '@actions/core';
 import * as github from '@actions/github';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { ApiGithubActionRequestData } from '../../common/lib/interfaces';
+import { ApiGithubActionRequestData } from '../../common/lib/types';
 import { API_ENDPOINT } from '../../common/lib/const';
-
-function isAxiosError(error: Error): error is AxiosError {
-  return 'response' in error;
-}
 
 async function run() {
   try {
@@ -24,6 +20,7 @@ async function run() {
     const repoArr = GITHUB_REPOSITORY.split('/', 2);
 
     const postData: ApiGithubActionRequestData = {
+      channel: getInput('channel', { required: true }),
       githubToken: getInput('GITHUB_TOKEN', { required: true }),
       appToken: getInput('slack_app_token', { required: true }),
       github: {
@@ -38,14 +35,10 @@ async function run() {
       },
     };
 
-    //console.log('ApiGithubActionRequestData', postData);
-
-    // fetch data from a url endpoint
     const response: AxiosResponse = await axios.post(API_ENDPOINT, postData);
-    console.log('hurrary');
-    console.log('data');
-    //, response);
-    //  const json = await response.json();
+
+    // No need to display anything. Queued and streaming will begin
+
     return response;
   } catch (error) {
     if (error.isAxiosError) {

@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@octokit/webhooks": "^7.6.2",
-    "aws-sdk": "^2.679.0"
+    "aws-sdk": "^2.686.0"
   },
   "devDependencies": {
     "@octokit/types": "^4.1.1",

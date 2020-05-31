@@ -1,7 +1,7 @@
 import { AWSError, SQS } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
-import { GitHubWorkflowRunData } from '../../common/src/interfaces';
+import { GitHubWorkflowRunData } from '../../common/src/types';
 
 export interface ConsumerOptions {
   queueUrl?: string;
