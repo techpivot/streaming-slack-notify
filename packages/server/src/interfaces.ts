@@ -2,6 +2,7 @@ import { AWSError, SQS } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
 import { GitHubWorkflowRunData } from '../../common/src/types';
+import { WebAPICallResult } from '@slack/web-api';
 
 export interface ConsumerOptions {
   queueUrl?: string;
@@ -46,4 +47,17 @@ export interface GitHubWorkflowRunSummary extends GitHubWorkflowRunData {
   jobsData: ActionsListJobsForWorkflowRunResponseData;
   // Data result from: octokit.actions.getWorkflowRun(opts)
   workflowData: ActionsGetWorkflowRunResponseData;
+}
+
+export interface ChatResponse extends WebAPICallResult {
+  ok: boolean;
+  error?: string;
+  channel: string;
+  ts: string;
+  message: {
+    text: string;
+  };
+  response_metadata?: {
+    messages?: string[];
+  };
 }

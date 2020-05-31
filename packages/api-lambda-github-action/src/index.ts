@@ -32,14 +32,19 @@ export const handler = async (event: APIGatewayProxyEvent, context: Context): Pr
 
     const validJsonBody = jsonBody as ApiGithubActionRequestData;
 
+    const { channel, username, iconUrl, iconEmoji, appToken } = validJsonBody;
+
     // Ensure the application token exists
     console.time('DynamoDB Time');
-    const record = await getRecordById(validJsonBody.appToken);
+    const record = await getRecordById(appToken);
     console.timeEnd('DynamoDB Time');
 
     const sqsBody: SQSBody = {
       slack: {
-        channel: validJsonBody.channel,
+        channel,
+        username,
+        iconUrl,
+        iconEmoji,
         ...record,
       },
       github: validJsonBody.github,

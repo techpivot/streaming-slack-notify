@@ -69,20 +69,31 @@ export type SlackTeamData = {
   // The ID of the slack team
   teamId: string;
   // Slack Message timestamp of the original message for the workflow.
-  messageTs?: string;
+  ts?: string;
+  // Optional fields for first chat postMessage
+  username?: string;
+  iconUrl?: string;
+  iconEmoji?: string;
 };
 
-export const ApiGithubActionRequestDataV = t.type({
-  // The Slack channel to stream GitHub actions logs to
-  channel: t.string,
-  // The GitHub workflow run data payload
-  github: GitHubWorkflowRunDataV,
-  // This is the TechPivot token ID we use to exchange for the secret slack_access_token stored securely. We
-  // purposely don't use the legacy style "SLACK_ACCESS_TOKEN" verbiage to help prevent confusion.
-  appToken: t.string,
-  // The GitHub {{github.token}} that is generated for each action which has API access.
-  githubToken: t.string,
-});
+export const ApiGithubActionRequestDataV = t.intersection([
+  t.type({
+    // The Slack channel to stream GitHub actions logs to
+    channel: t.string,
+    // The GitHub workflow run data payload
+    github: GitHubWorkflowRunDataV,
+    // This is the TechPivot token ID we use to exchange for the secret slack_access_token stored securely. We
+    // purposely don't use the legacy style "SLACK_ACCESS_TOKEN" verbiage to help prevent confusion.
+    appToken: t.string,
+    // The GitHub {{github.token}} that is generated for each action which has API access.
+    githubToken: t.string,
+  }),
+  t.partial({
+    username: t.string,
+    iconUrl: t.string,
+    iconEmoji: t.string,
+  })
+]);
 
 export type ApiGithubActionRequestData = t.TypeOf<typeof ApiGithubActionRequestDataV>;
 

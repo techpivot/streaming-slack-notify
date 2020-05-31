@@ -21,6 +21,9 @@ async function run() {
 
     const postData: ApiGithubActionRequestData = {
       channel: getInput('channel', { required: true }),
+      username: getInput('username') === '' ? undefined : getInput('username'),
+      iconUrl: getInput('icon_url') === '' ? undefined : getInput('icon_url'),
+      iconEmoji: getInput('icon_emoji') === '' ? undefined : getInput('icon_emoji'),
       githubToken: getInput('GITHUB_TOKEN', { required: true }),
       appToken: getInput('slack_app_token', { required: true }),
       github: {
@@ -38,6 +41,7 @@ async function run() {
     const response: AxiosResponse = await axios.post(API_ENDPOINT, postData);
 
     // No need to display anything. Queued and streaming will begin
+    console.log('Successfully added Workflow run to the queue');
 
     return response;
   } catch (error) {

@@ -13,8 +13,8 @@
   "main": "dist/index.js",
   "source": "src/index.ts",
   "scripts": {
-    "build": "tsc --build",
-    "start": "node dist"
+    "build": "tsc --build --incremental && ncc build --no-source-map-register --out dist src/index.ts",
+    "start": "yarn build && node dist"
   },
   "prettier": {
     "trailingComma": "es5",

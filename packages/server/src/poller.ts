@@ -1,5 +1,5 @@
 import { Octokit } from '@octokit/rest';
-import { ChatPostMessageArguments, ChatUpdateArguments, WebClient, WebAPICallResult } from '@slack/web-api';
+import { ChatPostMessageArguments, ChatUpdateArguments, WebClient } from '@slack/web-api';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
@@ -13,7 +13,7 @@ import {
   getEventDetailBlocks,
   getJobAttachments,
 } from './slack-ui';
-import { GitHubWorkflowRunSummary } from './interfaces';
+import { GitHubWorkflowRunSummary, ChatResponse } from './interfaces';
 import { SQSBody } from '../../common/lib/types';
 import { getMemoryUsageMb, getReadableElapsedTime, sleep } from '../../common/lib/utils';
 
@@ -37,13 +37,10 @@ export default class Poller {
       throw new Error('No message body for SQS payload');
     }
 
-    // Validate Body
-    const messageBody = JSON.parse(Body);
-
     this.startTime = new Date();
     this.sqs = sqs;
     this.queueUrl = queueUrl;
-    this.messageBody = messageBody;
+    this.messageBody = JSON.parse(Body);
   }
 
   async run(ee: EventEmitter): Promise<void> {
@@ -101,7 +98,7 @@ export default class Poller {
   async queryGitHub(): Promise<GitHubWorkflowRunSummary> {
     if (!this.octokit) {
       this.octokit = new Octokit({
-        auth: 'dcf631b9c0d5274a26d6779843afcfe1306966d7',
+        auth: this.messageBody.githubToken,
       });
     }
 
@@ -139,14 +136,16 @@ export default class Poller {
   }
 
   async updateSlack(summary: GitHubWorkflowRunSummary): Promise<void> {
+    const { accessToken, ts, username, iconUrl, iconEmoji } = this.messageBody.slack;
+
     if (!this.slack) {
-      this.slack = new WebClient(this.messageBody.slack.accessToken);
+      this.slack = new WebClient(accessToken);
     }
 
     debug('Building Slack payload');
 
     // Build payload and send to Slack
-    const payloadBase = {
+    const payloadBase  = {
       channel: '#builds', //channel,
       text: getFallbackText(summary), // fallback when using blocks
       blocks: [].concat.apply([], [
@@ -160,6 +159,33 @@ export default class Poller {
     };
 
     debug('Sending Slack payload');
+
+    let response;
+    if (ts) {
+      const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts });
+
+      response = await this.slack.chat.update(payload) as ChatResponse;
+    } else {
+      const payload: ChatPostMessageArguments = Object.assign({}, payloadBase, {
+        username,
+        icon_url: iconUrl,
+        icon_emoji: iconEmoji,
+      });
+
+      response = await this.slack.chat.postMessage(payload) as ChatResponse;
+    }
+
+    let error;
+    if (response.error) {
+      error = response.error;
+      if (response.response_metadata && response.response_metadata.messages) {
+        error += `: ${response.response_metadata.messages[0]}`;
+      }
+    }
+
+    if (error != undefined) {
+      throw new Error(`Unable to post message to Slack${error !== null ? ': ' + error : ''}\n`);
+    }
 
     if (summary.workflowData.status === 'completed') {
       throw new GitHubWorkflowComplete();

@@ -49,20 +49,15 @@ async function run(): Promise<void> {
     },
   });
 
-  app.on('response_processed', () => {
-    console.log('processed');
-  });
-
   // SQS Errors
   app.on('error', (err) => {
+    // @todo Fixme
     // potentially handle deletes here
     console.error('1 sqs error', err.message);
   });
 
-  // Timeout Error
-  app.on('timeout_error', (err) => {
-    console.error('2 timeout', err.message);
-  });
+  // Timeout Error. Currently not specifying a timeout so we won't have any of these
+  // app.on('timeout_error', (err) => {});
 
   // We handle uncaught processing errors here. In general, since we're explicitly wrapping our Poller.run()
   // in a try/catch, this yields really only constructor() errors.
@@ -99,7 +94,8 @@ async function run(): Promise<void> {
   };
 
   // Register signal handlers
-  process.on('SIGINT', () => drainActivePollers('SIGINT'));
+
+  // ECS host sends the SIGTERM signal to the docker container
   process.on('SIGTERM', () => drainActivePollers('SIGTERM'));
 
   app.start();
