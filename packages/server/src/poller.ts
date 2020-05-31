@@ -23,7 +23,8 @@ export default class Poller {
   startTime: Date;
 
   // Time in ms between updates
-  intervalTime: number = 1200;
+  defaultIntervalTime: number = 1200;
+  nextIntervalTime: number = this.defaultIntervalTime;
 
   // SQS
   sqs: SQS;
@@ -62,7 +63,8 @@ export default class Poller {
         debug('Poll Loop #', ++i);
         const summary: GitHubWorkflowRunSummary = await this.queryGitHub();
         await this.updateSlack(summary);
-        await sleep(this.intervalTime);
+        await sleep(this.nextIntervalTime);
+        this.nextIntervalTime = this.defaultIntervalTime;
       }
     } catch (err) {
       if (err instanceof GitHubWorkflowComplete) {
@@ -101,7 +103,7 @@ export default class Poller {
   async queryGitHub(): Promise<GitHubWorkflowRunSummary> {
     if (!this.octokit) {
       this.octokit = new Octokit({
-        auth: '5de87eb6a8b4c209b8b1e9c41ca1a8103fa6c3f5', // this.messageBody.githubToken,
+        auth: '8c3208e3362e99b979e3901224dfa50d87829ad8', // this.messageBody.githubToken,
       });
     }
 
@@ -126,10 +128,16 @@ export default class Poller {
 
     // Rate Limits: Currently, we query 2 endpoints using REST API v3. Thus, take into account the
     // poll frequency based on the follwing data:
-    // workflow.headers
-    //      "x-ratelimit-limit": "5000",        // The maximum number of requests you're permitted to make per hour.
-    //      "x-ratelimit-remaining": "4995",    // Remaining	The number of requests remaining in the current rate limit window.
-    //      "x-ratelimit-reset": "1590444834",  // The time at which the current rate limit window resets in UTC epoch seconds.
+
+    //  "x-ratelimit-limit": "5000",        // The maximum number of requests you're permitted to make per hour.
+    //  "x-ratelimit-remaining": "4995",    // Remaining	The number of requests remaining in the current rate limit window.
+    //  "x-ratelimit-reset": "1590444834",  // The time at which the current rate limit window resets in UTC epoch seconds.
+
+    // Some Notes:
+    //  Rate limit for public unauth requests = 60
+    //  Rate limit for GitHub Actions token = 1000
+    //  Rate limit for Personal Access token = 5000
+    //  Rate limit for application
 
     const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
     const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
@@ -201,6 +209,14 @@ export default class Poller {
 
     if (error != undefined) {
       throw new Error(`Unable to post message to Slack${error !== null ? ': ' + error : ''}\n`);
+    }
+
+    // If the last job was successful, it takes about 200ms to mark workflow complete. So instead of waiting
+    // 1 to 2 seconds, decrease the interval time.
+    const lastJob = summary.jobsData.jobs[summary.jobsData.jobs.length];
+    if (lastJob.status === 'completed') {
+      debug('Decreasing interval time to 250ms');
+      this.nextIntervalTime = 250;
     }
 
     if (summary.workflowData.status === 'completed') {
