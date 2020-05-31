@@ -312,6 +312,9 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
     let currentStep;
     let currentStepIndex = 0; // Zero indexed
 
+    console.log('>>', status, conclusion);
+    console.log('>>>', steps);
+
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
       switch (steps[i].status) {
         case 'completed':
