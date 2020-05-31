@@ -101,7 +101,7 @@ export default class Poller {
   async queryGitHub(): Promise<GitHubWorkflowRunSummary> {
     if (!this.octokit) {
       this.octokit = new Octokit({
-        auth: '1631ae67803abdd21a2b5ea328e576fc751d557d', // this.messageBody.githubToken,
+        auth: '5de87eb6a8b4c209b8b1e9c41ca1a8103fa6c3f5', // this.messageBody.githubToken,
       });
     }
 
