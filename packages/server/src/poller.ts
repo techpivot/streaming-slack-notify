@@ -127,9 +127,14 @@ export default class Poller {
     // Rate Limits: Currently, we query 2 endpoints using REST API v3. Thus, take into account the
     // poll frequency based on the follwing data:
     // workflow.headers
-    //      "x-ratelimit-limit": "5000",
-    //      "x-ratelimit-remaining": "4995",
-    //      "x-ratelimit-reset": "1590444834",
+    //      "x-ratelimit-limit": "5000",        // The maximum number of requests you're permitted to make per hour.
+    //      "x-ratelimit-remaining": "4995",    // Remaining	The number of requests remaining in the current rate limit window.
+    //      "x-ratelimit-reset": "1590444834",  // The time at which the current rate limit window resets in UTC epoch seconds.
+
+    const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || "", 10);
+    const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
+    debug(`GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req per hour`);
+    debug(`GitHub Queries Remaining: ${Math.min(remaining1, remaining2)}`);
 
     return {
       ...this.messageBody.github,
@@ -167,7 +172,6 @@ export default class Poller {
     if (ts) {
       const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts });
       debug('Slack: update');
-      debug(payload);
 
       response = await this.slack.chat.update(payload) as ChatResponse;
     } else {
@@ -178,7 +182,6 @@ export default class Poller {
       });
 
       debug('Slack: postMessage');
-      debug(payload);
 
       response = await this.slack.chat.postMessage(payload) as ChatResponse;
 
