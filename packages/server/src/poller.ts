@@ -131,7 +131,7 @@ export default class Poller {
     //      "x-ratelimit-remaining": "4995",    // Remaining	The number of requests remaining in the current rate limit window.
     //      "x-ratelimit-reset": "1590444834",  // The time at which the current rate limit window resets in UTC epoch seconds.
 
-    const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || "", 10);
+    const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
     const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
     debug(`GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req per hour`);
     debug(`GitHub Queries Remaining: ${Math.min(remaining1, remaining2)}`);
@@ -153,7 +153,7 @@ export default class Poller {
     debug('Building Slack payload');
 
     // Build payload and send to Slack
-    const payloadBase  = {
+    const payloadBase = {
       channel,
       text: getFallbackText(summary), // fallback when using blocks
       blocks: [].concat.apply([], [
@@ -173,7 +173,7 @@ export default class Poller {
       const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts });
       debug('Slack: update');
 
-      response = await this.slack.chat.update(payload) as ChatResponse;
+      response = (await this.slack.chat.update(payload)) as ChatResponse;
     } else {
       const payload: ChatPostMessageArguments = Object.assign({}, payloadBase, {
         username,
@@ -183,7 +183,7 @@ export default class Poller {
 
       debug('Slack: postMessage');
 
-      response = await this.slack.chat.postMessage(payload) as ChatResponse;
+      response = (await this.slack.chat.postMessage(payload)) as ChatResponse;
 
       // Store the "ts" and "channel" for future updates. The channel gets is searchable in the initial postMessage
       // request but update requires the channel id which is returned in the response.

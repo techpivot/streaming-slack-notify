@@ -92,7 +92,7 @@ export const ApiGithubActionRequestDataV = t.intersection([
     username: t.string,
     iconUrl: t.string,
     iconEmoji: t.string,
-  })
+  }),
 ]);
 
 export type ApiGithubActionRequestData = t.TypeOf<typeof ApiGithubActionRequestDataV>;

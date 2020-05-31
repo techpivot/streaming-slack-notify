@@ -8,7 +8,7 @@ import {
 } from '@slack/types';
 import Webhooks from '@octokit/webhooks';
 import { getReadableDurationString } from '../../common/lib/utils';
-import { GitHubWorkflowRunSummary } from './interfaces';
+import { ActionsConclusion, ActionsStatus, GitHubWorkflowRunSummary } from './interfaces';
 
 type outputFallbackText = {
   text: string;
@@ -316,8 +316,29 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
     console.log('>>>', steps);
 
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
-      switch (steps[i].status) {
+      const conclusion: ActionsConclusion = steps[i].conclusion;
+      const status: ActionsStatus = steps[i].status;
+
+      switch (status) {
         case 'completed':
+          switch (conclusion) {
+            case 'skipped':
+              break stepLoop;
+
+            case 'failure':
+            case 'success':
+            case 'failure':
+            case 'neutral':
+            case 'cancelled':
+            case 'timed_out':
+            case 'action_required':
+              if (!currentStep || steps[i].number > currentStep.number) {
+                currentStepIndex = i;
+                currentStep = steps[i];
+              }
+          }
+          break;
+
         case 'in_progress':
           if (!currentStep || steps[i].number > currentStep.number) {
             currentStepIndex = i;
@@ -332,6 +353,8 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
           break stepLoop;
       }
     }
+
+    console.log('>>>> current index');
 
     if (!currentStep) {
       // This will never happen just type safety

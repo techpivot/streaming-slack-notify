@@ -35,6 +35,7 @@ export type ActionsStatus = 'queued' | 'in_progress' | 'completed';
 
 export type ActionsConclusion =
   | null
+  | 'skipped'
   | 'success'
   | 'failure'
   | 'neutral'
