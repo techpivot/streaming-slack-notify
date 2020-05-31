@@ -86,7 +86,7 @@ export const ApiGithubActionRequestDataV = t.type({
 
 export type ApiGithubActionRequestData = t.TypeOf<typeof ApiGithubActionRequestDataV>;
 
-export type ApiGithubActionResponse = {
+export type ApiGithubActionResponseData = {
   ok: boolean;
   error?: {
     message: string;

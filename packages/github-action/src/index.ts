@@ -1,7 +1,7 @@
 import { setFailed, getInput } from '@actions/core';
 import * as github from '@actions/github';
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { ApiGithubActionRequestData } from '../../common/lib/types';
+import { ApiGithubActionRequestData, ApiGithubActionResponseData } from '../../common/lib/types';
 import { API_ENDPOINT } from '../../common/lib/const';
 
 async function run() {
@@ -43,12 +43,20 @@ async function run() {
   } catch (error) {
     if (error.isAxiosError) {
       const axiosError: AxiosError = error;
+      let errorMessage = 'Unknown error';
       if (axiosError.response !== undefined) {
-        console.log(axiosError.response);
-        setFailed(`Unable to post to API endpoint: ${axiosError.response.data.message}`);
-      } else {
-        setFailed(`Unable to post to API endpoint: Unknown error`);
+        try {
+          const data = JSON.parse(axiosError.response.data) as ApiGithubActionResponseData;
+          if (data.error && data.error.name && data.error.message) {
+            errorMessage = `[${data.error.name}] ${data.error.message}`;
+          }
+        } catch (err) {
+          // Ignore, redisplay original error
+        }
+
+        setFailed(`Unable to post to API endpoint: ${errorMessage}`);
       }
+      setFailed(`Unable to post to API endpoint: ${errorMessage}`);
     } else {
       setFailed(error);
     }

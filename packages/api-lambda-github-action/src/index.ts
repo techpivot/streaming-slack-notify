@@ -5,7 +5,7 @@ import { getRecordById } from '../../common/lib/dynamodb';
 import { BaseError, ValidationError } from '../../common/lib/errors';
 import { addToQueue } from '../../common/lib/sqs';
 import {
-  ApiGithubActionResponse,
+  ApiGithubActionResponseData,
   ApiGithubActionRequestData,
   ApiGithubActionRequestDataV,
   SQSBody,
@@ -13,7 +13,7 @@ import {
 
 export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
   let statusCode: number = 200;
-  let body: ApiGithubActionResponse = {
+  let body: ApiGithubActionResponseData = {
     ok: true,
   };
 
