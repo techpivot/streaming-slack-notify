@@ -23,7 +23,7 @@ export default class Poller {
   startTime: Date;
 
   // Time in ms between updates
-  intervalTime: number = 1800;
+  intervalTime: number = 1200;
 
   // SQS
   sqs: SQS;
