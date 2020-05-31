@@ -214,7 +214,7 @@ export default class Poller {
     // If the last job was successful, it takes about 200ms to mark workflow complete. So instead of waiting
     // 1 to 2 seconds, decrease the interval time.
     const lastJob = summary.jobsData.jobs[summary.jobsData.jobs.length];
-    if (lastJob.status === 'completed') {
+    if (lastJob !== undefined && lastJob.status === 'completed') {
       debug('Decreasing interval time to 250ms');
       this.nextIntervalTime = 250;
     }
