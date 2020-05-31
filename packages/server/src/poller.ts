@@ -22,6 +22,9 @@ const debug = Debug('poller');
 export default class Poller {
   startTime: Date;
 
+  // Time in ms between updates
+  intervalTime: number = 1800;
+
   // SQS
   sqs: SQS;
   queueUrl: string;
@@ -59,7 +62,7 @@ export default class Poller {
         debug('Poll Loop #', ++i);
         const summary: GitHubWorkflowRunSummary = await this.queryGitHub();
         await this.updateSlack(summary);
-        sleep(2500);
+        await sleep(this.intervalTime);
       }
     } catch (err) {
       if (err instanceof GitHubWorkflowComplete) {
@@ -173,6 +176,9 @@ export default class Poller {
       });
 
       response = await this.slack.chat.postMessage(payload) as ChatResponse;
+
+      // Store the ts for future updates
+      this.messageBody.slack.ts = response.ts;
     }
 
     let error;
