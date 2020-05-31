@@ -46,15 +46,16 @@ async function run() {
       let errorMessage = 'Unknown error';
       if (axiosError.response !== undefined) {
         try {
+          console.log(axiosError.response.data);
           const data = JSON.parse(axiosError.response.data) as ApiGithubActionResponseData;
+          console.log('>>>', data);
           if (data.error && data.error.name && data.error.message) {
             errorMessage = `[${data.error.name}] ${data.error.message}`;
           }
         } catch (err) {
+          console.log('>>.', err);
           // Ignore, redisplay original error
         }
-
-        setFailed(`Unable to post to API endpoint: ${errorMessage}`);
       }
       setFailed(`Unable to post to API endpoint: ${errorMessage}`);
     } else {
