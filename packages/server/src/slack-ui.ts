@@ -354,8 +354,6 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
       }
     }
 
-    console.log('>>>> current index');
-
     if (!currentStep) {
       // This will never happen just type safety
       throw new Error('Unable to determine current job step');
