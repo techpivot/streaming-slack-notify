@@ -18,6 +18,7 @@ resource "aws_iam_role_policy" "ecs_task_dynamodb_policy" {
     "Statement": [
       {
         "Action": [
+          "dynamodb:GetItem",
           "dynamodb:PutItem"
         ],
         "Effect": "Allow",
@@ -38,7 +39,7 @@ resource "aws_iam_role_policy" "ecs_task_ssm_policy" {
     "Statement": [
       {
         "Action": [
-          "dynamodb:GetParameter"
+          "ssm:GetParameter"
         ],
         "Effect": "Allow",
         "Resource": "${aws_ssm_parameter.queue_url.arn}"

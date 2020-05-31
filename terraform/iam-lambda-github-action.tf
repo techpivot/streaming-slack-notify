@@ -34,7 +34,7 @@ resource "aws_iam_role_policy" "lambda_github_action_role_cloudwatch_policy" {
 }
 
 resource "aws_iam_role_policy" "lambda_github_action_role_dynamodb_policy" {
-  name = "dynamodb-policy"
+  name = "sqs-policy"
   role = aws_iam_role.lambda_github_action_role.id
 
   policy = <<-EOF
@@ -48,6 +48,29 @@ resource "aws_iam_role_policy" "lambda_github_action_role_dynamodb_policy" {
         ],
         "Resource": [
           "${aws_dynamodb_table.default.arn}"
+        ],
+        "Effect": "Allow"
+      }
+    ]
+  }
+  EOF
+}
+
+
+resource "aws_iam_role_policy" "lambda_github_action_role_sqs_policy" {
+  name = "sqs-policy"
+  role = aws_iam_role.lambda_github_action_role.id
+
+  policy = <<-EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": [
+          "sqs:sendMessage"
+        ],
+        "Resource": [
+          "${aws_sqs_queue.default.arn}"
         ],
         "Effect": "Allow"
       }
