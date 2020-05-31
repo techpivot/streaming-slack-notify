@@ -58,7 +58,6 @@ async function run() {
       }
 
       setFailed(`Unable to post to API endpoint: ${errorMessage}`);
-
     } else {
       setFailed(error);
     }

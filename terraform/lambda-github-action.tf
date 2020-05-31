@@ -24,7 +24,12 @@ resource "aws_lambda_function" "lambda_github_action" {
   memory_size      = 128
   timeout          = var.lambda_slack_oauth_authorize_timeout
   runtime          = "nodejs12.x"
-  tags             = module.lambda_github_action_label.tags
+  environment {
+    variables = {
+      queue_url = aws_sqs_queue.default.id
+    }
+  }
+  tags = module.lambda_github_action_label.tags
 }
 
 resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_github_action" {
