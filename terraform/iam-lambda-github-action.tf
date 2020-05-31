@@ -34,7 +34,7 @@ resource "aws_iam_role_policy" "lambda_github_action_role_cloudwatch_policy" {
 }
 
 resource "aws_iam_role_policy" "lambda_github_action_role_dynamodb_policy" {
-  name = "sqs-policy"
+  name = "dynamodb-policy"
   role = aws_iam_role.lambda_github_action_role.id
 
   policy = <<-EOF
