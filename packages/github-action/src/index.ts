@@ -44,6 +44,7 @@ async function run() {
     if (error.isAxiosError) {
       const axiosError: AxiosError = error;
       if (axiosError.response !== undefined) {
+        console.log(axiosError.response);
         setFailed(`Unable to post to API endpoint: ${axiosError.response.data.message}`);
       } else {
         setFailed(`Unable to post to API endpoint: Unknown error`);

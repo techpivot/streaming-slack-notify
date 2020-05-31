@@ -53,15 +53,16 @@ export const handler = async (event: APIGatewayProxyEvent, context: Context): Pr
 
     // All done!
   } catch (error) {
-    // Log the full error in CloudWatch
-    console.error(error);
-
     // If the error is one of our errors, display appropriately; Otherwise, throw 500
     if (error instanceof BaseError) {
       statusCode = error.getStatusCode();
     } else {
       statusCode = 500;
     }
+
+    // Log the full error in CloudWatch
+    console.error(error);
+    console.error('Returning with statusCode: ' + statusCode);
 
     body.ok = false;
     body.error = {
