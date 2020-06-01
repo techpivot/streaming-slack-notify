@@ -220,7 +220,7 @@
   resolved "https://registry.yarnpkg.com/@slack/types/-/types-1.6.0.tgz#7b5f08db824d9853cbf6c2de1c08865ba6ce346f"
   integrity sha512-SrrAD/ZxDN4szQ35V/mY2TvKSyGsUWP8def1C8NMg9AvdYG0VyaL5f+Dd6jw8STosMFXd3zqjekMowT9LB9/IQ==
 
-"@slack/web-api@^5.8.1", "@slack/web-api@^5.9.0":
+"@slack/web-api@^5.8.1":
   version "5.9.0"
   resolved "https://registry.yarnpkg.com/@slack/web-api/-/web-api-5.9.0.tgz#13ce1eecc405c3972e6037d54338344d7859a3b5"
   integrity sha512-gIRvuA9wGtp4S/Zc+zfT59IaGHYzNxjob2QxoJlc3JZ3BLuPMa6Lw81YBV0xutJvUVFPX2ytW27KAUakvi5ZMA==
@@ -1378,7 +1378,7 @@ inquirer@^7.0.0:
     strip-ansi "^6.0.0"
     through "^2.3.6"
 
-io-ts@^2.2.3, io-ts@^2.2.4:
+io-ts@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.2.4.tgz#c9b5390b8c60b9976ad03f670a6b976fe50d4083"
   integrity sha512-a8A/3jekTgSPfQ+OG40sTiX2gohXZz89X1+TfKsWJ/vpA2dBilBkrGYPiDE8OaKMMG7xm5ma3SAZL5eNr4Bi2w==

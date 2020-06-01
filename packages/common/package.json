@@ -24,10 +24,5 @@
     "Notify",
     "Streaming",
     "Common"
-  ],
-  "dependencies": {
-    "@actions/github": "^2.2.0",
-    "io-ts": "^2.2.4"
-  },
-  "devDependencies": {}
+  ]
 }

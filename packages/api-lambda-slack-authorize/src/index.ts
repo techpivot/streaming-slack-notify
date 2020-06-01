@@ -1,30 +1,23 @@
+import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
-import { BadRequest, BaseError } from './errors';
-import { Context, Event, OauthV2AccessResponse } from './types';
-import { generateReadableSlackError, getSlackSecrets, parseTemplate, saveOauthV2AccessResponse } from './utils';
 
-export const handler = async (event: Event, context: Context): Promise<any> => {
+import { parseTemplate } from './utils';
+
+import { insertRecord } from '../../common/lib/dynamodb';
+import { generateReadableSlackError, ValidationError, BaseError } from '../../common/lib/errors';
+import { getSlackAppSecrets } from '../../common/lib/ssm';
+import { SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
+
+export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
   let statusCode: number = 200;
   let body: string = '';
-  const isBase64Encoded: boolean = false;
-  const cookies: string[] = [];
-  const headers = {
-    Server: 'TechPivot',
-    'Content-Type': 'text/html',
-  };
 
   try {
-    // Parse the region from context since we don't have Regions global mocked locally
-    if (!context || !context['invokedFunctionArn']) {
-      throw new BadRequest('Invalid context payload.');
-    }
-
     if (!event.queryStringParameters || !event.queryStringParameters.code) {
-      throw new BadRequest('No "code" query parameter specified.');
+      throw new ValidationError('No "code" query parameter specified.');
     }
 
-    const region = context['invokedFunctionArn'].split(':')[3];
-    const { client_id, client_secret, signing_secret } = await getSlackSecrets(region);
+    const { client_id, client_secret, signing_secret } = await getSlackAppSecrets();
 
     // Exchange code for token
     // Reference: https://api.slack.com/methods/oauth.v2.access
@@ -37,17 +30,15 @@ export const handler = async (event: Event, context: Context): Promise<any> => {
 
     let response;
     try {
-      response = (await client.oauth.v2.access(options)) as OauthV2AccessResponse;
+      response = (await client.oauth.v2.access(options)) as SlackApiOauthV2AccessResponseData;
     } catch (error) {
-      console.error('======== Original Error ========');
       console.error(error);
       throw generateReadableSlackError(error);
     }
 
-    const token = await saveOauthV2AccessResponse(region, response);
+    const token = await insertRecord(response);
     console.log(`Generated token [${token}] for team ID: ${response.team.id}`);
 
-    statusCode = 200;
     body = parseTemplate('success.html', {
       token,
     });
@@ -66,19 +57,13 @@ export const handler = async (event: Event, context: Context): Promise<any> => {
       errorType: error.name || error.code || 'Unknown error type',
     });
   } finally {
-    const { DEVELOPMENT } = process.env;
-
-    if (DEVELOPMENT === 'true') {
-      return {
-        statusCode,
-      };
-    }
-
     return {
       statusCode,
-      isBase64Encoded,
-      cookies,
-      headers,
+      isBase64Encoded: false,
+      headers: {
+        Server: 'TechPivot',
+        'Content-Type': 'text/html',
+      },
       body,
     };
   }

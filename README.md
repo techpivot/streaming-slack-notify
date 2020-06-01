@@ -34,6 +34,7 @@
 </p>
 
 ## Overview
+
 1. [Motivation](#motivation)
 1. [Sample Output](#sample-output)
 1. [Features](#features)
@@ -67,7 +68,6 @@ Default output if you've not set any attachment will look like this.
 ## Usage
 
 ### Create Slack API Token
-
 
 ### Save API Token in GitHub Secrets
 

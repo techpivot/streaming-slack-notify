@@ -1,8 +1,12 @@
 import * as t from 'io-ts';
 import { WebhookPayload } from '@actions/github/lib/interfaces';
+import { WebAPICallResult } from '@slack/web-api';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GitHub
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // A transform of  { WebhookPayload } @actions/github/lib/interfaces
-
 const WebhookPayloadV = t.partial({});
 
 export const GitHubWorkflowRunDataV = t.type({
@@ -49,33 +53,6 @@ export type GitHubWorkflowRunData = {
   };
 };
 
-export type DynamoDbGetRecordItem = {
-  teamName: string;
-  teamId: string;
-  id: string;
-  accessToken: string;
-};
-
-export type SlackTeamData = {
-  // The Slack channel for sending message
-  channel: string;
-  // The Slack access token
-  accessToken: string;
-  // The DynamoDB record ID. Resent in case this is needed for potentially updating the
-  // record on the server side.
-  id: string;
-  // The name of the slack team
-  teamName: string;
-  // The ID of the slack team
-  teamId: string;
-  // Slack Message timestamp of the original message for the workflow.
-  ts?: string;
-  // Optional fields for first chat postMessage
-  username?: string;
-  iconUrl?: string;
-  iconEmoji?: string;
-};
-
 export const ApiGithubActionRequestDataV = t.intersection([
   t.type({
     // The Slack channel to stream GitHub actions logs to
@@ -104,6 +81,66 @@ export type ApiGithubActionResponseData = {
     name: string;
   };
 };
+
+export type DynamoDbGetRecordItem = {
+  teamName: string;
+  teamId: string;
+  id: string;
+  accessToken: string;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Slack
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type SlackSecrets = {
+  client_id: string;
+  client_secret: string;
+  signing_secret: string;
+};
+
+export interface SlackApiOauthV2AccessResponseData extends WebAPICallResult {
+  app_id: string;
+  authed_user: {
+    id: string;
+  };
+  scope: string;
+  token_type: 'bot';
+  access_token: string;
+  bot_user_id: string;
+  team: {
+    id: string;
+    name: string;
+  };
+  enterprise?: {
+    id: string;
+    name: string;
+  };
+}
+
+export type SlackTeamData = {
+  // The Slack channel for sending message
+  channel: string;
+  // The Slack access token
+  accessToken: string;
+  // The DynamoDB record ID. Resent in case this is needed for potentially updating the
+  // record on the server side.
+  id: string;
+  // The name of the slack team
+  teamName: string;
+  // The ID of the slack team
+  teamId: string;
+  // Slack Message timestamp of the original message for the workflow.
+  ts?: string;
+  // Optional fields for first chat postMessage
+  username?: string;
+  iconUrl?: string;
+  iconEmoji?: string;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SQS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Since the server never queries DynamoDB (the Lambda will ensure the record exists and pluck the

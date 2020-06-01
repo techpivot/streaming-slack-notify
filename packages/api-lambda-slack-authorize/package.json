@@ -30,15 +30,5 @@
     "lambda",
     "slack",
     "authorize"
-  ],
-  "dependencies": {
-    "@slack/web-api": "^5.8.1",
-    "@techpivot/streaming-slack-notify-common": "0.0.0",
-    "uuid": "^8.1.0"
-  },
-  "devDependencies": {
-    "@slack/types": "^1.6.0",
-    "@types/aws-lambda": "^8.10.3",
-    "@types/uuid": "^8.0.0"
-  }
+  ]
 }

@@ -1,6 +1,7 @@
 import { SSM } from 'aws-sdk';
-import { GetParameterResult } from 'aws-sdk/clients/ssm';
+import { GetParameterResult, GetParametersRequest, GetParametersResult } from 'aws-sdk/clients/ssm';
 import { REGION, SSM_PARAMETER_QUEUE_URL } from './const';
+import { SlackSecrets } from './types';
 
 const ssm = new SSM({ region: REGION });
 let queueUrl: string = '';
@@ -38,4 +39,27 @@ export const getSqsQueueUrl = async (): Promise<string> => {
   }
 
   return queueUrl;
+};
+
+export const getSlackAppSecrets = async (): Promise<SlackSecrets> => {
+  var params: GetParametersRequest = {
+    Names: [
+      '/techpivot/streaming-slack-notify/prod/slack/client_id',
+      '/techpivot/streaming-slack-notify/prod/slack/client_secret',
+      '/techpivot/streaming-slack-notify/prod/slack/signing_secret',
+    ],
+    WithDecryption: true,
+  };
+
+  const response: GetParametersResult = await ssm.getParameters(params).promise();
+  const result: any = {};
+
+  (response.Parameters || []).forEach(({ Name, Value }) => {
+    var namePieces: string[] = (Name || '').split('/');
+    if (namePieces.length > 0) {
+      result[namePieces[namePieces.length - 1]] = Value;
+    }
+  });
+
+  return result;
 };

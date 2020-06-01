@@ -30,13 +30,5 @@
     "lambda",
     "github",
     "action"
-  ],
-  "dependencies": {
-    "@techpivot/streaming-slack-notify-common": "0.0.0",
-    "io-ts": "^2.2.3",
-    "fp-ts": "^2.6.1"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.3"
-  }
+  ]
 }
