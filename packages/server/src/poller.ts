@@ -4,7 +4,6 @@ import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunRespons
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
 import Debug from 'debug';
-import { GitHubWorkflowComplete } from './errors';
 import {
   getFallbackText,
   getTitleBlocks,
@@ -21,6 +20,7 @@ const debug = Debug('poller');
 
 export default class Poller {
   startTime: Date;
+  finished = false;
 
   // Time in ms between updates
   defaultIntervalTime = 1200;
@@ -59,20 +59,17 @@ export default class Poller {
       this.log(`Current Node Memory Usage: ${getMemoryUsageMb()} MB`);
 
       let i = 0;
-      while (true) {
+      while (this.finished !== true) {
         debug('Poll Loop #', ++i);
         const summary: GitHubWorkflowRunSummary = await this.queryGitHub();
         await this.updateSlack(summary);
         await sleep(this.nextIntervalTime);
         this.nextIntervalTime = this.defaultIntervalTime;
       }
+      debug('GitHub workflow complete');
     } catch (err) {
-      if (err instanceof GitHubWorkflowComplete) {
-        debug('GitHub workflow complete');
-      } else {
-        // This error could potentially be streamed back into the MESSAGE
-        this.logError(err);
-      }
+      // This error could potentially be streamed back into the MESSAGE
+      this.logError(err);
     } finally {
       ee.off('drain', drain);
 
@@ -220,7 +217,7 @@ export default class Poller {
     }
 
     if (summary.workflowData.status === 'completed') {
-      throw new GitHubWorkflowComplete();
+      this.finished = true;
     }
   }
 }

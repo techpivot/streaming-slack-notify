@@ -195,9 +195,9 @@
     "@types/node" ">= 8"
 
 "@octokit/types@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-4.1.1.tgz#e2dc79d49b04c7f0e84fe61b0da28187d9bbaa2c"
-  integrity sha512-gOuIVmMCfHzSv3QBwLZjGDEDtYC73A5+tYcccEoq+Jd/h9rG/Mfc+h0+GEU+mpGhx86n7eBw6J/0BZ0zAmLkKg==
+  version "4.1.3"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-4.1.3.tgz#9a90f2c2dd2d42105c4dbf5cabcb31e4ac960835"
+  integrity sha512-MMBEO1k+fMa44gATPamxdpZmya9ugPBdcxwBIPgnH8/uD/1FWO3hiQFMGJT8diUk7E5UnnkraTFx00oHfUIFAA==
   dependencies:
     "@types/node" ">= 8"
 
@@ -282,9 +282,9 @@
   integrity sha512-x26ur3dSXgv5AwKS0lNfbjpCakGIduWU1DU91Zz58ONRWrIKGunmZBNv4P7N+e27sJkiGDsw/3fT4AtsqQBrBA==
 
 "@types/node@>= 8", "@types/node@^14.0.5":
-  version "14.0.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.5.tgz#3d03acd3b3414cf67faf999aed11682ed121f22b"
-  integrity sha512-90hiq6/VqtQgX8Sp0EzeIsv3r+ellbGj4URKj5j30tLlZvRUpnAe9YbYnjl3pJM93GyXU0tghHhvXHq+5rnCKA==
+  version "14.0.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.6.tgz#f9e178b2da31a4b0ec60b64649e244c31ce18daf"
+  integrity sha512-FbNmu4F67d3oZMWBV6Y4MaPER+0EpE9eIYf2yaHhCWovc1dlXCZkqGX4NLHfVVr6umt20TNBdRzrNJIzIKfdbw==
 
 "@types/p-queue@^2.3.2":
   version "2.3.2"

@@ -14,7 +14,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build --incremental"
+    "build": "tsc --build --incremental",
+    "watch": "tsc --watch"
   },
   "keywords": [
     "TechPivot",

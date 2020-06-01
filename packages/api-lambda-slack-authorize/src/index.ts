@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
 
 import { parseTemplate } from './utils';
@@ -8,7 +8,7 @@ import { generateReadableSlackError, ValidationError, BaseError } from '../../co
 import { getSlackAppSecrets } from '../../common/lib/ssm';
 import { SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
 
-export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: APIGatewayProxyEvent /*, context: Context */): Promise<APIGatewayProxyResult> => {
   let statusCode = 200;
   let body = '';
 
