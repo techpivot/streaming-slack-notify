@@ -8,7 +8,11 @@ import {
 } from '@slack/types';
 import Webhooks from '@octokit/webhooks';
 import { getReadableDurationString } from '../../common/lib/utils';
-import { ActionsConclusion, ActionsStatus, GitHubWorkflowRunSummary } from './interfaces';
+import {
+  GithubActionsWorkflowJobConclusion,
+  GithubActionsWorkflowJobStepStatus,
+  GitHubWorkflowRunSummary,
+} from './interfaces';
 
 type outputFallbackText = {
   text: string;
@@ -304,7 +308,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
   const { jobsData } = summary;
   const attachments: Array<MessageAttachment> = [];
 
-  jobsData.jobs.forEach((job: any) => {
+  jobsData.jobs.forEach((job) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
     let icon = '';
@@ -313,8 +317,8 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
     let currentStepIndex = 0; // Zero indexed
 
     stepLoop: for (let i = 0; i < steps.length; i += 1) {
-      const conclusion: ActionsConclusion = steps[i].conclusion;
-      const status: ActionsStatus = steps[i].status;
+      const status: GithubActionsWorkflowJobStepStatus = steps[i].status as GithubActionsWorkflowJobStepStatus;
+      const conclusion: GithubActionsWorkflowJobConclusion = steps[i].conclusion as GithubActionsWorkflowJobConclusion;
 
       switch (status) {
         case 'completed':
@@ -324,7 +328,6 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
 
             case 'failure':
             case 'success':
-            case 'failure':
             case 'neutral':
             case 'cancelled':
             case 'timed_out':

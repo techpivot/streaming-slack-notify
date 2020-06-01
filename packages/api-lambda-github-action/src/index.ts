@@ -12,8 +12,8 @@ import {
 } from '../../common/lib/types';
 
 export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
-  let statusCode: number = 200;
-  let body: ApiGithubActionResponseData = {
+  let statusCode = 200;
+  const body: ApiGithubActionResponseData = {
     ok: true,
   };
 
@@ -22,7 +22,7 @@ export const handler = async (event: APIGatewayProxyEvent, context: Context): Pr
       throw new ValidationError('No post data received');
     }
 
-    let jsonBody = JSON.parse(event.body);
+    const jsonBody = JSON.parse(event.body);
 
     const result = ApiGithubActionRequestDataV.decode(jsonBody);
 

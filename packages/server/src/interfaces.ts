@@ -31,9 +31,9 @@ export interface TimeoutResponse {
   promise: Promise<any>;
 }
 
-export type ActionsStatus = 'queued' | 'in_progress' | 'completed';
+export type GithubActionsWorkflowJobStepStatus = 'queued' | 'in_progress' | 'completed';
 
-export type ActionsConclusion =
+export type GithubActionsWorkflowJobConclusion =
   | null
   | 'skipped'
   | 'success'

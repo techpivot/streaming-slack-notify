@@ -61,7 +61,7 @@ export const getRecordById = async (id: string): Promise<DynamoDbGetRecordItem> 
   };
 };
 
-export const incrementWorkflowRunCount = async (id: string, amount: number = 1): Promise<void> => {
+export const incrementWorkflowRunCount = async (id: string, amount = 1): Promise<void> => {
   await dynamodb
     .update({
       TableName: DYNAMODB_TABLE_NAME,

@@ -13,7 +13,7 @@ export class SQSError extends Error {
 }
 
 export class TimeoutError extends Error {
-  constructor(message: string = 'Operation timed out.') {
+  constructor(message = 'Operation timed out.') {
     super(message);
     this.message = message;
     this.name = 'TimeoutError';

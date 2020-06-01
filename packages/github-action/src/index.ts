@@ -6,8 +6,7 @@ import { API_ENDPOINT } from '../../common/lib/const';
 
 async function run() {
   try {
-    const { GITHUB_REPOSITORY } = process.env;
-    const { GITHUB_RUN_ID } = process.env;
+    const { GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
 
     if (GITHUB_REPOSITORY === undefined) {
       throw new Error('Unable to determine GitHub repository name: No GITHUB_REPOSITORY environment variable defined');

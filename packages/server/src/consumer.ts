@@ -195,7 +195,7 @@ export class Consumer extends EventEmitter {
 
     try {
       if (this.handleMessageTimeout) {
-        let { timeoutHandle: timeoutHandleInner, promise } = createTimeout(this.handleMessageTimeout);
+        const { timeoutHandle: timeoutHandleInner, promise } = createTimeout(this.handleMessageTimeout);
         timeoutHandle = timeoutHandleInner;
 
         await Promise.race([this.handleMessage(message), promise]);
@@ -321,19 +321,19 @@ export class Consumer extends EventEmitter {
     try {
       await this.sqs.deleteMessageBatch(deleteParams).promise();
     } catch (err) {
-      throw toSQSError(err, `SQS delete message failed: ${err.message}`);
+      throw toSQSError(err, `SQS batch delete message failed: ${err.message}`);
     }
   }
 
   private async executeBatchHandler(messages: SQSMessage[]): Promise<void> {
     if (!this.handleMessageBatch) {
-      throw new Error('Unable to executeBatchHandler: No handleMessageBatch function defined');
+      throw new Error('Unable to execute BatchHandler: No handleMessageBatch function defined');
     }
 
     try {
       await this.handleMessageBatch(messages);
     } catch (err) {
-      err.message = `Unexpected message handler failure: ${err.message}`;
+      err.message = `Unexpected batch message handler failure: ${err.message}`;
       throw err;
     }
   }

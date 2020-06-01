@@ -4,7 +4,7 @@ import { REGION, SSM_PARAMETER_QUEUE_URL } from './const';
 import { SlackSecrets } from './types';
 
 const ssm = new SSM({ region: REGION });
-let queueUrl: string = '';
+let queueUrl = '';
 
 /**
  * Queue URL is available in Lambda as environment variable (semi-secure) or parsed from
@@ -42,7 +42,7 @@ export const getSqsQueueUrl = async (): Promise<string> => {
 };
 
 export const getSlackAppSecrets = async (): Promise<SlackSecrets> => {
-  var params: GetParametersRequest = {
+  const params: GetParametersRequest = {
     Names: [
       '/techpivot/streaming-slack-notify/prod/slack/client_id',
       '/techpivot/streaming-slack-notify/prod/slack/client_secret',
@@ -55,7 +55,7 @@ export const getSlackAppSecrets = async (): Promise<SlackSecrets> => {
   const result: any = {};
 
   (response.Parameters || []).forEach(({ Name, Value }) => {
-    var namePieces: string[] = (Name || '').split('/');
+    const namePieces: string[] = (Name || '').split('/');
     if (namePieces.length > 0) {
       result[namePieces[namePieces.length - 1]] = Value;
     }

@@ -6,7 +6,7 @@ import Poller from './poller';
 import { REGION } from '../../common/lib/const';
 import { getSqsQueueUrl } from '../../common/lib/ssm';
 
-let globalEmitter = new EventEmitter({ captureRejections: true });
+const globalEmitter = new EventEmitter({ captureRejections: true });
 
 const sqs = new SQS({
   region: REGION,

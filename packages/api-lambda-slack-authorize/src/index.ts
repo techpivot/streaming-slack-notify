@@ -9,8 +9,8 @@ import { getSlackAppSecrets } from '../../common/lib/ssm';
 import { SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
 
 export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
-  let statusCode: number = 200;
-  let body: string = '';
+  let statusCode = 200;
+  let body = '';
 
   try {
     if (!event.queryStringParameters || !event.queryStringParameters.code) {
