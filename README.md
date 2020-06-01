@@ -33,6 +33,15 @@
   </a>
 </p>
 
+## Overview
+1. [Motivation](#motivation)
+1. [Sample Output](#sample-output)
+1. [Features](#features)
+1. [Usage](#features)
+1. [Configuration Options](#configuration-options)
+1. [Contributing](#contributing)
+1. [License](#license)
+
 ## Motivation
 
 The existing Slack actions were only displayed at the conclusion of
@@ -55,13 +64,10 @@ Default output if you've not set any attachment will look like this.
 - Minimal configuration options
 - Fast: Typically completes in 500-700ms
 
-## Output
-
 ## Usage
 
 ### Create Slack API Token
 
-## Contributing
 
 ### Save API Token in GitHub Secrets
 
@@ -129,14 +135,13 @@ In order to handle failures and properly simulate the conclusion of the workflow
 
 All configuration options are action inputs and should be used inside the YAML `with:` section as key/value pairs.
 
-| Parameter            | Description                                                                                                                                                                                                        | Required | When to use?                                           |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- | ------------------------------------------------------ |
-| `slack_access_token` | The Slack API token                                                                                                                                                                                                | **Yes**  | Always                                                 |
-| `channel`            | Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity | **Yes**  | First Action only (Not required otherwise)             |
-| `username`           | The slack bot user name                                                                                                                                                                                            | No       | First Action                                           |
-| `icon_url`           | URL to an image to use as the icon for this message                                                                                                                                                                | No       | First Action                                           |
-| `icon_emoji`         | Emoji to use as the icon for this message. Overrides "icon_url"                                                                                                                                                    | No       | First Action                                           |
-| `is_final_step`      | Flag that defines the last Slack notify step in your workflow.                                                                                                                                                     | **Yes**  | Last Step (ONLY include on last step; otherwise, omit) |
+| Parameter         | Description                                                                                                                                                                                                        | Required |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| `slack_app_token` | Your Slack APP token received when registering your workspace                                                                                                                                                      | **Yes**  |
+| `channel`         | Slack Channel, private group, or IM channel to send message to. Can be an encoded ID, or a name. This is required to send the first Slack message. Subsequent github actions calls can omit this value for brevity | **Yes**  |
+| `username`        | The slack bot user name                                                                                                                                                                                            | No       |
+| `icon_url`        | URL to an image to use as the icon for this message                                                                                                                                                                | No       |
+| `icon_emoji`      | Emoji to use as the icon for this message. Overrides `icon_url`                                                                                                                                                    | No       |
 
 ## How It Works
 
@@ -147,8 +152,8 @@ Bug reports and feature requests via [issues](https://github.com/techpivot/strea
 ### Helping Out
 
 1. Fork this repo
-2. Modify the `./src` as necessary.
-3. Ensure to `format:write`, `lint`, and `build` _(See `package.json` scripts for more info)_
+2. Modify the corresponding `./packages` as necessary.
+3. Ensure to `format`, `lint`, and `build` _(See `package.json` scripts for more info)_
 4. Submit a PR
 
 ### Developer Reference
