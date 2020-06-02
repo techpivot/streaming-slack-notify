@@ -118,25 +118,31 @@ export interface SlackApiOauthV2AccessResponseData extends WebAPICallResult {
   };
 }
 
-export type SlackTeamData = {
-  // The Slack channel for sending message
-  channel: string;
-  // The Slack access token
-  accessToken: string;
-  // The DynamoDB record ID. Resent in case this is needed for potentially updating the
-  // record on the server side.
-  id: string;
-  // The name of the slack team
-  teamName: string;
-  // The ID of the slack team
-  teamId: string;
-  // Slack Message timestamp of the original message for the workflow.
-  ts?: string;
-  // Optional fields for first chat postMessage
-  username?: string;
-  iconUrl?: string;
-  iconEmoji?: string;
-};
+export const SlackTeamDataV = t.intersection([
+  t.type({
+    // The Slack channel for sending message
+    channel: t.string,
+    // The Slack access token
+    accessToken: t.string,
+    // The DynamoDB record ID. Resent in case this is needed for potentially updating the
+    // record on the server side.
+    id: t.string,
+    // The name of the slack team
+    teamName: t.string,
+    // The ID of the slack team
+    teamId: t.string,
+  }),
+  t.partial({
+    // Slack Message timestamp of the original message for the workflow.
+    ts: t.string,
+    // Optional fields for first chat postMessage
+    username: t.string,
+    iconUrl: t.string,
+    iconEmoji: t.string,
+  }),
+]);
+
+export type SlackTeamData = t.TypeOf<typeof SlackTeamDataV>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SQS
@@ -146,8 +152,10 @@ export type SlackTeamData = {
  * Since the server never queries DynamoDB (the Lambda will ensure the record exists and pluck the
  * required data), it means we don't have to expose the tokenId again to the polling server.
  */
-export type SQSBody = {
-  github: GitHubWorkflowRunData;
-  githubToken: string;
-  slack: SlackTeamData;
-};
+export const SQSBodyV = t.type({
+  github: GitHubWorkflowRunDataV,
+  githubToken: t.string,
+  slack: SlackTeamDataV,
+});
+
+export type SQSBody = t.TypeOf<typeof SQSBodyV>;

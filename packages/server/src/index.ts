@@ -1,10 +1,13 @@
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
 import * as https from 'https';
+import { PathReporter } from 'io-ts/lib/PathReporter';
+import { isLeft } from 'fp-ts/lib/Either';
 import { Consumer } from './consumer';
 import Poller from './poller';
 import { REGION } from '../../common/lib/const';
 import { getSqsQueueUrl } from '../../common/lib/ssm';
+import { SQSBody, SQSBodyV } from '../../common/lib/types';
 
 const globalEmitter = new EventEmitter({ captureRejections: true });
 
@@ -38,14 +41,31 @@ async function run(): Promise<void> {
     pollingWaitTimeMs: 0,
     sqs,
     handleMessage: async (message: SQS.Message) => {
-      const poller = new Poller(sqs, queueUrl, message);
+      // Validate the message
+      const { Body } = message;
+      try {
+        if (!Body) {
+          throw new Error('No message body for SQS payload');
+        }
 
-      // This is async. Intentionally, we do not wait 'await'. We want to run this
-      // async in another thread. Additionally, we pass in the global event emitter
-      // to bind a "drain" event in the event we receive a SIGTERM from ECS host instance.
-      poller.run(globalEmitter);
+        const body = JSON.parse(Body);
+        const result = SQSBodyV.decode(body);
 
-      // Upon returning immediately, the message is deleted by the Consumer.
+        if (isLeft(result)) {
+          throw new Error(PathReporter.report(result).join('\n'));
+        }
+
+        const poller = new Poller(sqs, queueUrl, body as SQSBody);
+
+        // This is async. Intentionally, we do not wait 'await'. We want to run this
+        // async in another thread. Additionally, we pass in the global event emitter
+        // to bind a "drain" event in the event we receive a SIGTERM from ECS host instance.
+        poller.run(globalEmitter);
+
+        // Upon returning immediately, the message is deleted by the Consumer.
+      } catch (err) {
+        console.error('Received an invalid SQSBody payload. Ignoring', Body);
+      }
     },
   });
 

@@ -21,7 +21,7 @@ const getPostData = (): ApiGithubActionRequestData => {
     throw new Error('Unable to determine run ID: No GITHUB_RUN_ID environment variable defined');
   }
 
-  const { payload, eventName, workflow: workflowName} = github.context;
+  const { payload, eventName, workflow: workflowName } = github.context;
   const repoArr = GITHUB_REPOSITORY.split('/', 2);
 
   return {

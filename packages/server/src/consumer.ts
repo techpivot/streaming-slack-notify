@@ -70,7 +70,7 @@ export class Consumer extends EventEmitter {
     this.attributeNames = options.attributeNames || [];
     this.messageAttributeNames = options.messageAttributeNames || [];
     this.stopped = true;
-    this.batchSize = Math.max(1, Math.min(9, options.batchSize || 1));
+    this.batchSize = Math.max(1, Math.min(10, options.batchSize || 1));
     this.visibilityTimeout = options.visibilityTimeout || 30;
     this.terminateVisibilityTimeout = options.terminateVisibilityTimeout || false;
     this.waitTimeSeconds = options.waitTimeSeconds || 20;
@@ -105,7 +105,7 @@ export class Consumer extends EventEmitter {
   }
 
   private async handleSqsResponse(response: PromiseResult<SQS.Types.ReceiveMessageResult, AWSError>): Promise<void> {
-    debug('Received SQS response');
+    debug(`Received SQS response - count ${(response.Messages || []).length}`);
     debug(response);
 
     if (!response) {

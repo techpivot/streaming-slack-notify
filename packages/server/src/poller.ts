@@ -36,16 +36,11 @@ export default class Poller {
   octokit?: Octokit;
   slack?: WebClient;
 
-  constructor(sqs: SQS, queueUrl: string, message: SQS.Message) {
-    const { Body } = message;
-    if (!Body) {
-      throw new Error('No message body for SQS payload');
-    }
-
+  constructor(sqs: SQS, queueUrl: string, body: SQSBody) {
     this.startTime = new Date();
     this.sqs = sqs;
     this.queueUrl = queueUrl;
-    this.messageBody = JSON.parse(Body);
+    this.messageBody = body;
   }
 
   async run(ee: EventEmitter): Promise<void> {
@@ -69,8 +64,9 @@ export default class Poller {
       }
       debug('GitHub workflow complete');
     } catch (err) {
+      console.log('log err', err);
       // This error could potentially be streamed back into the MESSAGE
-      this.logError(err);
+      //this.logError(err);
     } finally {
       ee.off('drain', drain);
 
