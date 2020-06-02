@@ -15,7 +15,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       throw new ValidationError('No "code" query parameter specified.');
     }
 
-    const { client_id, client_secret, } = await getSlackAppSecrets();
+    const { client_id, client_secret } = await getSlackAppSecrets();
 
     // Exchange code for token
     // Reference: https://api.slack.com/methods/oauth.v2.access

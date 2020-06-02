@@ -188,6 +188,7 @@ export default class Poller {
       });
 
       debug('Slack: postMessage');
+      console.log(JSON.stringify(payload));
 
       response = (await this.slack.chat.postMessage(payload)) as ChatResponse;
 
