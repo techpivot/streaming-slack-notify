@@ -4,39 +4,48 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ApiGithubActionRequestData, ApiGithubActionResponseData } from '../../common/lib/types';
 import { API_ENDPOINT } from '../../common/lib/const';
 
+const getOptionalInput = (key: string, returnVal: string | undefined): string | undefined => {
+  const value = getInput(key);
+
+  return value === '' ? returnVal : value;
+};
+
+const getPostData = (): ApiGithubActionRequestData => {
+  const { GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
+
+  if (GITHUB_REPOSITORY === undefined) {
+    throw new Error('Unable to determine GitHub repository name: No GITHUB_REPOSITORY environment variable defined');
+  }
+
+  if (!GITHUB_RUN_ID) {
+    throw new Error('Unable to determine run ID: No GITHUB_RUN_ID environment variable defined');
+  }
+
+  const repoArr = GITHUB_REPOSITORY.split('/', 2);
+
+  return {
+    channel: getInput('channel', { required: true }),
+    username: getOptionalInput('username', undefined),
+    iconUrl: getOptionalInput('icon_url', undefined),
+    iconEmoji: getOptionalInput('icon_emoji', undefined),
+    githubToken: getInput('GITHUB_TOKEN', { required: true }),
+    appToken: getInput('slack_app_token', { required: true }),
+    github: {
+      payload: github.context.payload,
+      eventName: github.context.eventName,
+      workflowName: github.context.workflow,
+      runId: GITHUB_RUN_ID,
+      repository: {
+        owner: repoArr[0],
+        repo: repoArr[1],
+      },
+    },
+  };
+};
+
 async function run() {
   try {
-    const { GITHUB_REPOSITORY, GITHUB_RUN_ID } = process.env;
-
-    if (GITHUB_REPOSITORY === undefined) {
-      throw new Error('Unable to determine GitHub repository name: No GITHUB_REPOSITORY environment variable defined');
-    }
-
-    if (!GITHUB_RUN_ID) {
-      throw new Error('Unable to determine run ID: No GITHUB_RUN_ID environment variable defined');
-    }
-
-    const repoArr = GITHUB_REPOSITORY.split('/', 2);
-
-    const postData: ApiGithubActionRequestData = {
-      channel: getInput('channel', { required: true }),
-      username: getInput('username') === '' ? undefined : getInput('username'),
-      iconUrl: getInput('icon_url') === '' ? undefined : getInput('icon_url'),
-      iconEmoji: getInput('icon_emoji') === '' ? undefined : getInput('icon_emoji'),
-      githubToken: getInput('GITHUB_TOKEN', { required: true }),
-      appToken: getInput('slack_app_token', { required: true }),
-      github: {
-        payload: github.context.payload,
-        eventName: github.context.eventName,
-        workflowName: github.context.workflow,
-        runId: GITHUB_RUN_ID,
-        repository: {
-          owner: repoArr[0],
-          repo: repoArr[1],
-        },
-      },
-    };
-
+    const postData: ApiGithubActionRequestData = getPostData();
     const response: AxiosResponse = await axios.post(API_ENDPOINT, postData);
 
     // No need to display anything. Queued and streaming will begin

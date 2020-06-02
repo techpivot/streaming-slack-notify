@@ -336,6 +336,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
                 currentStepIndex = i;
                 currentStep = steps[i];
               }
+              break;
           }
           break;
 
