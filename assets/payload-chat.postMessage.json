@@ -1,0 +1,89 @@
+{
+    "channel": "#builds",
+    "text": "Workflow Main is running.  (Duration: 13s)",
+    "blocks": [
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Workflow *<https://www.github.com/techpivot/streaming-slack-notify/actions/runs/122130178|Main>* is running.      :clock3: 13s"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "mrkdwn",
+            "text": "*<https://www.github.com/techpivot/streaming-slack-notify|techpivot/streaming-slack-notify>*"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Event*: `push`"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*Branch*: `master`"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": "*<https://github.com/techpivot/streaming-slack-notify/commit/d982ef7d9751703a2009b0dceab7a3bf878d3c1b|d982ef7>*: more lint fix"
+        }
+      },
+      {
+        "type": "context",
+        "elements": [
+          {
+            "type": "image",
+            "image_url": "https://github.com/virgofx.png",
+            "alt_text": "virgofx"
+          },
+          {
+            "type": "mrkdwn",
+            "text": "*<https://github.com/virgofx|virgofx>*"
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      }
+    ],
+    "attachments": [
+      {
+        "color": "#d2942c",
+        "blocks": [
+          {
+            "type": "context",
+            "elements": [
+              {
+                "type": "mrkdwn",
+                "text": ":hourglass_flowing_sand:"
+              },
+              {
+                "type": "mrkdwn",
+                "text": "*Job*: *<https://github.com/techpivot/streaming-slack-notify/runs/729575483|build>*"
+              },
+              {
+                "type": "mrkdwn",
+                "text": "_In Progress_"
+              },
+              {
+                "type": "mrkdwn",
+                "text": "*Installing dependencies* (4 of 10)"
+              },
+              {
+                "type": "mrkdwn",
+                "text": ":clock3:5s"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
