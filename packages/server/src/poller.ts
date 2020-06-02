@@ -15,7 +15,7 @@ import {
 } from './slack-ui';
 import { GitHubWorkflowRunSummary, ChatResponse } from './interfaces';
 import { SQSBody } from '../../common/lib/types';
-import { getMemoryUsageMb, getReadableElapsedTime, sleep } from '../../common/lib/utils';
+import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../common/lib/utils';
 
 const debug = Debug('poller');
 
@@ -75,7 +75,7 @@ export default class Poller {
       ee.off('drain', drain);
 
       const slackTeamName = this.messageBody.slack.teamName;
-      const duration = getReadableElapsedTime(this.startTime, new Date());
+      const duration = getReadableDurationString(this.startTime, new Date());
 
       this.log(`Completed GitHub actions workflow polling for Slack Team ${slackTeamName} in ${duration}`);
     }
