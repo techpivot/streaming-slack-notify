@@ -21,6 +21,7 @@ const getPostData = (): ApiGithubActionRequestData => {
     throw new Error('Unable to determine run ID: No GITHUB_RUN_ID environment variable defined');
   }
 
+  const { payload, eventName, workflow: workflowName} = github.context;
   const repoArr = GITHUB_REPOSITORY.split('/', 2);
 
   return {
@@ -31,9 +32,9 @@ const getPostData = (): ApiGithubActionRequestData => {
     githubToken: getInput('GITHUB_TOKEN', { required: true }),
     appToken: getInput('slack_app_token', { required: true }),
     github: {
-      payload: github.context.payload,
-      eventName: github.context.eventName,
-      workflowName: github.context.workflow,
+      payload,
+      eventName,
+      workflowName,
       runId: GITHUB_RUN_ID,
       repository: {
         owner: repoArr[0],
