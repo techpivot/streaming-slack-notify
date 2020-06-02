@@ -10,13 +10,15 @@ module "sqs_label" {
 }
 
 resource "aws_sqs_queue" "default" {
-  name                       = module.sqs_label.id
-  delay_seconds              = 0
-  visibility_timeout_seconds = 30
-  max_message_size           = 262144
-  message_retention_seconds  = 86400 # 1 day
-  receive_wait_time_seconds  = 20
-  tags                       = module.sqs_label.tags
+  name                              = module.sqs_label.id
+  delay_seconds                     = 0
+  visibility_timeout_seconds        = 30
+  max_message_size                  = 262144
+  message_retention_seconds         = 86400 # 1 day
+  receive_wait_time_seconds         = 20
+  kms_master_key_id                 = "alias/aws/sqs"
+  kms_data_key_reuse_period_seconds = 300
+  tags                              = module.sqs_label.tags
 }
 
 module "ssm_parameter_queue_url" {
