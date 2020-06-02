@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { ChatPostMessageArguments, ChatUpdateArguments, WebClient } from '@slack/web-api';
+import { KnownBlock } from '@slack/types';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
@@ -161,13 +162,13 @@ export default class Poller {
     const payloadBase = {
       channel,
       text: getFallbackText(summary), // fallback when using blocks
-      blocks: [].concat.apply([], [
-        getTitleBlocks(summary),
-        getEventSummaryBlocks(summary),
+      blocks: ([] as KnownBlock[]).concat(
+        ...getTitleBlocks(summary),
+        ...getEventSummaryBlocks(summary),
         getDividerBlock(),
-        getEventDetailBlocks(summary),
-        getDividerBlock(),
-      ] as Array<any>),
+        ...getEventDetailBlocks(summary),
+        getDividerBlock()
+      ) as KnownBlock[],
       attachments: getJobAttachments(summary),
     };
 

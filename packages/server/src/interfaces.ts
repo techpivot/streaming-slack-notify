@@ -1,5 +1,4 @@
-import { AWSError, SQS } from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
+import { SQS } from 'aws-sdk';
 import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
 import { GitHubWorkflowRunData } from '../../common/src/types';
 import { WebAPICallResult } from '@slack/web-api';
@@ -18,13 +17,9 @@ export interface ConsumerOptions {
   sqs?: SQS;
   region?: string;
   handleMessageTimeout?: number;
-  handleMessage?(message: SQSMessage): Promise<void>;
-  handleMessageBatch?(messages: SQSMessage[]): Promise<void>;
+  handleMessage?(message: SQS.Types.Message): Promise<void>;
+  handleMessageBatch?(messages: SQS.Types.Message[]): Promise<void>;
 }
-
-export type ReceiveMessageRequest = SQS.Types.ReceiveMessageRequest;
-export type ReceieveMessageResponse = PromiseResult<SQS.Types.ReceiveMessageResult, AWSError>;
-export type SQSMessage = SQS.Types.Message;
 
 export interface TimeoutResponse {
   timeoutHandle?: NodeJS.Timeout;

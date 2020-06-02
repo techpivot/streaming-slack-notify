@@ -74,15 +74,15 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       message: error.message || error,
       name: error.name,
     };
-  } finally {
-    return {
-      statusCode,
-      isBase64Encoded: false,
-      headers: {
-        Server: 'TechPivot',
-        'Content-Type': 'text/javascript',
-      },
-      body: JSON.stringify(body),
-    };
   }
+
+  return {
+    statusCode,
+    isBase64Encoded: false,
+    headers: {
+      Server: 'TechPivot',
+      'Content-Type': 'text/javascript',
+    },
+    body: JSON.stringify(body),
+  };
 };

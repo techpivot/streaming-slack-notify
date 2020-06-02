@@ -1,8 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
-
 import { parseTemplate } from './utils';
-
 import { insertRecord } from '../../common/lib/dynamodb';
 import { generateReadableSlackError, ValidationError, BaseError } from '../../common/lib/errors';
 import { getSlackAppSecrets } from '../../common/lib/ssm';
@@ -17,7 +15,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       throw new ValidationError('No "code" query parameter specified.');
     }
 
-    const { client_id, client_secret, signing_secret } = await getSlackAppSecrets();
+    const { client_id, client_secret, } = await getSlackAppSecrets();
 
     // Exchange code for token
     // Reference: https://api.slack.com/methods/oauth.v2.access
@@ -56,15 +54,14 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       errorMessage: error.message || 'Unknown',
       errorType: error.name || error.code || 'Unknown error type',
     });
-  } finally {
-    return {
-      statusCode,
-      isBase64Encoded: false,
-      headers: {
-        Server: 'TechPivot',
-        'Content-Type': 'text/html',
-      },
-      body,
-    };
   }
+  return {
+    statusCode,
+    isBase64Encoded: false,
+    headers: {
+      Server: 'TechPivot',
+      'Content-Type': 'text/html',
+    },
+    body,
+  };
 };

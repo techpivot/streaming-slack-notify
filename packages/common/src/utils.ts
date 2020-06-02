@@ -1,19 +1,9 @@
-export const sleep = async (ms: number) => {
+export const sleep = async (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export const getMemoryUsageMb = () => {
+export const getMemoryUsageMb = (): number => {
   return Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100;
-};
-
-export const autoBind = (obj: any): void => {
-  const propertyNames = Object.getOwnPropertyNames(obj.constructor.prototype);
-  propertyNames.forEach((propertyName) => {
-    const value = obj[propertyName];
-    if (propertyName !== 'constructor' && typeof value === 'function') {
-      obj[propertyName] = value.bind(obj);
-    }
-  });
 };
 
 const numberEnding = (number: number): string => {
