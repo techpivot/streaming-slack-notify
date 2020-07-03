@@ -1,0 +1,34 @@
+{
+  "name": "@techpivot/streaming-slack-notify-api-lambda-github-app",
+  "version": "0.0.0",
+  "description": "Lambda function XXXXXXXXXXXXXXXXX",
+  "author": "TechPivot",
+  "license": "MIT",
+  "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/techpivot/streaming-slack-notify.git",
+    "directory": "packages/api-lambda-github-app"
+  },
+  "scripts": {
+    "build": "tsc --build --incremental && rm -rf ./dist && ncc build --minify --no-source-map-register --out dist src/index.ts",
+    "package": "node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-app",
+    "test": "yarn build && node-lambda run"
+  },
+  "engines": {
+    "node": "=12"
+  },
+  "main": "dist/index.js",
+  "source": "src/index.ts",
+  "keywords": [
+    "TechPivot",
+    "streaming-slack-notify",
+    "api",
+    "node",
+    "typescript",
+    "lambda",
+    "github",
+    "app"
+  ]
+}

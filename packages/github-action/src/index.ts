@@ -17,11 +17,7 @@ const getPostData = (): ApiGithubActionRequestData => {
     throw new Error('Unable to determine GitHub repository name: No GITHUB_REPOSITORY environment variable defined');
   }
 
-  if (!GITHUB_RUN_ID) {
-    throw new Error('Unable to determine run ID: No GITHUB_RUN_ID environment variable defined');
-  }
-
-  const { payload, eventName, workflow: workflowName } = github.context;
+  const { payload, eventName, runId, workflow: workflowName } = github.context;
   const repoArr = GITHUB_REPOSITORY.split('/', 2);
 
   return {
@@ -35,7 +31,7 @@ const getPostData = (): ApiGithubActionRequestData => {
       payload,
       eventName,
       workflowName,
-      runId: GITHUB_RUN_ID,
+      runId,
       repository: {
         owner: repoArr[0],
         repo: repoArr[1],

@@ -6,8 +6,9 @@
     "outDir": "./lib",
     "composite": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
   },
   "references": [],
-  "include": ["./src/**/*.ts"]
+  "include": ["src"],
+  "exclude": ["node_modules", "node_modules/", "../../node_modules/", "../node_modules", "/app/node_modules/"]
 }

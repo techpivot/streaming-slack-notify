@@ -17,10 +17,8 @@ export const GitHubWorkflowRunDataV = t.type({
   eventName: t.string,
   // The name of the current GitHub workflow (e.g. "main")
   workflowName: t.string,
-  // The GitHub action run id. Internally, GitHub is storing this as a number; however,
-  // it seems likely they'll chnage it in the future. For now, we'll store as a string
-  // and coerce where necessary for @oktokit-* API method type requirements.
-  runId: t.string,
+  // The GitHub action run id. Internally, GitHub is storing this as a number.
+  runId: t.number,
   // The GitHub repository owner + repo. Technically, this is included in the payload for
   // most events; however, for some events it is not. Therefore, to better futureproof
   // we pluck this out of the payload to ensure that the action can send this where these
@@ -31,27 +29,7 @@ export const GitHubWorkflowRunDataV = t.type({
   }),
 });
 
-export type GitHubWorkflowRunData = {
-  // GitHub Action payload. It's up to the caller to switch on the eventName and cast appropriately.
-  // Currently need to refacor this to use the io-ts optional partials
-  payload: WebhookPayload;
-  // The name of the GitHub trigger event. (e.g. "push", "pull_request")
-  eventName: string;
-  // The name of the current GitHub workflow (e.g. "main")
-  workflowName: string;
-  // The GitHub action run id. Internally, GitHub is storing this as a number; however,
-  // it seems likely they'll chnage it in the future. For now, we'll store as a string
-  // and coerce where necessary for @oktokit-* API method type requirements.
-  runId: string;
-  // The GitHub repository owner + repo. Technically, this is included in the payload for
-  // most events; however, for some events it is not. Therefore, to better futureproof
-  // we pluck this out of the payload to ensure that the action can send this where these
-  // values are defined via environment variables.
-  repository: {
-    owner: string;
-    repo: string;
-  };
-};
+export type GitHubWorkflowRunData = t.TypeOf<typeof GitHubWorkflowRunDataV>;
 
 export const ApiGithubActionRequestDataV = t.intersection([
   t.type({
