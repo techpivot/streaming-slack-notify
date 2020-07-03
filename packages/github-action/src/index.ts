@@ -44,7 +44,7 @@ async function run() {
   try {
     const postData: ApiGithubActionRequestData = getPostData();
 
-    // Manually wrap output
+    // Log the post data for debug in a group
     startGroup('Post Data')
     console.log(postData);
     endGroup()
