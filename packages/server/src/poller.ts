@@ -97,21 +97,15 @@ export default class Poller {
   async queryGitHub(): Promise<GitHubWorkflowRunSummary> {
     if (!this.octokit) {
       this.octokit = new Octokit({
-        auth: '8c3208e3362e99b979e3901224dfa50d87829ad8', // this.messageBody.githubToken,
+        auth: '661f7f03b2a1f9fdb84112c0246a59efb39a09f9', // this.messageBody.githubToken,
       });
     }
 
     const {
-      runId,
+      runId: run_id,
       repository: { owner, repo },
     } = this.messageBody.github;
-    const opts = {
-      // Currently, GitHub likes this to be a number per there TypeScript definitions. I have a feeling
-      // this will change in the future which is why we have this is a string.
-      run_id: parseInt(runId, 10),
-      owner,
-      repo,
-    };
+    const opts = { run_id, owner, repo };
 
     debug('Querying GitHub');
 
