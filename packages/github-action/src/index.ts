@@ -1,4 +1,4 @@
-import { setFailed, getInput } from '@actions/core';
+import { setFailed, getInput, startGroup, endGroup } from '@actions/core';
 import * as github from '@actions/github';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ApiGithubActionRequestData, ApiGithubActionResponseData } from '../../common/lib/types';
@@ -43,6 +43,12 @@ const getPostData = (): ApiGithubActionRequestData => {
 async function run() {
   try {
     const postData: ApiGithubActionRequestData = getPostData();
+
+    // Manually wrap output
+    startGroup('Post Data')
+    console.log(postData);
+    endGroup()
+
     const response: AxiosResponse = await axios.post(API_ENDPOINT, postData);
 
     // No need to display anything. Queued and streaming will begin
