@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { BaseError, ValidationError } from '../../common/lib/errors';
 
-
 export const handler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
   let statusCode = 200;
 
@@ -12,7 +11,6 @@ export const handler = async (event: APIGatewayProxyEvent, context: Context): Pr
   };
 
   try {
-
     // All done!
   } catch (error) {
     // If the error is one of our errors, display appropriately; Otherwise, throw 500

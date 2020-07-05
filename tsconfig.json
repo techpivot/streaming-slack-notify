@@ -7,7 +7,7 @@
     "noImplicitAny": true,
     "sourceMap": false,
     "moduleResolution": "node",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules/**", "dist", "lib", "__tests__", "**/*.test*", "**/*.spec*"]
 }

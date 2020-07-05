@@ -45,9 +45,9 @@ async function run() {
     const postData: ApiGithubActionRequestData = getPostData();
 
     // Log the post data for debug in a group
-    startGroup('Post Data')
+    startGroup('Post Data');
     console.log(postData);
-    endGroup()
+    endGroup();
 
     const response: AxiosResponse = await axios.post(API_ENDPOINT, postData);
 
