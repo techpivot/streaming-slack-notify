@@ -12,7 +12,7 @@
     "directory": "packages/api-lambda-github-action"
   },
   "scripts": {
-    "build": "tsc --build --incremental && rm -rf ./dist && ncc build --minify --no-source-map-register --out dist src/index.ts",
+    "build": "tsc --build --incremental && rm -rf ./dist && ncc build --minify --out dist src/index.ts",
     "package": "node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-action",
     "test": "yarn build && node-lambda run"
   },

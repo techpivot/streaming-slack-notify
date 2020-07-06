@@ -1,8 +1,12 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 import { isLeft } from 'fp-ts/lib/Either';
-import { getRecordById } from '../../common/lib/dynamodb';
-import { BaseError, ValidationError } from '../../common/lib/errors';
+import { createAppAuth } from '@octokit/auth';
+import { Octokit } from '@octokit/rest';
+import { GITHUB_APP_ID } from '../../common/lib/const';
+import { getSlackRecordById, getGitHubInstallationId } from '../../common/lib/dynamodb';
+import { BaseError, GitHubAppValidationError, ValidationError } from '../../common/lib/errors';
+import { getGitHubAppPrivateKey } from '../../common/lib/ssm';
 import { addToQueue } from '../../common/lib/sqs';
 import {
   ApiGithubActionResponseData,
@@ -32,12 +36,62 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
 
     const validJsonBody = jsonBody as ApiGithubActionRequestData;
 
-    const { channel, username, iconUrl, iconEmoji, appToken } = validJsonBody;
+    const {
+      channel,
+      username,
+      iconUrl,
+      iconEmoji,
+      appToken,
+      github: {
+        repository: { owner, repo },
+      },
+    } = validJsonBody;
 
-    // Ensure the application token exists
-    console.time('DynamoDB Time');
-    const record = await getRecordById(appToken);
-    console.timeEnd('DynamoDB Time');
+    // Validate that we can retrieve an installation ID
+    console.time('DynamoDB Time [getGitHubInstallationId]');
+    const githubInstallationId = await getGitHubInstallationId(owner);
+    console.timeEnd('DynamoDB Time [getGitHubInstallationId]');
+
+    console.log('Found GitHub installation ID:', githubInstallationId);
+
+    // Validate the actual GitHub installation ID
+    try {
+      console.time('GitHub octokit client app auth');
+
+      const octokit = new Octokit({
+        authStrategy: createAppAuth,
+        auth: {
+          id: GITHUB_APP_ID,
+          privateKey: await getGitHubAppPrivateKey(),
+          installationId: githubInstallationId,
+        },
+      });
+      console.timeEnd('GitHub octokit client app auth');
+
+      // If we have an active rest API client, attempt to retrieve workflow runs (verifies we have permissions)
+
+      console.time('GitHub verify workflow actions');
+      const workflowResult = await octokit.actions.listWorkflowRunsForRepo({
+        owner,
+        repo,
+        page: 1,
+        per_page: 1,
+      });
+      console.timeEnd('GitHub verify workflow actions');
+
+      if ([200, 204].includes(workflowResult.status) === false) {
+        throw new Error();
+      }
+    } catch (error) {
+      throw new GitHubAppValidationError(
+        `Unable to read GitHub action data for repo: ${owner}/${repo}. Ensure the current account ${owner} has the GitHub application installed and the ${repo} repository is included in the permission set.`
+      );
+    }
+
+    // Ensure the Slack application token exists
+    console.time('DynamoDB Time [getSlackRecordById]');
+    const record = await getSlackRecordById(appToken);
+    console.timeEnd('DynamoDB Time [getSlackRecordById]');
 
     const sqsBody: SQSBody = {
       slack: {
@@ -48,7 +102,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
         ...record,
       },
       github: validJsonBody.github,
-      githubToken: validJsonBody.githubToken,
+      githubInstallationId,
     };
 
     // Add to queue which will be picked up by poller

@@ -50,17 +50,30 @@ variable "dns_zone_name" {
   description = "The name of the DNS zone name for this account has permissions to add records"
 }
 
-variable "dynamodb_read_capacity" {
-  default     = 3
+variable "dynamodb_slack_read_capacity" {
+  default     = 2
   type        = number
-  description = "DynamoDB read capacity units"
+  description = "DynamoDB slack table read capacity units"
 }
 
-variable "dynamodb_write_capacity" {
-  default     = 3
+variable "dynamodb_slack_write_capacity" {
+  default     = 2
   type        = number
-  description = "DynamoDB write capacity units"
+  description = "DynamoDB slack write capacity units"
 }
+
+variable "dynamodb_github_read_capacity" {
+  default     = 4
+  type        = number
+  description = "DynamoDB github table read capacity units"
+}
+
+variable "dynamodb_github_write_capacity" {
+  default     = 4
+  type        = number
+  description = "DynamoDB github write capacity units"
+}
+
 
 variable "spot_fleet_target_capacity" {
   description = "Default target capacity for the spot fleet"
@@ -90,6 +103,12 @@ variable "ecs_asg_min_size" {
 variable "ecs_asg_desired_capacity" {
   type    = number
   default = 0
+}
+
+variable "lambda_github_webhook_timeout" {
+  type        = number
+  description = "The number of seconds before the Lambda function times out (Needs to query DynamoDB)"
+  default     = 10
 }
 
 variable "lambda_slack_oauth_authorize_timeout" {

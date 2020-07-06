@@ -132,9 +132,12 @@ export class Consumer extends EventEmitter {
 
   private async processMessage(message: SQS.Types.Message): Promise<void> {
     this.emit('message_received', message);
+    debug('Processing message');
 
     try {
+      debug('Executing handler');
       await this.executeHandler(message);
+      debug('Deleting message');
       await this.deleteMessage(message);
       this.emit('message_processed', message);
     } catch (err) {

@@ -13,7 +13,7 @@
   "main": "dist/index.js",
   "source": "src/index.ts",
   "scripts": {
-    "build": "tsc --build --incremental --listFiles",
+    "build": "tsc --build --incremental",
     "package": "ncc build --no-source-map-register --out dist src/index.ts",
     "start:dev": "DEBUG=* node lib",
     "start": "node dist"

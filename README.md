@@ -59,11 +59,12 @@ Default output if you've not set any attachment will look like this.
 ## Features
 
 - Ability to display job step status from beginning of workflow to end
+- Slack message that updates reflective of current job status
 - Support for **push**, **pull_request** events
 - Clean and consistent Slack UI
-- Lightweight, minimal dependencies, and pure TypeScript/JavaScript
+- Lightweight, minimal dependencies, and pure TypeScript
 - Minimal configuration options
-- Fast: Typically completes in 500-700ms
+- Fast: Using minified JavaScript the action injects very quickly compared to Docker actions
 
 ## Usage
 
@@ -144,38 +145,6 @@ All configuration options are action inputs and should be used inside the YAML `
 | `icon_emoji`      | Emoji to use as the icon for this message. Overrides `icon_url`                                                                                                                                                    | No       |
 
 ## How It Works
-
-## Contributing
-
-Bug reports and feature requests via [issues](https://github.com/techpivot/streaming-slack-notify/issues) are welcome. Additionally, [pull requests](https://github.com/techpivot/streaming-slack-notify/pulls) are also welcome!
-
-### Helping Out
-
-1. Fork this repo
-2. Modify the corresponding `./packages` as necessary.
-3. Ensure to `format`, `lint`, and `build` _(See `package.json` scripts for more info)_
-4. Submit a PR
-
-### Developer Reference
-
-- Project setup is a Monorepo using Yarn workspaces. This works fairly well for shared dependencies,
-  specifically, the `common` package. We resolve using relative paths and not aliases (e.g. `../../common`)
-  as this works 100% of the time cross platform. When using aliases/path resolves it works when
-  compiling but not currently in VSCode. _More investigation is needed to migrate to aliases._
-
-- If you need to run any of the the NPM/Yarn commands on a system
-  that may not have anything installed, we provide a docker-compose
-  helper.
-
-  ```bash
-  docker-compose up
-
-  # Then in another terminal:
-  docker exec -it streaming-slack-notify bash
-  ```
-
-- [Slack Message Builder](https://api.slack.com/docs/messages/builder)
-  > Use the Slack debug payload from existing actions to seed a message builder and then iterate as necessary.
 
 ## License
 

@@ -16,6 +16,24 @@ resource "aws_apigatewayv2_api" "default" {
   tags          = module.api_gateway_label.tags
 }
 
+resource "aws_apigatewayv2_integration" "api_integration_github_app_webhook_lambda" {
+  api_id                 = aws_apigatewayv2_api.default.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  description            = "Proxies requests to the GitHub app webhook Lambda function"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.lambda_github_app_webhook.invoke_arn
+  payload_format_version = "2.0"
+  timeout_milliseconds   = (var.lambda_github_webhook_timeout * 1000) + 250
+  passthrough_behavior   = "WHEN_NO_MATCH"
+
+  # Remove the following snippet once this PR is merged:
+  # https://github.com/terraform-providers/terraform-provider-aws/pull/13062
+  lifecycle {
+    ignore_changes = [passthrough_behavior]
+  }
+}
+
 resource "aws_apigatewayv2_integration" "api_integration_slack_authorize_lambda" {
   api_id                 = aws_apigatewayv2_api.default.id
   integration_type       = "AWS_PROXY"
@@ -52,9 +70,16 @@ resource "aws_apigatewayv2_integration" "api_integration_github_action_lambda" {
   }
 }
 
-resource "aws_apigatewayv2_route" "route_get_authorize" {
+resource "aws_apigatewayv2_route" "route_get_github_app_webhook" {
   api_id             = aws_apigatewayv2_api.default.id
-  route_key          = "GET /authorize"
+  route_key          = "POST /github/webhook"
+  authorization_type = "NONE"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_app_webhook_lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "route_get_slack_authorize" {
+  api_id             = aws_apigatewayv2_api.default.id
+  route_key          = "GET /slack/authorize"
   authorization_type = "NONE"
   target             = "integrations/${aws_apigatewayv2_integration.api_integration_slack_authorize_lambda.id}"
 }
@@ -65,7 +90,6 @@ resource "aws_apigatewayv2_route" "route_post_action" {
   authorization_type = "NONE"
   target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_action_lambda.id}"
 }
-
 
 module "api_gateway_stage_prod_label" {
   source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"

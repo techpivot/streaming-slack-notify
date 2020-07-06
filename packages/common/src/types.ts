@@ -1,5 +1,4 @@
 import * as t from 'io-ts';
-import { WebhookPayload } from '@actions/github/lib/interfaces';
 import { WebAPICallResult } from '@slack/web-api';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,8 +39,6 @@ export const ApiGithubActionRequestDataV = t.intersection([
     // This is the TechPivot token ID we use to exchange for the secret slack_access_token stored securely. We
     // purposely don't use the legacy style "SLACK_ACCESS_TOKEN" verbiage to help prevent confusion.
     appToken: t.string,
-    // The GitHub {{github.token}} that is generated for each action which has API access.
-    githubToken: t.string,
   }),
   t.partial({
     username: t.string,
@@ -132,7 +129,7 @@ export type SlackTeamData = t.TypeOf<typeof SlackTeamDataV>;
  */
 export const SQSBodyV = t.type({
   github: GitHubWorkflowRunDataV,
-  githubToken: t.string,
+  githubInstallationId: t.number,
   slack: SlackTeamDataV,
 });
 

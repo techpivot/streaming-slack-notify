@@ -1,5 +1,5 @@
-resource "aws_iam_role" "lambda_slack_authorize_role" {
-  name                  = "${var.name}-lambda-slack-authorize-service-role"
+resource "aws_iam_role" "lambda_github_app_webhook_role" {
+  name                  = "${var.name}-github-app-webhook-service-role"
   assume_role_policy    = data.aws_iam_policy_document.lambda_assume_role_policy.json
   force_detach_policies = true
 
@@ -12,9 +12,9 @@ resource "aws_iam_role" "lambda_slack_authorize_role" {
 ### Policies are pretty specific to the role so let's put them inline.
 ###
 
-resource "aws_iam_role_policy" "lambda_slack_authorize_role_cloudwatch_policy" {
+resource "aws_iam_role_policy" "lambda_github_app_webhook_role_cloudwatch_policy" {
   name = "cloudwatch-policy"
-  role = aws_iam_role.lambda_slack_authorize_role.id
+  role = aws_iam_role.lambda_github_app_webhook_role.id
 
   policy = <<-EOF
   {
@@ -25,7 +25,7 @@ resource "aws_iam_role_policy" "lambda_slack_authorize_role_cloudwatch_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ],
-        "Resource": "${aws_cloudwatch_log_group.log_group_lambda_slack_authorize.arn}",
+        "Resource": "${aws_cloudwatch_log_group.log_group_lambda_github_app_webhook.arn}",
         "Effect": "Allow"
       }
     ]
@@ -33,9 +33,9 @@ resource "aws_iam_role_policy" "lambda_slack_authorize_role_cloudwatch_policy" {
   EOF
 }
 
-resource "aws_iam_role_policy" "lambda_slack_authorize_role_ssm_policy" {
+resource "aws_iam_role_policy" "lambda_github_app_webhook_role_ssm_policy" {
   name = "ssm-policy"
-  role = aws_iam_role.lambda_slack_authorize_role.id
+  role = aws_iam_role.lambda_github_app_webhook_role.id
 
   policy = <<-EOF
   {
@@ -43,12 +43,10 @@ resource "aws_iam_role_policy" "lambda_slack_authorize_role_ssm_policy" {
     "Statement": [
       {
         "Action": [
-          "ssm:GetParameters"
+          "ssm:GetParameter"
         ],
         "Resource": [
-          "${aws_ssm_parameter.slack_client_id.arn}",
-          "${aws_ssm_parameter.slack_client_secret.arn}",
-          "${aws_ssm_parameter.slack_signing_secret.arn}"
+          "${aws_ssm_parameter.github_app_webhook_secret.arn}"
         ],
         "Effect": "Allow"
       }
@@ -57,9 +55,9 @@ resource "aws_iam_role_policy" "lambda_slack_authorize_role_ssm_policy" {
   EOF
 }
 
-resource "aws_iam_role_policy" "lambda_slack_authorize_role_dynamodb_policy" {
+resource "aws_iam_role_policy" "lambda_github_app_webhook_role_dynamodb_policy" {
   name = "dynamodb-policy"
-  role = aws_iam_role.lambda_slack_authorize_role.id
+  role = aws_iam_role.lambda_github_app_webhook_role.id
 
   policy = <<-EOF
   {
@@ -70,7 +68,7 @@ resource "aws_iam_role_policy" "lambda_slack_authorize_role_dynamodb_policy" {
           "dynamodb:PutItem"
         ],
         "Resource": [
-          "${aws_dynamodb_table.slack.arn}"
+          "${aws_dynamodb_table.github.arn}"
         ],
         "Effect": "Allow"
       }

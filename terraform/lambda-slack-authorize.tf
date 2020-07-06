@@ -32,7 +32,7 @@ resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_slack_authoriz
   function_name = aws_lambda_function.lambda_slack_authorize.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/authorize"
+  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/slack/authorize"
 }
 
 resource "aws_lambda_function_event_invoke_config" "lambda_slack_authorize_invoke_config" {

@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
 import { parseTemplate } from './utils';
-import { insertRecord } from '../../common/lib/dynamodb';
+import { insertSlackRecord } from '../../common/lib/dynamodb';
 import { generateReadableSlackError, ValidationError, BaseError } from '../../common/lib/errors';
 import { getSlackAppSecrets } from '../../common/lib/ssm';
 import { SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
@@ -34,7 +34,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       throw generateReadableSlackError(error);
     }
 
-    const token = await insertRecord(response);
+    const token = await insertSlackRecord(response);
     console.log(`Generated token [${token}] for team ID: ${response.team.id}`);
 
     body = parseTemplate('success.html', {

@@ -1,3 +1,4 @@
+import { createAppAuth } from '@octokit/auth';
 import { Octokit } from '@octokit/rest';
 import { ChatPostMessageArguments, ChatUpdateArguments, WebClient } from '@slack/web-api';
 import { KnownBlock } from '@slack/types';
@@ -14,7 +15,9 @@ import {
   getJobAttachments,
 } from './slack-ui';
 import { GitHubWorkflowRunSummary, ChatResponse } from './interfaces';
+import { GITHUB_APP_ID } from '../../common/lib/const';
 import { SQSBody } from '../../common/lib/types';
+import { getGitHubAppPrivateKey } from '../../common/lib/ssm';
 import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../common/lib/utils';
 
 const debug = Debug('poller');
@@ -64,9 +67,8 @@ export default class Poller {
       }
       debug('GitHub workflow complete');
     } catch (err) {
-      console.log('log err', err);
       // This error could potentially be streamed back into the MESSAGE
-      //this.logError(err);
+      this.logError(err);
     } finally {
       ee.off('drain', drain);
 
@@ -96,8 +98,15 @@ export default class Poller {
 
   async queryGitHub(): Promise<GitHubWorkflowRunSummary> {
     if (!this.octokit) {
+      debug('Initializing new Octokit instance ...');
+
       this.octokit = new Octokit({
-        auth: '661f7f03b2a1f9fdb84112c0246a59efb39a09f9', // this.messageBody.githubToken,
+        authStrategy: createAppAuth,
+        auth: {
+          id: GITHUB_APP_ID,
+          privateKey: await getGitHubAppPrivateKey(),
+          installationId: this.messageBody.githubInstallationId,
+        },
       });
     }
 
@@ -162,12 +171,11 @@ export default class Poller {
       attachments: getJobAttachments(summary),
     };
 
-    debug('Sending Slack payload');
-
     let response;
     if (ts) {
       const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts });
-      debug('Slack: update');
+
+      debug('Sending Slack [chat.update] payload');
 
       response = (await this.slack.chat.update(payload)) as ChatResponse;
     } else {
@@ -177,7 +185,7 @@ export default class Poller {
         icon_emoji: iconEmoji,
       });
 
-      debug('Slack: postMessage');
+      debug('Sending Slack [chat.postMessage] payload');
 
       response = (await this.slack.chat.postMessage(payload)) as ChatResponse;
 

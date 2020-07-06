@@ -37,7 +37,7 @@ resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_github_action"
   function_name = aws_lambda_function.lambda_github_action.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*"
+  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/"
 }
 
 resource "aws_lambda_function_event_invoke_config" "lambda_github_action_invoke_config" {

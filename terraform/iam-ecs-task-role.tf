@@ -22,7 +22,7 @@ resource "aws_iam_role_policy" "ecs_task_dynamodb_policy" {
           "dynamodb:PutItem"
         ],
         "Effect": "Allow",
-        "Resource": "${aws_dynamodb_table.default.arn}"
+        "Resource": "${aws_dynamodb_table.slack.arn}"
       }
     ]
   }

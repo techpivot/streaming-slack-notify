@@ -25,7 +25,6 @@ const getPostData = (): ApiGithubActionRequestData => {
     username: getOptionalInput('username', undefined),
     iconUrl: getOptionalInput('icon_url', undefined),
     iconEmoji: getOptionalInput('icon_emoji', undefined),
-    githubToken: getInput('GITHUB_TOKEN', { required: true }),
     appToken: getInput('slack_app_token', { required: true }),
     github: {
       payload,

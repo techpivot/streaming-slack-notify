@@ -1,7 +1,7 @@
 {
-  "name": "@techpivot/streaming-slack-notify-api-lambda-github-app",
+  "name": "@techpivot/streaming-slack-notify-api-lambda-github-app-webhook",
   "version": "0.0.0",
-  "description": "Lambda function XXXXXXXXXXXXXXXXX",
+  "description": "Lambda function that responds to the GitHub app webhooks",
   "author": "TechPivot",
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
@@ -9,11 +9,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
-    "directory": "packages/api-lambda-github-app"
+    "directory": "packages/api-lambda-github-app-webhook"
   },
   "scripts": {
-    "build": "tsc --build --incremental && rm -rf ./dist && ncc build --minify --no-source-map-register --out dist src/index.ts",
-    "package": "node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-app",
+    "build": "tsc --build && rm -rf ./dist && ncc build --minify --out dist src/index.ts",
+    "package": "node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-app-webhook",
     "test": "yarn build && node-lambda run"
   },
   "engines": {
@@ -29,6 +29,7 @@
     "typescript",
     "lambda",
     "github",
-    "app"
+    "app",
+    "webook"
   ]
 }

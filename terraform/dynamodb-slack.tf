@@ -1,18 +1,18 @@
-module "dynamodb_label" {
+module "dynamodb_slack_label" {
   source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
   name               = var.name
-  attributes         = []
+  attributes         = ["slack-auths"]
   tags               = local.tags
   additional_tag_map = var.additional_tag_map
 }
 
-resource "aws_dynamodb_table" "default" {
-  name           = module.dynamodb_label.id
-  read_capacity  = var.dynamodb_read_capacity
-  write_capacity = var.dynamodb_write_capacity
+resource "aws_dynamodb_table" "slack" {
+  name           = module.dynamodb_slack_label.id
+  read_capacity  = var.dynamodb_slack_read_capacity
+  write_capacity = var.dynamodb_slack_write_capacity
   hash_key       = "id"
 
   server_side_encryption {
@@ -37,23 +37,19 @@ resource "aws_dynamodb_table" "default" {
   global_secondary_index {
     name            = "TeamIdIndex"
     hash_key        = "team_id"
-    write_capacity  = 3
-    read_capacity   = 3
+    write_capacity  = 2
+    read_capacity   = 2
     projection_type = "KEYS_ONLY"
   }
 
   global_secondary_index {
     name               = "LastUpdatedIndex"
     hash_key           = "updated_at"
-    write_capacity     = 3
-    read_capacity      = 3
+    write_capacity     = 2
+    read_capacity      = 2
     projection_type    = "INCLUDE"
     non_key_attributes = ["app_id"]
   }
 
-  lifecycle {
-    ignore_changes = [read_capacity, write_capacity]
-  }
-
-  tags = module.dynamodb_label.tags
+  tags = module.dynamodb_slack_label.tags
 }

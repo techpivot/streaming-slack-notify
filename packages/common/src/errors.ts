@@ -25,6 +25,12 @@ export class ValidationError extends BaseError {
   }
 }
 
+export class GitHubAppValidationError extends BaseError {
+  constructor(message: string) {
+    super(message, 'GitHubAppValidationError', 400);
+  }
+}
+
 export class SlackApplicationAuthError extends BaseError {
   constructor(message: string, name: string) {
     super(message, name, 400);

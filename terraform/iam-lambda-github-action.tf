@@ -43,11 +43,10 @@ resource "aws_iam_role_policy" "lambda_github_action_role_dynamodb_policy" {
     "Statement": [
       {
         "Action": [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem"
+          "dynamodb:GetItem"
         ],
         "Resource": [
-          "${aws_dynamodb_table.default.arn}"
+          "${aws_dynamodb_table.slack.arn}"
         ],
         "Effect": "Allow"
       }
