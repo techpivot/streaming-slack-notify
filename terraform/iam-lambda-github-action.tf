@@ -46,7 +46,15 @@ resource "aws_iam_role_policy" "lambda_github_action_role_dynamodb_policy" {
           "dynamodb:GetItem"
         ],
         "Resource": [
-          "${aws_dynamodb_table.slack.arn}",
+          "${aws_dynamodb_table.slack.arn}"
+        ],
+        "Effect": "Allow"
+      },
+      {
+        "Action": [
+          "dynamodb:Query"
+        ],
+        "Resource": [
           "${aws_dynamodb_table.github.arn}"
         ],
         "Effect": "Allow"
