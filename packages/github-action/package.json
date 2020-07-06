@@ -14,7 +14,8 @@
   "source": "src/index.ts",
   "scripts": {
     "build": "tsc --build --incremental",
-    "package": "ncc build --minify --out dist src/index.ts"
+    "build:prod": "ncc build --minify --out dist src/index.ts",
+    "dist": "yarn build:prod"
   },
   "author": "TechPivot",
   "keywords": [

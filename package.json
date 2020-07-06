@@ -24,11 +24,11 @@
     "build:api-lambda-slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize build",
     "build:github-action": "yarn workspace @techpivot/streaming-slack-notify-github-action build",
     "build": "npm-run-all --parallel build:*",
-    "package:api-lambda-github-app-webhook": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-app-webhook package",
-    "package:api-lambda-github-action": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-action package",
-    "package:api-lambda-slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize package",
-    "package:github-action": "yarn workspace @techpivot/streaming-slack-notify-github-action package",
-    "package": "npm-run-all --parallel package:*"
+    "dist:api-lambda-github-app-webhook": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-app-webhook dist",
+    "dist:api-lambda-github-action": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-action dist",
+    "dist:api-lambda-slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize dist",
+    "dist:github-action": "yarn workspace @techpivot/streaming-slack-notify-github-action dist",
+    "dist": "npm-run-all --parallel dist:*"
   },
   "keywords": [
     "GitHub",

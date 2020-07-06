@@ -56,7 +56,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
 
     // Validate the actual GitHub installation ID
     try {
-      console.time('GitHub octokit client app auth');
+      console.time('GitHub octokit client app auth:');
 
       const octokit = new Octokit({
         authStrategy: createAppAuth,
@@ -66,7 +66,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
           installationId: githubInstallationId,
         },
       });
-      console.timeEnd('GitHub octokit client app auth');
+      console.timeEnd('GitHub octokit client app auth:');
 
       // If we have an active rest API client, attempt to retrieve workflow runs (verifies we have permissions)
 
@@ -80,11 +80,11 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       console.timeEnd('GitHub verify workflow actions');
 
       if ([200, 204].includes(workflowResult.status) === false) {
-        throw new Error();
+        throw new Error(`Invalid status code for listWorkflowRunsForRepo: ${workflowResult.status}`);
       }
     } catch (error) {
       throw new GitHubAppValidationError(
-        `Unable to read GitHub action data for repo: ${owner}/${repo}. Ensure the current account ${owner} has the GitHub application installed and the ${repo} repository is included in the permission set.`
+        `Unable to read GitHub action data for repo: ${owner}/${repo}. Ensure the current account ${owner} has the GitHub application installed and the ${repo} repository is included in the permission set. ${error.message}`
       );
     }
 

@@ -12,9 +12,10 @@
     "directory": "packages/api-lambda-github-action"
   },
   "scripts": {
-    "build": "tsc --build --incremental && rm -rf ./dist && ncc build --minify --out dist src/index.ts",
-    "package": "node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-action",
-    "test": "yarn build && node-lambda run"
+    "build": "tsc --build --incremental",
+    "build:prod": "rm -rf ./dist && ncc build --minify --out dist src/index.ts",
+    "dist": "yarn build:prod && node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-action",
+    "run:dev": "yarn build && node-lambda run"
   },
   "engines": {
     "node": "=12"
