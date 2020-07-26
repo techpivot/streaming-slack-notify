@@ -146,6 +146,16 @@ All configuration options are action inputs and should be used inside the YAML `
 
 ## How It Works
 
+## Cost Optimization
+
+The current infrastructure is deployed in a dedicated AWS account tht is actively managed by TechPivot. In order to graciously provide the bandwidth to host this service for the public we optimize various parts of the infrastrucure using the following techniques:
+
+- EC2 Spot Instances - Reducing cost by running on small instances that can be interrupted and easily resumed by other instances from a large pool.
+- Minimizing the number of EC2 Metrics - Metrics are free for the first 10 and \$0.30/month thereafter.
+- Minimizing EBS volume size - Argueably the larger cost of these tiny instances is actually the size of the EBS volumes.
+
+Please help support this project and donate.
+
 ## License
 
 [MIT](LICENSE) © 2020 TechPivot
