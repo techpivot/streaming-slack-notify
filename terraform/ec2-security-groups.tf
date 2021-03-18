@@ -1,5 +1,6 @@
 module "ecs_sg_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -26,7 +27,8 @@ resource "aws_security_group_rule" "ecs_instance_out_all" {
 }
 
 module "task_sg_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage

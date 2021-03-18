@@ -28,7 +28,8 @@ data "template_file" "user_data" {
 }
 
 module "ec2_ecs_instance_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -39,7 +40,8 @@ module "ec2_ecs_instance_label" {
 }
 
 module "ec2_ecs_instance_volume_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage

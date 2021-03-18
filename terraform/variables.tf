@@ -83,7 +83,7 @@ variable "spot_fleet_target_capacity" {
 
 variable "ecs_instance_types_with_max_price" {
   description = "A map of allowed ECS instance types with corresponding max price"
-  type        = map
+  type        = map(any)
   default = {
     "t3a.nano" = 0.0017
     "t3.nano"  = 0.0016

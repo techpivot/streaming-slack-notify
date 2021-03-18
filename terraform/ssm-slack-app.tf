@@ -1,5 +1,6 @@
 module "ssm_parameter_client_id_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -23,7 +24,8 @@ resource "aws_ssm_parameter" "slack_client_id" {
 }
 
 module "ssm_parameter_client_secret_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -47,7 +49,8 @@ resource "aws_ssm_parameter" "slack_client_secret" {
 }
 
 module "ssm_parameter_signing_secret_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage

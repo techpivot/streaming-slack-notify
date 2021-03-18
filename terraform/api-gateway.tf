@@ -1,5 +1,6 @@
 module "api_gateway_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -92,7 +93,8 @@ resource "aws_apigatewayv2_route" "route_post_action" {
 }
 
 module "api_gateway_stage_prod_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -122,7 +124,8 @@ resource "aws_apigatewayv2_stage" "stage_prod" {
 }
 
 module "api_gateway_domain_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage

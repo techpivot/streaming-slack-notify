@@ -1,5 +1,6 @@
 module "sqs_label" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
@@ -22,7 +23,8 @@ resource "aws_sqs_queue" "default" {
 }
 
 module "ssm_parameter_queue_url" {
-  source             = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  source             = "cloudposse/label/null"
+  version            = "0.24.1"
   namespace          = var.namespace
   environment        = var.environment
   stage              = var.stage
