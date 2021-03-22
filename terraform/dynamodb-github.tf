@@ -1,13 +1,9 @@
 module "dynamodb_github_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["github-auths"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["github"]
+  tags       = local.tags
 }
 
 resource "aws_dynamodb_table" "github" {

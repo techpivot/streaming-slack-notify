@@ -1,13 +1,9 @@
 module "api_gateway_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["api"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["api"]
+  tags       = local.tags
 }
 
 resource "aws_apigatewayv2_api" "default" {
@@ -17,23 +13,9 @@ resource "aws_apigatewayv2_api" "default" {
   tags          = module.api_gateway_label.tags
 }
 
-resource "aws_apigatewayv2_integration" "api_integration_github_app_webhook_lambda" {
-  api_id                 = aws_apigatewayv2_api.default.id
-  integration_type       = "AWS_PROXY"
-  connection_type        = "INTERNET"
-  description            = "Proxies requests to the GitHub app webhook Lambda function"
-  integration_method     = "POST"
-  integration_uri        = aws_lambda_function.lambda_github_app_webhook.invoke_arn
-  payload_format_version = "2.0"
-  timeout_milliseconds   = (var.lambda_github_webhook_timeout * 1000) + 250
-  passthrough_behavior   = "WHEN_NO_MATCH"
-
-  # Remove the following snippet once this PR is merged:
-  # https://github.com/terraform-providers/terraform-provider-aws/pull/13062
-  lifecycle {
-    ignore_changes = [passthrough_behavior]
-  }
-}
+//
+// Integrations
+//
 
 resource "aws_apigatewayv2_integration" "api_integration_slack_authorize_lambda" {
   api_id                 = aws_apigatewayv2_api.default.id
@@ -45,38 +27,55 @@ resource "aws_apigatewayv2_integration" "api_integration_slack_authorize_lambda"
   payload_format_version = "2.0"
   timeout_milliseconds   = (var.lambda_slack_oauth_authorize_timeout * 1000) + 250
   passthrough_behavior   = "WHEN_NO_MATCH"
-
-  # Remove the following snippet once this PR is merged:
-  # https://github.com/terraform-providers/terraform-provider-aws/pull/13062
-  lifecycle {
-    ignore_changes = [passthrough_behavior]
-  }
 }
 
-resource "aws_apigatewayv2_integration" "api_integration_github_action_lambda" {
+resource "aws_apigatewayv2_integration" "api_integration_slack_webhook_lambda" {
   api_id                 = aws_apigatewayv2_api.default.id
   integration_type       = "AWS_PROXY"
   connection_type        = "INTERNET"
-  description            = "Proxies requests to the GitHub Action Lambda function"
+  description            = "Proxies requests to the Slack Webhook Lambda function"
   integration_method     = "POST"
-  integration_uri        = aws_lambda_function.lambda_github_action.invoke_arn
+  integration_uri        = aws_lambda_function.lambda_slack_webhook.invoke_arn
   payload_format_version = "2.0"
-  timeout_milliseconds   = (var.lambda_github_action_timeout * 1000) + 250
+  timeout_milliseconds   = (var.lambda_slack_webhook_timeout * 1000) + 250
   passthrough_behavior   = "WHEN_NO_MATCH"
-
-  # Remove the following snippet once this PR is merged:
-  # https://github.com/terraform-providers/terraform-provider-aws/pull/13062
-  lifecycle {
-    ignore_changes = [passthrough_behavior]
-  }
 }
 
-resource "aws_apigatewayv2_route" "route_get_github_app_webhook" {
-  api_id             = aws_apigatewayv2_api.default.id
-  route_key          = "POST /github/webhook"
-  authorization_type = "NONE"
-  target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_app_webhook_lambda.id}"
-}
+#resource "aws_apigatewayv2_integration" "api_integration_github_app_webhook_lambda" {
+#api_id                 = aws_apigatewayv2_api.default.id
+#integration_type       = "AWS_PROXY"
+#connection_type        = "INTERNET"
+#description            = "Proxies requests to the GitHub app webhook Lambda function"
+#integration_method     = "POST"
+#integration_uri        = aws_lambda_function.lambda_github_app_webhook.invoke_arn
+#payload_format_version = "2.0"
+#timeout_milliseconds   = (var.lambda_github_webhook_timeout * 1000) + 250
+#passthrough_behavior   = "WHEN_NO_MATCH"
+#}
+
+#resource "aws_apigatewayv2_integration" "api_integration_github_action_lambda" {
+#api_id                 = aws_apigatewayv2_api.default.id
+#integration_type       = "AWS_PROXY"
+#connection_type        = "INTERNET"
+#description            = "Proxies requests to the GitHub Action Lambda function"
+#integration_method     = "POST"
+#integration_uri        = aws_lambda_function.lambda_github_action.invoke_arn
+#payload_format_version = "2.0"
+#timeout_milliseconds   = (var.lambda_github_action_timeout * 1000) + 250
+#passthrough_behavior   = "WHEN_NO_MATCH"
+#}
+
+#resource "aws_apigatewayv2_route" "route_get_github_app_webhook" {
+#  api_id             = aws_apigatewayv2_api.default.id
+#route_key          = "POST /github/webhook"
+#  authorization_type = "NONE"
+#target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_app_webhook_lambda.id}"
+#}
+
+
+//
+// Routes
+//
 
 resource "aws_apigatewayv2_route" "route_get_slack_authorize" {
   api_id             = aws_apigatewayv2_api.default.id
@@ -85,23 +84,30 @@ resource "aws_apigatewayv2_route" "route_get_slack_authorize" {
   target             = "integrations/${aws_apigatewayv2_integration.api_integration_slack_authorize_lambda.id}"
 }
 
-resource "aws_apigatewayv2_route" "route_post_action" {
+resource "aws_apigatewayv2_route" "route_get_slack_webhook" {
   api_id             = aws_apigatewayv2_api.default.id
-  route_key          = "POST /"
+  route_key          = "POST /slack/webhook"
   authorization_type = "NONE"
-  target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_action_lambda.id}"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_slack_webhook_lambda.id}"
 }
 
+#resource "aws_apigatewayv2_route" "route_post_action" {
+#api_id             = aws_apigatewayv2_api.default.id
+#route_key          = "POST /"
+#  authorization_type = "NONE"
+#target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_action_lambda.id}"
+#}
+
+//
+// Stages
+//
+
 module "api_gateway_stage_prod_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["api", "gateway", "prod"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["api", "gateway", "prod"]
+  tags       = local.tags
 }
 
 resource "aws_apigatewayv2_stage" "stage_prod" {
@@ -115,24 +121,18 @@ resource "aws_apigatewayv2_stage" "stage_prod" {
     destination_arn = aws_cloudwatch_log_group.log_group_api_gateway_prod.arn
     format          = replace(file("${path.module}/data/api-gateway-log-format.json.tpl"), "/\n/", "")
   }
-
-  # Temporarily bypassing error
-  # https://github.com/terraform-providers/terraform-provider-aws/issues/11148
-  lifecycle {
-    ignore_changes = [deployment_id, default_route_settings]
-  }
 }
 
+//
+// Custom Domain
+//
+
 module "api_gateway_domain_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["api-gateway", "custom-domain"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["api-gateway", "custom-domain"]
+  tags       = local.tags
 }
 
 resource "aws_api_gateway_domain_name" "api_streaming_slack_notify" {

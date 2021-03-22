@@ -1,13 +1,9 @@
 module "sqs_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["sqs"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["sqs", "workflows"]
+  tags       = local.tags
 }
 
 resource "aws_sqs_queue" "default" {
@@ -23,15 +19,11 @@ resource "aws_sqs_queue" "default" {
 }
 
 module "ssm_parameter_queue_url" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ssm", "queue", "url"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ssm", "queue", "url"]
+  tags       = local.tags
 }
 
 resource "aws_ssm_parameter" "queue_url" {

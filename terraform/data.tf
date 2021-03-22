@@ -1,32 +1,4 @@
-data "aws_iam_policy_document" "lambda_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "ec2_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "ecs_tasks_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
-    }
-  }
+# The Route53 hosted zone is created by master infra so we'll get the ID via data
+data "aws_route53_zone" "zone" {
+  name = var.dns_zone_name
 }

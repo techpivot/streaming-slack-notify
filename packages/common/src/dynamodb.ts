@@ -1,6 +1,5 @@
 import { DynamoDB } from 'aws-sdk';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { v4 as uuidv4 } from 'uuid';
 import { REGION, DYNAMODB_SLACK_TABLE_NAME, DYNAMODB_GITHUB_TABLE_NAME } from './const';
 import { NotFoundError } from './errors';
 import { DynamoDbGetRecordItem, SlackApiOauthV2AccessResponseData } from './types';
@@ -15,17 +14,15 @@ const dynamodb = new DynamoDB.DocumentClient({ region: REGION });
  */
 export const insertSlackRecord = async (response: SlackApiOauthV2AccessResponseData): Promise<any> => {
   const timestamp: string = new Date().toISOString();
-  const uuid: string = uuidv4();
 
   await dynamodb
     .put({
       TableName: DYNAMODB_SLACK_TABLE_NAME,
       Item: {
-        id: uuid,
+        api_app_id: response.app_id,
         team_id: response.team.id,
         team_name: response.team.name,
         created_at: timestamp,
-        app_id: response.app_id,
         scope: response.scope,
         token_type: response.token_type,
         access_token: response.access_token,
@@ -34,21 +31,21 @@ export const insertSlackRecord = async (response: SlackApiOauthV2AccessResponseD
     })
     .promise();
 
-  return uuid;
+  return response.app_id;
 };
 
 export const getSlackRecordById = async (id: string): Promise<DynamoDbGetRecordItem> => {
   const result: DocumentClient.GetItemOutput = await dynamodb
     .get({
       TableName: DYNAMODB_SLACK_TABLE_NAME,
-      Key: { id: id },
-      ProjectionExpression: 'id, access_token, team_name, team_id',
+      Key: { api_app_id: id },
+      ProjectionExpression: 'api_app_id, access_token, team_name, team_id',
     })
     .promise();
 
   const { Item } = result;
   if (!Item) {
-    throw new NotFoundError(`Unable to retrieve Slack record for token id: ${id}  (Non-existent)`);
+    throw new NotFoundError(`Unable to retrieve Slack record for api app id: ${id}  (Non-existent)`);
   }
 
   return {
@@ -58,6 +55,16 @@ export const getSlackRecordById = async (id: string): Promise<DynamoDbGetRecordI
     accessToken: Item.access_token,
   };
 };
+
+export const deleteSlackRecordById = async (id: string): Promise<void> => {
+  await dynamodb
+    .delete({
+      TableName: DYNAMODB_SLACK_TABLE_NAME,
+      Key: { api_app_id: id },
+    })
+    .promise();
+};
+
 /*
 
 export const incrementWorkflowRunCount = async (id: string, amount = 1): Promise<void> => {

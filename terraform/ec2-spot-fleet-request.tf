@@ -1,17 +1,13 @@
 module "spot_fleet_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["spot-fleet"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["spot-fleet"]
+  tags       = local.tags
 }
 
 resource "aws_spot_fleet_request" "default" {
-  iam_fleet_role                      = aws_iam_role.spotfleet_role.arn
+  iam_fleet_role                      = module.spot_fleet_tagging_role.arn
   replace_unhealthy_instances         = true
   terminate_instances_with_expiration = true
   valid_until                         = "9999-12-31T23:59:59Z"

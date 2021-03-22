@@ -2,17 +2,11 @@ version: '3.7'
 
 services:
   streaming-slack-notify:
-    container_name: streaming-slack-notify
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        TERRAFORM_VERSION: ${TERRAFORM_VERSION}
+    image: node:14
     stdin_open: true
     tty: true
     volumes:
       - .:/app
-      - /app/node_modules
       #- /app/packages/github-action/node_modules
       ##- /app/packages/server/node_modules
       #- /app/packages/api/lambda-slack-authorize/node_modules

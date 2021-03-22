@@ -1,12 +1,9 @@
 module "vpc_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = "vpc"
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source    = "cloudposse/label/null"
+  version   = "0.24.1"
+  namespace = var.namespace
+  name      = "vpc"
+  tags      = local.tags
 }
 
 data "aws_availability_zones" "available" {

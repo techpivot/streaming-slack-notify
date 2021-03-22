@@ -58,9 +58,9 @@ export type ApiGithubActionResponseData = {
 };
 
 export type DynamoDbGetRecordItem = {
+  id: string;
   teamName: string;
   teamId: string;
-  id: string;
   accessToken: string;
 };
 

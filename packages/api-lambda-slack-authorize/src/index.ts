@@ -3,19 +3,29 @@ import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
 import { parseTemplate } from './utils';
 import { insertSlackRecord } from '../../common/lib/dynamodb';
 import { generateReadableSlackError, ValidationError, BaseError } from '../../common/lib/errors';
-import { getSlackAppSecrets } from '../../common/lib/ssm';
-import { SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
+import { getAllSlackAppSecrets } from '../../common/lib/ssm';
+import { SlackSecrets, SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
+
+const init = async (): Promise<SlackSecrets> => {
+  return new Promise((resolve) => {
+    resolve(getAllSlackAppSecrets());
+  });
+};
+const initPromise: Promise<SlackSecrets> = init();
 
 export const handler = async (event: APIGatewayProxyEvent /*, context: Context */): Promise<APIGatewayProxyResult> => {
-  let statusCode = 200;
-  let body = '';
+  let statusCode: number = 200;
+  let responseBody: string = '';
 
   try {
-    if (!event.queryStringParameters || !event.queryStringParameters.code) {
+    // Note: No need to verify request signature as this is apart of the subsequent call
+    const { queryStringParameters } = event;
+
+    if (!queryStringParameters || !queryStringParameters.code) {
       throw new ValidationError('No "code" query parameter specified.');
     }
 
-    const { client_id, client_secret } = await getSlackAppSecrets();
+    const { client_id, client_secret } = await initPromise;
 
     // Exchange code for token
     // Reference: https://api.slack.com/methods/oauth.v2.access
@@ -23,7 +33,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
     const options: OAuthV2AccessArguments = {
       client_id,
       client_secret,
-      code: event.queryStringParameters.code,
+      code: queryStringParameters.code,
     };
 
     let response;
@@ -37,7 +47,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
     const token = await insertSlackRecord(response);
     console.log(`Generated token [${token}] for team ID: ${response.team.id}`);
 
-    body = parseTemplate('success.html', {
+    responseBody = parseTemplate('success.html', {
       token,
     });
   } catch (error) {
@@ -50,7 +60,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
     } else {
       statusCode = 500;
     }
-    body = parseTemplate('error.html', {
+    responseBody = parseTemplate('error.html', {
       errorMessage: error.message || 'Unknown',
       errorType: error.name || error.code || 'Unknown error type',
     });
@@ -62,6 +72,6 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       Server: 'TechPivot',
       'Content-Type': 'text/html',
     },
-    body,
+    body: responseBody,
   };
 };

@@ -1,12 +1,21 @@
 import { SSM } from 'aws-sdk';
 import { GetParameterResult, GetParametersRequest, GetParametersResult } from 'aws-sdk/clients/ssm';
-import { REGION, SSM_GITHUB_APP_PRIVATE_KEY, SSM_PARAMETER_QUEUE_URL, SSM_GITHUB_APP_WEBHOOK_SECRET } from './const';
+import {
+  REGION,
+  SSM_GITHUB_APP_PRIVATE_KEY,
+  SSM_PARAMETER_QUEUE_URL,
+  SSM_GITHUB_APP_WEBHOOK_SECRET,
+  SSM_SLACK_APP_CLIENT_ID,
+  SSM_SLACK_APP_CLIENT_SECRET,
+  SSM_SLACK_APP_SIGNING_SECRET,
+} from './const';
 import { SlackSecrets } from './types';
 
 const ssm = new SSM({ region: REGION });
 let queueUrl = '';
 let gitHubAppPrivateKey = '';
 let gitHubAppWebhookSecret = '';
+let slackSigningSecret = '';
 
 /**
  * Queue URL is available in Lambda as environment variable (semi-secure) or parsed from
@@ -43,13 +52,9 @@ export const getSqsQueueUrl = async (): Promise<string> => {
   return queueUrl;
 };
 
-export const getSlackAppSecrets = async (): Promise<SlackSecrets> => {
+export const getAllSlackAppSecrets = async (): Promise<SlackSecrets> => {
   const params: GetParametersRequest = {
-    Names: [
-      '/techpivot/streaming-slack-notify/prod/slack/client_id',
-      '/techpivot/streaming-slack-notify/prod/slack/client_secret',
-      '/techpivot/streaming-slack-notify/prod/slack/signing_secret',
-    ],
+    Names: [SSM_SLACK_APP_CLIENT_ID, SSM_SLACK_APP_CLIENT_SECRET, SSM_SLACK_APP_SIGNING_SECRET],
     WithDecryption: true,
   };
 
@@ -64,6 +69,31 @@ export const getSlackAppSecrets = async (): Promise<SlackSecrets> => {
   });
 
   return result;
+};
+
+export const getSlackSigningSecret = async (): Promise<string> => {
+  if (slackSigningSecret !== '') {
+    return slackSigningSecret;
+  }
+
+  const response: GetParameterResult = await ssm
+    .getParameter({
+      Name: SSM_SLACK_APP_SIGNING_SECRET,
+      WithDecryption: true,
+    })
+    .promise();
+
+  if (!response.Parameter) {
+    throw new Error('Successfully queried parameter store but no Parameter was received');
+  }
+
+  if (!response.Parameter.Value) {
+    throw new Error('Successfully queried parameter store but no Parameter value was received');
+  }
+
+  slackSigningSecret = response.Parameter.Value;
+
+  return slackSigningSecret;
 };
 
 export const getGitHubAppPrivateKey = async (): Promise<string> => {

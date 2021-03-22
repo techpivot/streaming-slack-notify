@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import Webhooks from '@octokit/webhooks';
+import { InstallationEvent } from '@octokit/webhooks-definitions/schema';
 import { BaseError, ValidationError } from '../../common/lib/errors';
 import { insertGithubAppWebhookRecord } from '../../common/lib/dynamodb';
 import { getGitHubAppWebhookSecret } from '../../common/lib/ssm';
@@ -43,7 +43,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
 
     switch (headers['x-github-event']) {
       case 'installation':
-        const jsonBody = JSON.parse(event.body) as Webhooks.WebhookPayloadInstallation;
+        const jsonBody = JSON.parse(event.body) as InstallationEvent;
         const {
           action,
           installation: {

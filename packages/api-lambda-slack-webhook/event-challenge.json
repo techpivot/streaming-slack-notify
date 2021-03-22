@@ -1,0 +1,40 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /slack/webhook",
+  "rawPath": "/prod/slack/webhook",
+  "rawQueryString": "",
+  "headers": {
+    "accept": "*/*",
+    "accept-encoding": "gzip,deflate",
+    "content-length": "129",
+    "content-type": "application/json",
+    "host": "api.streaming-slack-notify.techpivot.com",
+    "user-agent": "Slackbot 1.0 (+https://api.slack.com/robots)",
+    "x-amzn-trace-id": "Root=1-6057dd13-3aba2aba47ab5a020a6f2b65",
+    "x-forwarded-for": "3.238.9.227",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https",
+    "x-slack-request-timestamp": "1616370963",
+    "x-slack-signature": "v0=b5919c02378cf19fb894433e0e4b16a56ebb9ae764688851be3846f9f8244ef6"
+  },
+  "requestContext": {
+    "accountId": "XXXXXXXXXXXXX",
+    "apiId": "fxm0bt3si5",
+    "domainName": "api.streaming-slack-notify.techpivot.com",
+    "domainPrefix": "api",
+    "http": {
+      "method": "POST",
+      "path": "/prod/slack/webhook",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "3.238.9.227",
+      "userAgent": "Slackbot 1.0 (+https://api.slack.com/robots)"
+    },
+    "requestId": "cj97HjoZoAMEVyA=",
+    "routeKey": "POST /slack/webhook",
+    "stage": "prod",
+    "time": "21/Mar/2021:23:56:03 +0000",
+    "timeEpoch": 1616370963837
+  },
+  "body": "{\"token\":\"gtQKKd05ffvRQRailJyW3syI\",\"challenge\":\"utR6Z5rOmPlRjnCdh3BuI7L0q5qOSftz7Xx0RtveDuDiv5Q2C7Em\",\"type\":\"url_verification\"}",
+  "isBase64Encoded": false
+}

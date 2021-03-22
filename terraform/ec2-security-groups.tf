@@ -1,20 +1,16 @@
-module "ecs_sg_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["sg", "ecs"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+module "aws_security_group_ecs_instance_label" {
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["sg", "ecs", "instance"]
+  tags       = local.tags
 }
 
 resource "aws_security_group" "ecs_instance" {
-  name        = "${var.name}-ecs-instance"
+  name        = module.aws_security_group_ecs_instance_label.id
   description = "Security group for the EC2 instance running ECS"
   vpc_id      = module.vpc.vpc_id
-  tags        = module.ecs_sg_label.tags
+  tags        = module.aws_security_group_ecs_instance_label.tags
 }
 
 resource "aws_security_group_rule" "ecs_instance_out_all" {
@@ -26,23 +22,19 @@ resource "aws_security_group_rule" "ecs_instance_out_all" {
   security_group_id = aws_security_group.ecs_instance.id
 }
 
-module "task_sg_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["sg", "task"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+module "aws_security_group_ecs_task_label" {
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["sg", "task"]
+  tags       = local.tags
 }
 
-resource "aws_security_group" "task" {
-  name        = "${var.name}-container"
-  description = "Security group for the streaming-slack-notify service containers"
+resource "aws_security_group" "ecs_service" {
+  name        = module.aws_security_group_ecs_task_label.id
+  description = "Security group for the streaming-slack-notify ECS service"
   vpc_id      = module.vpc.vpc_id
-  tags        = module.task_sg_label.tags
+  tags        = module.aws_security_group_ecs_task_label.tags
 }
 
 resource "aws_security_group_rule" "task_egress" {
@@ -52,5 +44,5 @@ resource "aws_security_group_rule" "task_egress" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.task.id
+  security_group_id = aws_security_group.ecs_service.id
 }

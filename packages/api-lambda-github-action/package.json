@@ -13,12 +13,12 @@
   },
   "scripts": {
     "build": "tsc --build --incremental",
-    "build:prod": "rm -rf ./dist && ncc build --minify --out dist src/index.ts",
-    "dist": "yarn build:prod && node-lambda package --prebuiltDirectory ./dist -n api-lambda-github-action",
+    "build:prod": "yarn build && rm -rf ./dist && ncc build --minify --out dist src/index.ts",
+    "dist": "yarn build:prod && node-lambda package -D dist/ -A dist/ -n api-lambda-github-action",
     "run:dev": "yarn build && node-lambda run"
   },
   "engines": {
-    "node": "=12"
+    "node": "=14"
   },
   "main": "dist/index.js",
   "source": "src/index.ts",

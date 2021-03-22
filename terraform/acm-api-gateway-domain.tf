@@ -1,13 +1,9 @@
-module "acm_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["acm", "certificate"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+module "api_gateway_custom_domain_cert_label" {
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["acm", "gateway", "domain"]
+  tags       = local.tags
 }
 
 resource "aws_acm_certificate" "api_gateway_custom_domain_cert" {
@@ -17,16 +13,14 @@ resource "aws_acm_certificate" "api_gateway_custom_domain_cert" {
   ]
   validation_method = "DNS"
 
-  tags = module.acm_label.tags
+  tags = module.api_gateway_custom_domain_cert_label.tags
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-data "aws_route53_zone" "zone" {
-  name = var.dns_zone_name
-}
+
 
 resource "aws_route53_record" "cert_validation" {
   for_each = {

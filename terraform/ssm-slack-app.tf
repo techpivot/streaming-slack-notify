@@ -1,13 +1,9 @@
 module "ssm_parameter_client_id_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ssm", "slack", "client-id"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ssm", "slack", "client-id"]
+  tags       = local.tags
 }
 
 resource "aws_ssm_parameter" "slack_client_id" {
@@ -24,15 +20,11 @@ resource "aws_ssm_parameter" "slack_client_id" {
 }
 
 module "ssm_parameter_client_secret_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ssm", "slack", "client-secret"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ssm", "slack", "client-secret"]
+  tags       = local.tags
 }
 
 resource "aws_ssm_parameter" "slack_client_secret" {
@@ -49,15 +41,11 @@ resource "aws_ssm_parameter" "slack_client_secret" {
 }
 
 module "ssm_parameter_signing_secret_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ssm", "slack", "signing-secret"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ssm", "slack", "signing-secret"]
+  tags       = local.tags
 }
 
 resource "aws_ssm_parameter" "slack_signing_secret" {

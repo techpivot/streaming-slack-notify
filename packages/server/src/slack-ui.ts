@@ -6,7 +6,7 @@ import {
   KnownBlock,
   MessageAttachment,
 } from '@slack/types';
-import Webhooks from '@octokit/webhooks';
+import { Webhooks } from '@octokit/webhooks';
 import { getReadableDurationString } from '../../common/lib/utils';
 import {
   GithubActionsWorkflowJobConclusion,

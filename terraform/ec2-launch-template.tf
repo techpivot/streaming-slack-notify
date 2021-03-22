@@ -28,31 +28,23 @@ data "template_file" "user_data" {
 }
 
 module "ec2_ecs_instance_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ecs", "instance"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ecs", "instance"]
+  tags       = local.tags
 }
 
 module "ec2_ecs_instance_volume_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ecs", "volume"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ecs", "volume"]
+  tags       = local.tags
 }
 
 resource "aws_launch_template" "default" {
-  name = "${var.name}-ecs-launch-template"
+  name = "${var.namespace}-ecs-launch-template"
 
   capacity_reservation_specification {
     capacity_reservation_preference = "open"
@@ -63,7 +55,7 @@ resource "aws_launch_template" "default" {
   }
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.instance.name
+    name = aws_iam_instance_profile.ecs_iam_instance_profile.name
   }
 
   disable_api_termination              = true

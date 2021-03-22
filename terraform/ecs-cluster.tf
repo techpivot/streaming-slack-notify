@@ -1,13 +1,9 @@
 module "ecs_label" {
-  source             = "cloudposse/label/null"
-  version            = "0.24.1"
-  namespace          = var.namespace
-  environment        = var.environment
-  stage              = var.stage
-  name               = var.name
-  attributes         = ["ecs"]
-  tags               = local.tags
-  additional_tag_map = var.additional_tag_map
+  source     = "cloudposse/label/null"
+  version    = "0.24.1"
+  namespace  = var.namespace
+  attributes = ["ecs"]
+  tags       = local.tags
 }
 
 data "template_file" "task_definition" {
@@ -16,7 +12,7 @@ data "template_file" "task_definition" {
   vars = {
     region       = var.region
     logsGroup    = module.ecs_cloudwatch_label.id,
-    streamPrefix = var.name
+    streamPrefix = var.namespace
   }
 }
 
@@ -60,7 +56,7 @@ resource "aws_ecs_service" "default" {
   network_configuration {
     subnets = module.vpc.public_subnets
     security_groups = [
-      aws_security_group.task.id
+      aws_security_group.ecs_service.id
     ]
   }
 

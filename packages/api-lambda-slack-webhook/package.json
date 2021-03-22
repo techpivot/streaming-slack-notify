@@ -1,7 +1,7 @@
 {
-  "name": "@techpivot/streaming-slack-notify-api-lambda-slack-authorize",
+  "name": "@techpivot/streaming-slack-notify-api-lambda-slack-webhook",
   "version": "0.0.0",
-  "description": "Lambda function that responds and authorizes new Slack OAuth2 application requests",
+  "description": "Lambda function that responds and authorizes new Slack webhook requests",
   "author": "TechPivot",
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
@@ -9,18 +9,18 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
-    "directory": "packages/api-lambda-slack-authorize"
+    "directory": "packages/api-lambda-slack-webhook"
   },
   "scripts": {
     "build": "tsc --build --incremental",
     "build:prod": "yarn build && rm -rf ./dist && ncc build --minify --out dist src/index.ts",
-    "dist": "yarn build:prod && node-lambda package -D dist/ -A dist/ -n api-lambda-slack-authorize",
+    "dist": "yarn build:prod && node-lambda package -D dist/ -A dist/ -n api-lambda-slack-webhook",
     "run:dev": "yarn build && node-lambda run --apiGateway -j 'event-challenge.json' -H 'lib/index.handler'"
   },
   "engines": {
     "node": "=14"
   },
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "source": "src/index.ts",
   "keywords": [
     "TechPivot",
@@ -30,6 +30,6 @@
     "typescript",
     "lambda",
     "slack",
-    "authorize"
+    "webhook"
   ]
 }
