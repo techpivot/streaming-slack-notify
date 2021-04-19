@@ -16,7 +16,8 @@
   "scripts": {
     "lint": "eslint packages/**/src/**/*.ts",
     "lint:fix": "eslint --fix packages/**/src/**/*.ts",
-    "format": "prettier --write -l **/*.{ts,js,json,yml,md,html} && terraform fmt --recursive ./terraform",
+    "format": "prettier --write -l **/*.{ts,js,json,yml,md,html} && terraform fmt -recursive ./terraform",
+    "format:check": "prettier -l **/*.{ts,js,json,yml,md,html} && terraform fmt -recursive -check ./terraform",
     "build:lambda:github-webhook": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-webhook build",
     "build:lambda:github-post-install": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-post-install build",
     "build:lambda:slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize build",

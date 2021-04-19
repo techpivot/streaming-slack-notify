@@ -10,28 +10,21 @@ on:
       - develop
 
 jobs:
-  build:
+  validate-and-build:
+    name: Validate and Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: ./
-        with:
-          slack_app_token: ${{ secrets.SLACK_APP_TOKEN }}
-          channel: '#builds'
-
       - name: Installing dependencies
         run: yarn install
 
       - name: Formatting
-        run: yarn format
+        run: yarn format:check
 
       - name: Linting
         run: yarn lint
 
       - name: Building
         run: yarn build
-
-      - name: Deploying
-        run: sleep 2
