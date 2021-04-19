@@ -25,6 +25,12 @@ export class ValidationError extends BaseError {
   }
 }
 
+export const sanitizeErrorForTemplates = (error: string): string => {
+  error = error.replace(/[:]\d{12}[:]/, ':XXXXXXXXXXXX:');
+
+  return error;
+};
+
 export class GitHubAppValidationError extends BaseError {
   constructor(message: string) {
     super(message, 'GitHubAppValidationError', 400);

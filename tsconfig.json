@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     // Node12 is 100% on ES2019 - https://node.green/#ES2019
+    // We are using lambdas with Node14 runtime engine as well as on our container instance. So target this
     "target": "ES2019",
     "module": "commonjs",
     "strict": true,

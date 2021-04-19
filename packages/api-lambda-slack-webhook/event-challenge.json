@@ -11,22 +11,22 @@
     "host": "api.streaming-slack-notify.techpivot.com",
     "user-agent": "Slackbot 1.0 (+https://api.slack.com/robots)",
     "x-amzn-trace-id": "Root=1-6057dd13-3aba2aba47ab5a020a6f2b65",
-    "x-forwarded-for": "3.238.9.227",
+    "sourceIp": "xx.xx.xx.xx",
     "x-forwarded-port": "443",
     "x-forwarded-proto": "https",
     "x-slack-request-timestamp": "1616370963",
     "x-slack-signature": "v0=b5919c02378cf19fb894433e0e4b16a56ebb9ae764688851be3846f9f8244ef6"
   },
   "requestContext": {
-    "accountId": "XXXXXXXXXXXXX",
-    "apiId": "fxm0bt3si5",
+    "accountId": "000000000000",
+    "apiId": "xxxxxxxxxx",
     "domainName": "api.streaming-slack-notify.techpivot.com",
     "domainPrefix": "api",
     "http": {
       "method": "POST",
       "path": "/prod/slack/webhook",
       "protocol": "HTTP/1.1",
-      "sourceIp": "3.238.9.227",
+      "sourceIp": "xx.xx.xx.xx",
       "userAgent": "Slackbot 1.0 (+https://api.slack.com/robots)"
     },
     "requestId": "cj97HjoZoAMEVyA=",

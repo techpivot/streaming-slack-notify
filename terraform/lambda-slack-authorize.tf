@@ -20,7 +20,7 @@ resource "aws_lambda_function" "lambda_slack_authorize" {
   handler          = "index.handler"
   memory_size      = 192
   timeout          = var.lambda_slack_oauth_authorize_timeout
-  runtime          = "nodejs14.x"
+  runtime          = var.lambda_runtime
   tags             = module.lambda_slack_authorize_label.tags
 }
 
@@ -29,7 +29,7 @@ resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_slack_authoriz
   function_name = aws_lambda_function.lambda_slack_authorize.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/slack/authorize"
+  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*${split(" ", aws_apigatewayv2_route.route_get_slack_authorize.route_key)[1]}"
 }
 
 resource "aws_lambda_function_event_invoke_config" "lambda_slack_authorize_invoke_config" {

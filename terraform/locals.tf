@@ -33,6 +33,6 @@ locals {
   ]
 
   ssm_prefix        = "/${var.namespace}"
-  ssm_slack_prefix  = "${local.ssm_prefix}/prod/slack"
-  ssm_github_prefix = "${local.ssm_prefix}/prod/github-app"
+  ssm_slack_prefix  = "${local.ssm_prefix}/slack"
+  ssm_github_prefix = "${local.ssm_prefix}/github"
 }

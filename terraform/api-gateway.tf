@@ -41,36 +41,29 @@ resource "aws_apigatewayv2_integration" "api_integration_slack_webhook_lambda" {
   passthrough_behavior   = "WHEN_NO_MATCH"
 }
 
-#resource "aws_apigatewayv2_integration" "api_integration_github_app_webhook_lambda" {
-#api_id                 = aws_apigatewayv2_api.default.id
-#integration_type       = "AWS_PROXY"
-#connection_type        = "INTERNET"
-#description            = "Proxies requests to the GitHub app webhook Lambda function"
-#integration_method     = "POST"
-#integration_uri        = aws_lambda_function.lambda_github_app_webhook.invoke_arn
-#payload_format_version = "2.0"
-#timeout_milliseconds   = (var.lambda_github_webhook_timeout * 1000) + 250
-#passthrough_behavior   = "WHEN_NO_MATCH"
-#}
+resource "aws_apigatewayv2_integration" "api_integration_github_webhook_lambda" {
+  api_id                 = aws_apigatewayv2_api.default.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  description            = "Proxies requests to the GitHub app webhook Lambda function"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.lambda_github_webhook.invoke_arn
+  payload_format_version = "2.0"
+  timeout_milliseconds   = (var.lambda_github_webhook_timeout * 1000) + 250
+  passthrough_behavior   = "WHEN_NO_MATCH"
+}
 
-#resource "aws_apigatewayv2_integration" "api_integration_github_action_lambda" {
-#api_id                 = aws_apigatewayv2_api.default.id
-#integration_type       = "AWS_PROXY"
-#connection_type        = "INTERNET"
-#description            = "Proxies requests to the GitHub Action Lambda function"
-#integration_method     = "POST"
-#integration_uri        = aws_lambda_function.lambda_github_action.invoke_arn
-#payload_format_version = "2.0"
-#timeout_milliseconds   = (var.lambda_github_action_timeout * 1000) + 250
-#passthrough_behavior   = "WHEN_NO_MATCH"
-#}
-
-#resource "aws_apigatewayv2_route" "route_get_github_app_webhook" {
-#  api_id             = aws_apigatewayv2_api.default.id
-#route_key          = "POST /github/webhook"
-#  authorization_type = "NONE"
-#target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_app_webhook_lambda.id}"
-#}
+resource "aws_apigatewayv2_integration" "api_integration_github_post_install_lambda" {
+  api_id                 = aws_apigatewayv2_api.default.id
+  integration_type       = "AWS_PROXY"
+  connection_type        = "INTERNET"
+  description            = "Proxies requests to the GitHub app post-install Lambda function"
+  integration_method     = "POST"
+  integration_uri        = aws_lambda_function.lambda_github_post_install.invoke_arn
+  payload_format_version = "2.0"
+  timeout_milliseconds   = (var.lambda_github_post_install_timeout * 1000) + 250
+  passthrough_behavior   = "WHEN_NO_MATCH"
+}
 
 
 //
@@ -91,12 +84,26 @@ resource "aws_apigatewayv2_route" "route_get_slack_webhook" {
   target             = "integrations/${aws_apigatewayv2_integration.api_integration_slack_webhook_lambda.id}"
 }
 
-#resource "aws_apigatewayv2_route" "route_post_action" {
-#api_id             = aws_apigatewayv2_api.default.id
-#route_key          = "POST /"
-#  authorization_type = "NONE"
-#target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_action_lambda.id}"
-#}
+resource "aws_apigatewayv2_route" "route_get_github_webhook" {
+  api_id             = aws_apigatewayv2_api.default.id
+  route_key          = "POST /github/webhook"
+  authorization_type = "NONE"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_webhook_lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "route_get_github_post_install_get" {
+  api_id             = aws_apigatewayv2_api.default.id
+  route_key          = "GET /github/post-install"
+  authorization_type = "NONE"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_post_install_lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "route_get_github_post_install_post" {
+  api_id             = aws_apigatewayv2_api.default.id
+  route_key          = "POST /github/post-install"
+  authorization_type = "NONE"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_github_post_install_lambda.id}"
+}
 
 //
 // Stages

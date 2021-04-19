@@ -1,0 +1,49 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /github/post-install",
+  "rawPath": "/prod/github/post-install",
+  "rawQueryString": "installation_id=16348290&setup_action=install",
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "en-US,en;q=0.9",
+    "cache-control": "max-age=0",
+    "content-length": "0",
+    "dnt": "1",
+    "host": "api.streaming-slack-notify.techpivot.com",
+    "sec-ch-ua-mobile": "?0",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36",
+    "x-amzn-trace-id": "Root=1-607c9d1c-467a471677d643d84f2300fd",
+    "sourceIp": "XX.XX.XX.XX",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
+  },
+  "queryStringParameters": {
+    "installation_id": "16348290",
+    "setup_action": "install"
+  },
+  "requestContext": {
+    "accountId": "000000000000",
+    "apiId": "fxm0bt3si5",
+    "domainName": "api.streaming-slack-notify.techpivot.com",
+    "domainPrefix": "api",
+    "http": {
+      "method": "GET",
+      "path": "/prod/github/post-install",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "XX.XX.XX.XX",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.128 Safari/537.36"
+    },
+    "requestId": "d_18djbJoAMEVNg=",
+    "routeKey": "GET /github/post-install",
+    "stage": "prod",
+    "time": "18/Apr/2021:20:57:00 +0000",
+    "timeEpoch": 1618779420402
+  },
+  "isBase64Encoded": false
+}

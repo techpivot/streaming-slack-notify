@@ -39,13 +39,25 @@ variable "dynamodb_slack_write_capacity" {
 }
 
 variable "dynamodb_github_read_capacity" {
-  default     = 4
+  default     = 3
   type        = number
   description = "DynamoDB github table read capacity units"
 }
 
 variable "dynamodb_github_write_capacity" {
-  default     = 4
+  default     = 3
+  type        = number
+  description = "DynamoDB github write capacity units"
+}
+
+variable "dynamodb_stats_read_capacity" {
+  default     = 3
+  type        = number
+  description = "DynamoDB github table read capacity units"
+}
+
+variable "dynamodb_stats_write_capacity" {
+  default     = 3
   type        = number
   description = "DynamoDB github write capacity units"
 }
@@ -80,6 +92,12 @@ variable "ecs_asg_desired_capacity" {
   default = 0
 }
 
+variable "lambda_runtime" {
+  type        = string
+  description = "The runtime to use for all Node lambda functions"
+  default     = "nodejs14.x"
+}
+
 variable "lambda_slack_oauth_authorize_timeout" {
   type        = number
   description = "The number of seconds before the Lambda function times out (Needs to query Slack + DynamoDB)"
@@ -98,10 +116,8 @@ variable "lambda_github_webhook_timeout" {
   default     = 10
 }
 
-
-
-variable "lambda_github_action_timeout" {
+variable "lambda_github_post_install_timeout" {
   type        = number
-  description = "The number of seconds before the Lambda function times out (Needs to query DynamoDB + SQS)"
-  default     = 10
+  description = "The number of seconds before the Lambda post-install function times out (Needs to query DynamoDB)"
+  default     = 15
 }

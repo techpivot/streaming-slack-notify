@@ -15,10 +15,10 @@ import {
   getJobAttachments,
 } from './slack-ui';
 import { GitHubWorkflowRunSummary, ChatResponse } from './interfaces';
-import { GITHUB_APP_ID } from '../../common/src/const';
-import { SQSBody } from '../../common/src/types';
-import { getGitHubAppPrivateKey } from '../../common/src/ssm';
-import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../common/src/utils';
+import { GITHUB_APP_ID } from '../../common/lib/const';
+import { SQSBody } from '../../common/lib/types';
+import { getGitHubAppPrivateKey } from '../../common/lib/ssm';
+import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../common/lib/utils';
 
 const debug = Debug('poller');
 

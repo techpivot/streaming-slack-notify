@@ -1,5 +1,5 @@
 import { SQS } from 'aws-sdk';
-import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
+//import { ActionsGetWorkflowRunResponseData, ActionsListJobsForWorkflowRunResponseData } from '@octokit/types';
 import { GitHubWorkflowRunData } from '../../common/src/types';
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -40,9 +40,9 @@ export type GithubActionsWorkflowJobConclusion =
 
 export interface GitHubWorkflowRunSummary extends GitHubWorkflowRunData {
   // Data result from: octokit.actions.listJobsForWorkflowRun(opts)
-  jobsData: ActionsListJobsForWorkflowRunResponseData;
+  jobsData: any; //ActionsListJobsForWorkflowRunResponseData;
   // Data result from: octokit.actions.getWorkflowRun(opts)
-  workflowData: ActionsGetWorkflowRunResponseData;
+  workflowData: any; //ActionsGetWorkflowRunResponseData;
 }
 
 export interface ChatResponse extends WebAPICallResult {

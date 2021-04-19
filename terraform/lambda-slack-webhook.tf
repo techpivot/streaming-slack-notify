@@ -20,7 +20,7 @@ resource "aws_lambda_function" "lambda_slack_webhook" {
   handler          = "index.handler"
   memory_size      = 192
   timeout          = var.lambda_slack_webhook_timeout
-  runtime          = "nodejs14.x"
+  runtime          = var.lambda_runtime
   tags             = module.lambda_slack_webhook_label.tags
 }
 
@@ -29,7 +29,7 @@ resource "aws_lambda_permission" "allow_api_gateway_invoke_lambda_slack_webhook"
   function_name = aws_lambda_function.lambda_slack_webhook.function_name
   action        = "lambda:InvokeFunction"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*/slack/webhook"
+  source_arn    = "${aws_apigatewayv2_api.default.execution_arn}/*/*${split(" ", aws_apigatewayv2_route.route_get_slack_webhook.route_key)[1]}"
 }
 
 resource "aws_lambda_function_event_invoke_config" "lambda_slack_webhook_invoke_config" {

@@ -9,7 +9,7 @@
     "host": "api.streaming-slack-notify.techpivot.com",
     "user-agent": "Mock Testing",
     "x-amzn-trace-id": "Root=1-5ec33d1b-812e1a20ba67cacc31d13ae4",
-    "sourceIp": "xx.xx.xx.xx",
+    "sourceIp": "XX.XX.XX.XX",
     "x-forwarded-port": "443",
     "x-forwarded-proto": "https"
   },
@@ -26,7 +26,7 @@
       "method": "GET",
       "path": "/prod/slack/authorize",
       "protocol": "HTTP/1.1",
-      "sourceIp": "xx.xx.xx.xx",
+      "sourceIp": "XX.XX.XX.XX",
       "userAgent": "Mock Testing"
     },
     "requestId": "MwZ8ShZgIAMEPMg=",

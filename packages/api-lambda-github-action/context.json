@@ -1,9 +1,0 @@
-{
-  "functionVersion": "$LATEST",
-  "functionName": "techpivot-streaming-slack-notify-github-action",
-  "memoryLimitInMB": "128",
-  "logGroupName": "/aws/lambda/techpivot-streaming-slack-notify-github-action",
-  "logStreamName": "2020/05/30/[$LATEST]bf0eaebbf664426b9f5d22aa8c376838",
-  "invokedFunctionArn": "arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:techpivot-streaming-slack-notify-github-action",
-  "awsRequestId": "d9988ed5-cd67-4c4a-9edf-76c29ab57cae"
-}

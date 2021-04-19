@@ -2,7 +2,7 @@ import { SSM } from 'aws-sdk';
 import { GetParameterResult, GetParametersRequest, GetParametersResult } from 'aws-sdk/clients/ssm';
 import {
   REGION,
-  SSM_GITHUB_APP_PRIVATE_KEY,
+  SSM_GITHUB_APP_CLIENT_SECRET,
   SSM_PARAMETER_QUEUE_URL,
   SSM_GITHUB_APP_WEBHOOK_SECRET,
   SSM_SLACK_APP_CLIENT_ID,
@@ -64,7 +64,7 @@ export const getAllSlackAppSecrets = async (): Promise<SlackSecrets> => {
   (response.Parameters || []).forEach(({ Name, Value }) => {
     const namePieces: string[] = (Name || '').split('/');
     if (namePieces.length > 0) {
-      result[namePieces[namePieces.length - 1]] = Value;
+      result[namePieces[namePieces.length - 1].replace('-', '_')] = Value;
     }
   });
 
@@ -103,7 +103,7 @@ export const getGitHubAppPrivateKey = async (): Promise<string> => {
 
   const response: GetParameterResult = await ssm
     .getParameter({
-      Name: SSM_GITHUB_APP_PRIVATE_KEY,
+      Name: SSM_GITHUB_APP_CLIENT_SECRET,
       WithDecryption: true,
     })
     .promise();

@@ -1,10 +1,11 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
-import { parseTemplate } from './utils';
-import { insertSlackRecord } from '../../common/lib/dynamodb';
+import { insertSlackAccessResponseRecord } from '../../common/lib/dynamodb';
 import { generateReadableSlackError, ValidationError, BaseError } from '../../common/lib/errors';
 import { getAllSlackAppSecrets } from '../../common/lib/ssm';
 import { SlackSecrets, SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
+import { parseTemplate } from '../../common/lib/utils';
+import { sanitizeErrorForTemplates } from '../../common/lib/errors';
 
 const init = async (): Promise<SlackSecrets> => {
   return new Promise((resolve) => {
@@ -13,7 +14,9 @@ const init = async (): Promise<SlackSecrets> => {
 };
 const initPromise: Promise<SlackSecrets> = init();
 
-export const handler = async (event: APIGatewayProxyEvent /*, context: Context */): Promise<APIGatewayProxyResult> => {
+export const handler: APIGatewayProxyHandlerV2 = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
   let statusCode: number = 200;
   let responseBody: string = '';
 
@@ -44,11 +47,11 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       throw generateReadableSlackError(error);
     }
 
-    const token = await insertSlackRecord(response);
-    console.log(`Generated token [${token}] for team ID: ${response.team.id}`);
+    await insertSlackAccessResponseRecord(response);
+    console.log(`Authorized team [${response.team.name}] with app ID: ${response.app_id}`);
 
     responseBody = parseTemplate('success.html', {
-      token,
+      token: response.app_id,
     });
   } catch (error) {
     // Log the full error in CloudWatch
@@ -61,7 +64,7 @@ export const handler = async (event: APIGatewayProxyEvent /*, context: Context *
       statusCode = 500;
     }
     responseBody = parseTemplate('error.html', {
-      errorMessage: error.message || 'Unknown',
+      errorMessage: sanitizeErrorForTemplates(error.message) || 'Unknown',
       errorType: error.name || error.code || 'Unknown error type',
     });
   }

@@ -1,5 +1,38 @@
 import * as t from 'io-ts';
 import { WebAPICallResult } from '@slack/web-api';
+import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// DynamoDB
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export interface DynamoDBGitHubGetItemOutput extends Omit<DocumentClient.GetItemOutput, 'Item'> {
+  Item?: {
+    installation_id: number;
+    account_id: string;
+    owner: string;
+    sender_id: number;
+    sender_login: string;
+    type: string;
+    updated_at: string;
+    slack_app_id?: string;
+    slack_bot_username?: string;
+    slack_channel?: string;
+  };
+}
+
+export interface DynamoDBSlackGetItemOutput extends Omit<DocumentClient.GetItemOutput, 'Item'> {
+  Item?: {
+    api_id_id: string;
+    access_token: string;
+    bot_user_id: 'bot';
+    created_at: string;
+    scope: string;
+    team_id: string;
+    team_name: string;
+    token_type: string;
+  };
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GitHub
@@ -30,6 +63,7 @@ export const GitHubWorkflowRunDataV = t.type({
 
 export type GitHubWorkflowRunData = t.TypeOf<typeof GitHubWorkflowRunDataV>;
 
+/*
 export const ApiGithubActionRequestDataV = t.intersection([
   t.type({
     // The Slack channel to stream GitHub actions logs to
@@ -63,6 +97,7 @@ export type DynamoDbGetRecordItem = {
   teamId: string;
   accessToken: string;
 };
+*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Slack
@@ -128,9 +163,10 @@ export type SlackTeamData = t.TypeOf<typeof SlackTeamDataV>;
  * required data), it means we don't have to expose the tokenId again to the polling server.
  */
 export const SQSBodyV = t.type({
-  github: GitHubWorkflowRunDataV,
+  //github: GitHubWorkflowRunDataV,
   githubInstallationId: t.number,
-  slack: SlackTeamDataV,
+  githubWorkflowRunId: t.number,
+  slackAccessToken: SlackTeamDataV,
 });
 
 export type SQSBody = t.TypeOf<typeof SQSBodyV>;

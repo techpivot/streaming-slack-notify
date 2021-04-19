@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayEventRequestContext, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { verifyRequestSignature } from '@slack/events-api';
 import { BaseError, ValidationError } from '../../common/lib/errors';
 import { getSlackSigningSecret } from '../../common/lib/ssm';
@@ -11,20 +11,16 @@ const init = async (): Promise<string> => {
 };
 const initPromise: Promise<string> = init();
 
-export const handler = async (
-  event: APIGatewayProxyEvent,
-  context: APIGatewayEventRequestContext
-): Promise<APIGatewayProxyResult> => {
+export const handler: APIGatewayProxyHandlerV2 = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
   let statusCode = 200;
   let responseBody: any = {};
 
   try {
-    if (event.body === null) {
+    if (event.body === undefined) {
       throw new ValidationError('No post data received');
     }
-
-    console.log('event', event);
-    console.log('context', context);
 
     const { headers } = event;
     const eventBody = JSON.parse(event.body);

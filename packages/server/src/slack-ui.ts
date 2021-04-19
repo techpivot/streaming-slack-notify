@@ -6,7 +6,7 @@ import {
   KnownBlock,
   MessageAttachment,
 } from '@slack/types';
-import { Webhooks } from '@octokit/webhooks';
+import { PullRequestEvent, PushEvent } from '@octokit/webhooks-definitions/schema';
 import { getReadableDurationString } from '../../common/lib/utils';
 import {
   GithubActionsWorkflowJobConclusion,
@@ -151,7 +151,7 @@ export const getEventSummaryBlocks = (summary: GitHubWorkflowRunSummary): KnownB
   switch (eventName) {
     case 'push':
       {
-        const payload = summary.payload as Webhooks.WebhookPayloadPush;
+        const payload = summary.payload as PushEvent;
         elements.push({
           type: 'mrkdwn',
           text: '*Branch*: `' + payload.ref.replace('refs/heads/', '') + '`',
@@ -161,7 +161,7 @@ export const getEventSummaryBlocks = (summary: GitHubWorkflowRunSummary): KnownB
 
     case 'pull_request':
       {
-        const payload = summary.payload as Webhooks.WebhookPayloadPullRequest;
+        const payload = summary.payload as PullRequestEvent;
         elements.push({
           type: 'mrkdwn',
           text: `*Number*: \`${payload.number}\``,
@@ -178,7 +178,7 @@ export const getEventSummaryBlocks = (summary: GitHubWorkflowRunSummary): KnownB
   ];
 };
 
-const getPushEventDetailBlocks = (payload: Webhooks.WebhookPayloadPush): KnownBlock[] => {
+const getPushEventDetailBlocks = (payload: PushEvent): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
   const maxCommits = 2;
   let index = 0;
@@ -239,7 +239,7 @@ const getPushEventDetailBlocks = (payload: Webhooks.WebhookPayloadPush): KnownBl
   return blocks;
 };
 
-const getPullRequestEventDetailBlocks = (payload: Webhooks.WebhookPayloadPullRequest): KnownBlock[] => {
+const getPullRequestEventDetailBlocks = (payload: PullRequestEvent): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
 
   const {
@@ -294,10 +294,10 @@ export const getEventDetailBlocks = (summary: GitHubWorkflowRunSummary): KnownBl
 
   switch (eventName) {
     case 'push':
-      return getPushEventDetailBlocks(payload as Webhooks.WebhookPayloadPush);
+      return getPushEventDetailBlocks(payload as PushEvent);
 
     case 'pull_request':
-      return getPullRequestEventDetailBlocks(payload as Webhooks.WebhookPayloadPullRequest);
+      return getPullRequestEventDetailBlocks(payload as PullRequestEvent);
 
     default:
       throw new Error('Unsupported event type');
@@ -308,7 +308,7 @@ export const getJobAttachments = (summary: GitHubWorkflowRunSummary): Array<Mess
   const { jobsData } = summary;
   const attachments: Array<MessageAttachment> = [];
 
-  jobsData.jobs.forEach((job) => {
+  jobsData.jobs.forEach((job: any) => {
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
     let icon = '';

@@ -1,3 +1,25 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
+/**
+ * Parses the specified
+ * @param fileName
+ * @param vars
+ * @returns string
+ */
+export const parseTemplate = (fileName: string, vars: { [key: string]: string } = {}): string => {
+  let template = fs.readFileSync(path.resolve(__dirname, 'templates', fileName), {
+    encoding: 'utf8',
+    flag: 'r',
+  });
+
+  Object.keys(vars).forEach((key) => {
+    template = template.replace(new RegExp('{{' + key + '}}', 'g'), vars[key]);
+  });
+
+  return template;
+};
+
 export const sleep = async (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };

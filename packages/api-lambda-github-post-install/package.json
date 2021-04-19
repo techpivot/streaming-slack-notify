@@ -1,7 +1,7 @@
 {
-  "name": "@techpivot/streaming-slack-notify-api-lambda-slack-authorize",
+  "name": "@techpivot/streaming-slack-notify-api-lambda-github-post-install",
   "version": "0.0.0",
-  "description": "Lambda function that responds and authorizes new Slack OAuth2 application requests",
+  "description": "Lambda function that handles GitHub application post-install/update configuration",
   "author": "TechPivot",
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
@@ -9,13 +9,13 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
-    "directory": "packages/api-lambda-slack-authorize"
+    "directory": "packages/api-lambda-github-post-install"
   },
   "scripts": {
     "build": "tsc --build --incremental && cpy '**/*' '!**/*.ts' ../lib --cwd=src/ --parents",
     "build:prod": "yarn build && rm -rf ./dist && ncc build --minify --out dist src/index.ts --target es2020 && cpy '**/*' '!**/*.ts' ../dist --cwd=src/ --parents",
-    "dist": "yarn build:prod && node-lambda package -D dist/ -A dist/ -n api-lambda-slack-authorize",
-    "run:dev": "yarn build && node-lambda run --apiGateway -j 'event-challenge.json' -H 'lib/index.handler'"
+    "dist": "yarn build:prod && node-lambda package -D dist/ -A dist/ -n api-lambda-github-post-install",
+    "run:dev": "yarn build && node-lambda run --apiGateway -j 'event.json' -H 'lib/index.handler'"
   },
   "engines": {
     "node": "=14"
@@ -29,7 +29,7 @@
     "node",
     "typescript",
     "lambda",
-    "slack",
-    "authorize"
+    "github",
+    "post-install"
   ]
 }

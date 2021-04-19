@@ -137,7 +137,6 @@ export class Consumer extends EventEmitter {
     try {
       debug('Executing handler');
       await this.executeHandler(message);
-      debug('Deleting message');
       await this.deleteMessage(message);
       this.emit('message_processed', message);
     } catch (err) {
@@ -244,7 +243,6 @@ export class Consumer extends EventEmitter {
       return;
     }
 
-    debug('Polling for messages');
     const receiveParams = {
       QueueUrl: this.queueUrl,
       AttributeNames: this.attributeNames,
@@ -253,6 +251,8 @@ export class Consumer extends EventEmitter {
       WaitTimeSeconds: this.waitTimeSeconds,
       VisibilityTimeout: this.visibilityTimeout,
     };
+
+    debug('Polling for messages');
 
     let currentPollingTimeout = this.pollingWaitTimeMs;
     this.receiveMessage(receiveParams)

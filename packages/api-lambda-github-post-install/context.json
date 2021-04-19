@@ -1,0 +1,11 @@
+{
+  "functionVersion": "$LATEST",
+  "functionName": "techpivot-streaming-slack-notify-github-post-install",
+  "memoryLimitInMB": "192",
+  "logGroupName": "/aws/lambda/techpivot-streaming-slack-notify-github-post-install",
+  "logStreamName": "2021/04/18/[$LATEST]0f950f5d8f7249c18c3ad1dee6676112",
+  "clientContext": "undefined",
+  "identity": "undefined",
+  "invokedFunctionArn": "arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:techpivot-streaming-slack-notify-github-post-install",
+  "awsRequestId": "737b6edc-e846-46ca-ae1b-f86d6a65d446"
+}
