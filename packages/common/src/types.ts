@@ -15,6 +15,7 @@ export interface DynamoDBGitHubGetItemOutput extends Omit<DocumentClient.GetItem
     sender_login: string;
     type: string;
     updated_at: string;
+    // The following fields are injected at GitHub post-install settings
     slack_app_id?: string;
     slack_bot_username?: string;
     slack_channel?: string;

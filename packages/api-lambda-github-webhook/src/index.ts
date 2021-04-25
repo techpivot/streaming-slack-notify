@@ -1,8 +1,8 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { InstallationEvent, WorkflowRunEvent } from '@octokit/webhooks-definitions/schema';
+import { deleteGitHubRecordById, getGithubRecordById, updateGithubAppRecordFromWebhook } from '../../common/lib/dynamodb';
 import { BaseError, ValidationError } from '../../common/lib/errors';
-import { deleteGitHubRecordById, updateGithubAppRecordFromWebhook } from '../../common/lib/dynamodb';
 import { getGitHubAppWebhookSecret } from '../../common/lib/ssm';
 
 const init = async (): Promise<string> => {
@@ -81,6 +81,15 @@ export const handler: APIGatewayProxyHandlerV2 = async (
           let body = JSON.parse(event.body) as WorkflowRunEvent;
           switch (body.action) {
             case 'requested': // WorkflowRunRequestedEvent
+              // Git the record by id
+              if (!body.installation || !body.installation.id) {
+                throw new Error('No installation ID associated with event. Ignoring');
+              }
+              console.log('Retrieving GitHub record by ID ...');
+              const record = await getGithubRecordById(body.installation.id);
+              if (!record.Item) {
+                throw new Error(`Unable to find linked Slack/GitHub using installation ID: ${body.installation.id}`);
+              }
               break;
 
             case 'completed': // WorkflowRunCompletedEvent

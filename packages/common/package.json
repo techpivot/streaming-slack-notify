@@ -11,8 +11,6 @@
     "url": "https://github.com/techpivot/streaming-slack-notify.git",
     "directory": "packages/common"
   },
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build --incremental --listFiles",
     "watch": "tsc --watch"

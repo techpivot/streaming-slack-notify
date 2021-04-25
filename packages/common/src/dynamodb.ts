@@ -9,7 +9,7 @@ const dynamodb = new DynamoDB.DocumentClient({ region: REGION });
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * StoreStore result in DynamoDB. Really no need to store one team_id per id as if any Slack
+ * Store result in DynamoDB. Really no need to store one team_id per id as if any Slack
  * workspace decides to revoke and re-install this is minimal and our table structure is
  * minimal. We have a small GSI on team_id if we need to do some checking on other areas
  * of the app.

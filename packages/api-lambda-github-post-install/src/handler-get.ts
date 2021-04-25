@@ -30,17 +30,30 @@ export const getHandler = async (event: APIGatewayProxyEventV2): Promise<APIGate
 
     console.log('Retrieving GitHub post installation page for installation ID', installationId);
 
-    // Validate the GitHub installation ID. Note that we use a strongly consistent read here. This is important
-    // since the previous authorization webhook that takes place just milliseconds prior to this does not leave
-    // enough time to perform an eventually consistent read. Note that it appears these may come out of order. Thus,
-    // if this an install event, delay slightly.
-    if (setupAction.toLowerCase() === 'install') {
-      sleep(2000);
-    }
+    const isInstalling = setupAction.toLowerCase() === 'install';
+    let slackAppRecord;
+    let count = 0;
 
-    const slackAppRecord = await getGithubRecordById(parseInt(installationId), true);
-    if (!slackAppRecord.Item) {
-      throw new ValidationError('The specified GitHub Installation ID is invalid or no longer valid.');
+    while (true) {
+      count++;
+
+      // Validate the GitHub installation ID. Note that we use a strongly consistent read here. This is important
+      // since the previous authorization webhook that takes place just milliseconds prior to this does not leave
+      // enough time to perform an eventually consistent read. Note that it appears these may come out of order. Thus,
+      // if this an install event, delay slightly.
+      if (isInstalling) {
+        sleep(2500);
+      }
+
+      slackAppRecord = await getGithubRecordById(parseInt(installationId), true);
+      if (slackAppRecord.Item) {
+        break;
+      }
+
+      if (!isInstalling || count >= 2) {
+        // Attempt to sleep once more
+        throw new ValidationError('The specified GitHub Installation ID is invalid or no longer valid.');
+      }
     }
 
     // Great. Render the post-install template with the values for Slack App ID, Channel, Bot Username (Note: These may be empty)

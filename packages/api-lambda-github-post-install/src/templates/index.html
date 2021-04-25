@@ -311,9 +311,8 @@
 
     <div style="margin: 0 auto; text-align: center; max-width: calc(min(70vw, 660px))">
       <div id="alert-primary" class="alert-box alert-primary">
-        The following settings are <strong>required</strong> to complete the setup of linking GitHub with Slack.
-        Additionally, the following settings allow additional customization fore message delivery to your Slack
-        workspace.
+        The following settings are <strong>required</strong> to link GitHub with Slack. Additionally, the following
+        settings allow additional customization for message delivery to your Slack workspace.
       </div>
       <div id="alert-success" class="alert-box alert-success" style="display: none">
         <strong>Settings updated successfully!</strong>
@@ -429,7 +428,7 @@
               function () {
                 window.location.href = 'https://github.com/settings/installations/' + installationId;
               },
-              window.location.href.indexOf('setup_action=install') > 0 ? 7500 : 3000
+              window.location.href.indexOf('setup_action=install') > 0 ? 8500 : 5000
             );
           })
           .catch(function (error) {
