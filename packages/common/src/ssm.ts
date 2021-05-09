@@ -59,16 +59,16 @@ export const getAllSlackAppSecrets = async (): Promise<SlackSecrets> => {
   };
 
   const response: GetParametersResult = await ssm.getParameters(params).promise();
-  const result: any = {};
+  const result: { [key: string]: string } = {};
 
   (response.Parameters || []).forEach(({ Name, Value }) => {
     const namePieces: string[] = (Name || '').split('/');
-    if (namePieces.length > 0) {
+    if (namePieces.length > 0 && Value !== undefined) {
       result[namePieces[namePieces.length - 1].replace('-', '_')] = Value;
     }
   });
 
-  return result;
+  return result as SlackSecrets;
 };
 
 export const getSlackSigningSecret = async (): Promise<string> => {

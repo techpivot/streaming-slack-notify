@@ -1,11 +1,16 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { OAuthV2AccessArguments, WebClient } from '@slack/web-api';
+import { OAuthV2AccessArguments, WebClient, WebAPIPlatformError } from '@slack/web-api';
 import { insertSlackAccessResponseRecord } from '../../common/lib/dynamodb';
-import { generateReadableSlackError, ValidationError, BaseError } from '../../common/lib/errors';
 import { getAllSlackAppSecrets } from '../../common/lib/ssm';
 import { SlackSecrets, SlackApiOauthV2AccessResponseData } from '../../common/lib/types';
 import { parseTemplate } from '../../common/lib/utils';
-import { sanitizeErrorForTemplates } from '../../common/lib/errors';
+import {
+  generateReadableSlackError,
+  ValidationError,
+  BaseError,
+  SlackApplicationAuthError,
+  sanitizeErrorForTemplates,
+} from '../../common/lib/errors';
 
 const init = async (): Promise<SlackSecrets> => {
   return new Promise((resolve) => {
@@ -44,7 +49,12 @@ export const handler: APIGatewayProxyHandlerV2 = async (
       response = (await client.oauth.v2.access(options)) as SlackApiOauthV2AccessResponseData;
     } catch (error) {
       console.error(error);
-      throw generateReadableSlackError(error);
+
+      if (!error.code || !error.data || !error.data.error) {
+        return new SlackApplicationAuthError('Unknown Slack OAuth V2 Access error', 'unknown_error');
+      }
+
+      throw generateReadableSlackError(error as WebAPIPlatformError);
     }
 
     await insertSlackAccessResponseRecord(response);

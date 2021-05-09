@@ -30,11 +30,11 @@
     "dist": "npm-run-all --parallel dist:lambda:*"
   },
   "keywords": [
-    "GitHub",
-    "Actions",
+    "Streaming",
     "Slack",
     "Notify",
-    "Streaming"
+    "GitHub",
+    "Actions"
   ],
   "prettier": {
     "trailingComma": "es5",

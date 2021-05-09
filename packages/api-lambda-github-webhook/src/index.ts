@@ -1,7 +1,11 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { InstallationEvent, WorkflowRunEvent } from '@octokit/webhooks-definitions/schema';
-import { deleteGitHubRecordById, getGithubRecordById, updateGithubAppRecordFromWebhook } from '../../common/lib/dynamodb';
+import {
+  deleteGitHubRecordById,
+  getGithubRecordById,
+  updateGithubAppRecordFromWebhook,
+} from '../../common/lib/dynamodb';
 import { BaseError, ValidationError } from '../../common/lib/errors';
 import { getGitHubAppWebhookSecret } from '../../common/lib/ssm';
 

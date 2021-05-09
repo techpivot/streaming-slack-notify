@@ -1,3 +1,5 @@
+import { WebAPIPlatformError } from '@slack/web-api';
+
 export class BaseError extends Error {
   name: string;
   statusCode: number;
@@ -49,11 +51,7 @@ export class NotFoundError extends BaseError {
   }
 }
 
-export const generateReadableSlackError = (error: any): SlackApplicationAuthError => {
-  if (!error.data || !error.data.error) {
-    return new SlackApplicationAuthError('Unknown Slack OAuth V2 Access error', 'unknown_error');
-  }
-
+export const generateReadableSlackError = (error: WebAPIPlatformError): SlackApplicationAuthError => {
   switch (error.data.error) {
     case 'invalid_grant_type':
       return new SlackApplicationAuthError('Value passed for grant_type was invalid.', error.data.error);
@@ -131,5 +129,6 @@ export const generateReadableSlackError = (error: any): SlackApplicationAuthErro
         error.data.error
       );
   }
+
   return new SlackApplicationAuthError('Unknown Slack OAuth V2 Access error', 'unknown_error');
 };

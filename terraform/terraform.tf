@@ -8,7 +8,7 @@ terraform {
     }
   }
 
-  required_version = ">= 0.14"
+  required_version = ">= 0.15"
 
   # State is currently managed by TechPivot shared-services DevOps team and provided here for this application
   backend "s3" {
