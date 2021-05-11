@@ -1,6 +1,7 @@
 import { KnownBlock, MrkdwnElement } from '@slack/types';
 import { GetWorkflowRunResponseData } from '../github-poller/types';
 
+/*
 const getPushEventDetailBlocks = (payload: PushEvent): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
   const maxCommits = 1;
@@ -54,7 +55,7 @@ const getPushEventDetailBlocks = (payload: PushEvent): KnownBlock[] => {
   }
 
   return blocks;
-};
+};*/
 
 /*
 const getPullRequestEventDetailBlocks = (payload: PullRequestEvent): KnownBlock[] => {
@@ -112,9 +113,13 @@ const getEventDetailBlocks = (workflowData: GetWorkflowRunResponseData): KnownBl
 
   // import { PullRequestEvent, PushEvent } from '@octokit/webhooks-definitions/schema';
 
+  console.log('event details for multiple test');
+console.log(JSON.stringify(workflowData, null, 2));
+
   switch (event) {
     case 'push':
-      return getPushEventDetailBlocks(payload as PushEvent);
+      //return getPushEventDetailBlocks(payload as PushEvent);
+      return [];
 
     //case 'pull_request':
    //   return getPullRequestEventDetailBlocks(payload as PullRequestEvent);
