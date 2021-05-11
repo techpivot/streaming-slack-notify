@@ -1,14 +1,16 @@
 import { SQS } from 'aws-sdk';
+import Debug from 'debug';
 import { EventEmitter } from 'events';
 import * as https from 'https';
 import { PathReporter } from 'io-ts/lib/PathReporter';
 import { isLeft } from 'fp-ts/lib/Either';
-import { Consumer } from './consumer';
-import Poller from './poller.ts.orig';
+import { Consumer } from './sqs-consumer';
+import Poller from './github-poller';
 import { REGION } from '../../common/lib/const';
-import { getSqsQueueUrl, getGitHubAppPrivateKey } from '../../common/lib/ssm';
+import { getSqsQueueUrl, getGitHubAppClientSecret, getGitHubAppPrivateKey } from '../../common/lib/ssm';
 import { SQSBody, SQSBodyV } from '../../common/lib/types';
-import { debug } from '@actions/core';
+
+const debug = Debug('server');
 
 const globalEmitter = new EventEmitter({ captureRejections: true });
 
@@ -25,11 +27,13 @@ const sqs = new SQS({
 
 async function run(): Promise<void> {
   let queueUrl: string;
+  let githubAppClientSecret: string;
   let githubAppPrivateKey: string;
 
   try {
-    console.log('Retrieving SQS queue URL ...');
+    debug('Retrieving SQS queue URL ...');
     queueUrl = await getSqsQueueUrl();
+    debug('✓ SQS URL:', queueUrl);
   } catch (err) {
     console.error('Error: Unable to connect to AWS Parameter Store to retrieve queue URL');
     console.error(err);
@@ -37,15 +41,28 @@ async function run(): Promise<void> {
   }
 
   try {
-    console.log('Retrieving GitHub app client secret ...');
-    githubAppPrivateKey = await getGitHubAppPrivateKey();
+    debug('\nRetrieving GitHub app client secret ...');
+    githubAppClientSecret = await getGitHubAppClientSecret();
+    debug('✓ Successfully retrieved GitHub app client secret');
   } catch (err) {
-    console.error('Error: Unable to connect to AWS Parameter Store to GitHub app client secret');
+    console.error('Error: Unable to connect to AWS Parameter Store to retrieve GitHub app client secret');
     console.error(err);
     process.exit(1);
   }
 
-  const app = Consumer.create({
+  try {
+    debug('\nRetrieving GitHub app private key ...');
+    githubAppPrivateKey = await getGitHubAppPrivateKey();
+    debug('✓ Successfully retrieved GitHub app private key');
+  } catch (err) {
+    console.error('Error: Unable to connect to AWS Parameter Store to retrieve GitHub app private key');
+    console.error(err);
+    process.exit(1);
+  }
+
+  debug('\nStarting SQS consumer to long poll for messages ...');
+
+  const consumer = new Consumer({
     queueUrl,
     batchSize: 10,
     waitTimeSeconds: 20,
@@ -67,73 +84,62 @@ async function run(): Promise<void> {
           throw new Error(PathReporter.report(result).join('\n'));
         }
 
-        console.log('create');
-
-        const poller = new Poller(sqs, queueUrl, body as SQSBody);
+        debug('Received valid SQS message. Starting new GitHub poller ...');
+        const poller = new Poller(githubAppClientSecret, githubAppPrivateKey, sqs, queueUrl, body as SQSBody);
 
         // This is async. Intentionally, we do not wait 'await'. We want to run this
         // async in another thread. Additionally, we pass in the global event emitter
         // to bind a "drain" event in the event we receive a SIGTERM from ECS host instance.
-        //poller.run(globalEmitter);
+        poller.run(globalEmitter);
 
         // Upon returning immediately, the message is then immediately deleted by the Consumer.
       } catch (err) {
-        debug('here');
-        console.error('Received an invalid SQSBody payload. Ignoring', Body);
+        debug('Received an invalid SQSBody payload. Ignoring message:', Body);
       }
     },
   });
 
   // SQS Errors
-  app.on('error', (err) => {
-    // @todo Fixme
-    // potentially handle deletes here
-    console.error('1 sqs error', err.message);
-  });
 
   // Timeout Error. Currently not specifying a timeout so we won't have any of these
   // app.on('timeout_error', (err) => {});
 
   // We handle uncaught processing errors here. In general, since we're explicitly wrapping our Poller.run()
   // in a try/catch, this yields really only constructor() errors.
-  app.on('processing_error', (err, message: SQS.Message) => {
+  consumer.on('processing_error', (err, message: SQS.Message) => {
     console.error('Unable to process message: ', err.message);
 
     // Since the message wasn't processed, it never gets deleted. Delete manually.
     const { MessageId, ReceiptHandle } = message;
     if (ReceiptHandle !== undefined) {
-      console.log('Manually deleting: ', MessageId, ReceiptHandle);
+      debug('Manually deleting: ', MessageId, ReceiptHandle);
       const params = {
         QueueUrl: queueUrl,
         ReceiptHandle: ReceiptHandle,
       };
       sqs.deleteMessage(params, () => {
-        console.log('Successfully deleted: ', MessageId, ReceiptHandle);
+        debug('Successfully deleted: ', MessageId, ReceiptHandle);
       });
     }
   });
 
-  const drainActivePollers = async (signal: string) => {
-    console.log(`Received ${signal} signal. Stopping any active pollers and restoring payloads to queue`);
-    app.stop();
-
-    // Await doesn't work here; however, keeping it for consistency.
-    await globalEmitter.emit('drain', signal);
-
-    // Kill the process after the 'drain' events have finished restoring messages. Typically these complete
-    // in a few 100ms.
-    setTimeout(() => {
-      console.log('Exiting');
-      process.exit();
-    }, 2000);
-  };
-
   // Register signal handlers
+  // Note: ECS host sends the SIGTERM signal to the docker container when ECS agent uses
+  // "ECS_ENABLE_SPOT_INSTANCE_DRAINING" set to true.
+  // Ref: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-spot.html
+  ['SIGINT', 'SIGTERM'].forEach((signal) => {
+    process.on(signal, async () => {
+      debug(`Received ${signal} signal. Stopping any active pollers and restoring active payloads to queue`);
+      consumer.stop();
+      globalEmitter.emit('drain', signal);
+    });
+  });
 
-  // ECS host sends the SIGTERM signal to the docker container
-  process.on('SIGTERM', () => drainActivePollers('SIGTERM'));
+  process.on('beforeExit', async () => {
+    debug('Exiting');
+  });
 
-  app.start();
+  consumer.start();
 }
 
 run();

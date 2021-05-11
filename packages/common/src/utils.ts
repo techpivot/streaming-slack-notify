@@ -35,15 +35,16 @@ export const getMemoryUsageMb = (): number => {
  * @param date2
  */
 export const getReadableDurationString = (date1: Date, date2: Date): string => {
-  let h, m, s;
-  const d;
+  let h, m, s, ms;
 
-  s = Math.floor(Math.abs(date1.getTime() - date2.getTime()) / 1000);
+  ms = Math.floor(Math.abs(date1.getTime() - date2.getTime()));
+  s = Math.floor(ms / 1000);
+  ms = ms % 1000;
   m = Math.floor(s / 60);
   s = s % 60;
   h = Math.floor(m / 60);
   m = m % 60;
-  d = Math.floor(h / 24);
+  const d = Math.floor(h / 24);
   h = h % 24;
 
   const result = [];
@@ -58,6 +59,10 @@ export const getReadableDurationString = (date1: Date, date2: Date): string => {
   }
   if (s > 0) {
     result.push(`${s}s`);
+  }
+
+  if (result.length === 0 && ms > 0) {
+    result.push(`${ms}ms`);
   }
 
   return result.join(' ');

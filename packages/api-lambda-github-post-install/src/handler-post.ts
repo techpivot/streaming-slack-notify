@@ -3,8 +3,8 @@ import { BaseError, ValidationError } from '../../common/lib/errors';
 import { getSlackRecordById, updateGithubAppRecordFromPostInstallSettings } from '../../common/lib/dynamodb';
 
 export const postHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  let statusCode: number = 200;
-  let response: any = {};
+  let statusCode = 200;
+  const response: { action?: string; error?: string } = {};
 
   try {
     if (event.body === undefined) {

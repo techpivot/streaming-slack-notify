@@ -22,8 +22,8 @@ const initPromise: Promise<SlackSecrets> = init();
 export const handler: APIGatewayProxyHandlerV2 = async (
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> => {
-  let statusCode: number = 200;
-  let responseBody: string = '';
+  let statusCode: 200;
+  let responseBody: '';
 
   try {
     // Note: No need to verify request signature as this is apart of the subsequent call

@@ -3,6 +3,7 @@ import { GetParameterResult, GetParametersRequest, GetParametersResult } from 'a
 import {
   REGION,
   SSM_GITHUB_APP_CLIENT_SECRET,
+  SSM_GITHUB_APP_PRIVATE_KEY,
   SSM_PARAMETER_QUEUE_URL,
   SSM_GITHUB_APP_WEBHOOK_SECRET,
   SSM_SLACK_APP_CLIENT_ID,
@@ -13,8 +14,9 @@ import { SlackSecrets } from './types';
 
 const ssm = new SSM({ region: REGION });
 let queueUrl = '';
-let gitHubAppPrivateKey = '';
+let gitHubAppClientSecret = '';
 let gitHubAppWebhookSecret = '';
+let gitHubAppPrivateKey = '';
 let slackSigningSecret = '';
 
 /**
@@ -96,6 +98,31 @@ export const getSlackSigningSecret = async (): Promise<string> => {
   return slackSigningSecret;
 };
 
+export const getGitHubAppClientSecret = async (): Promise<string> => {
+  if (gitHubAppClientSecret !== '') {
+    return gitHubAppClientSecret;
+  }
+
+  const response: GetParameterResult = await ssm
+    .getParameter({
+      Name: SSM_GITHUB_APP_CLIENT_SECRET,
+      WithDecryption: true,
+    })
+    .promise();
+
+  if (!response.Parameter) {
+    throw new Error('Successfully queried parameter store but no Parameter was received');
+  }
+
+  if (!response.Parameter.Value) {
+    throw new Error('Successfully queried parameter store but no Parameter value was received');
+  }
+
+  gitHubAppClientSecret = response.Parameter.Value;
+
+  return gitHubAppClientSecret;
+};
+
 export const getGitHubAppPrivateKey = async (): Promise<string> => {
   if (gitHubAppPrivateKey !== '') {
     return gitHubAppPrivateKey;
@@ -103,7 +130,7 @@ export const getGitHubAppPrivateKey = async (): Promise<string> => {
 
   const response: GetParameterResult = await ssm
     .getParameter({
-      Name: SSM_GITHUB_APP_CLIENT_SECRET,
+      Name: SSM_GITHUB_APP_PRIVATE_KEY,
       WithDecryption: true,
     })
     .promise();

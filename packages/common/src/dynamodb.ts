@@ -56,7 +56,7 @@ export const deleteSlackRecordById = async (apiAppId: string): Promise<void> => 
 
 export const getGithubRecordById = async (
   installationId: number,
-  stronglyConsistent: boolean = false
+  stronglyConsistent = false
 ): Promise<DynamoDBGitHubGetItemOutput> => {
   return (await dynamodb
     .get({

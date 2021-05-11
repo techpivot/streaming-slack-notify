@@ -3,39 +3,10 @@ import { PromiseResult } from 'aws-sdk/lib/request';
 import Debug from 'debug';
 import { EventEmitter } from 'events';
 import { SQSError, TimeoutError } from './errors';
-import { ConsumerOptions, TimeoutResponse } from './interfaces';
+import { ConsumerOptions } from './interfaces';
+import { createTimeout, toSQSError, isConnectionError } from './utils';
 
 const debug = Debug('sqs-consumer');
-
-const createTimeout = (durationMs: number): TimeoutResponse => {
-  let timeoutHandle;
-  const promise = new Promise((resolve, reject) => {
-    timeoutHandle = setTimeout(() => {
-      reject(new TimeoutError());
-    }, durationMs);
-  });
-
-  return { timeoutHandle, promise };
-};
-
-const isConnectionError = (err: Error): boolean => {
-  if (err instanceof SQSError) {
-    return err.statusCode === 403 || err.code === 'CredentialsError' || err.code === 'UnknownEndpoint';
-  }
-  return false;
-};
-
-const toSQSError = (err: AWSError, message: string): SQSError => {
-  const sqsError = new SQSError(message);
-  sqsError.code = err.code;
-  sqsError.statusCode = err.statusCode;
-  sqsError.region = err.region;
-  sqsError.retryable = err.retryable;
-  sqsError.hostname = err.hostname;
-  sqsError.time = err.time;
-
-  return sqsError;
-};
 
 export class Consumer extends EventEmitter {
   private queueUrl: string;
@@ -52,6 +23,8 @@ export class Consumer extends EventEmitter {
   private pollingWaitTimeMs: number;
   private terminateVisibilityTimeout: boolean;
   private sqs: SQS;
+
+  private activeReceiveMessage: any;
 
   constructor(options: ConsumerOptions) {
     super();
@@ -81,14 +54,14 @@ export class Consumer extends EventEmitter {
       new SQS({
         region: options.region || process.env.AWS_REGION || 'us-east-1',
       });
+
+    this.on('error', (error: SQSError) => {
+      debug('[ERROR]', error.message);
+    });
   }
 
-  public get isRunning(): boolean {
+  public isRunning(): boolean {
     return !this.stopped;
-  }
-
-  public static create(options: ConsumerOptions): Consumer {
-    return new Consumer(options);
   }
 
   public start(): void {
@@ -101,6 +74,9 @@ export class Consumer extends EventEmitter {
 
   public stop(): void {
     debug('Stopping consumer');
+    if (this.isRunning() && this.activeReceiveMessage) {
+      this.activeReceiveMessage.abort();
+    }
     this.stopped = true;
   }
 
@@ -156,7 +132,8 @@ export class Consumer extends EventEmitter {
     params: SQS.Types.ReceiveMessageRequest
   ): Promise<PromiseResult<SQS.Types.ReceiveMessageResult, AWSError>> {
     try {
-      return await this.sqs.receiveMessage(params).promise();
+      this.activeReceiveMessage = this.sqs.receiveMessage(params);
+      return await this.activeReceiveMessage.promise();
     } catch (err) {
       throw toSQSError(err, `SQS receive message failed: ${err.message}`);
     }

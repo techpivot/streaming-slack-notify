@@ -14,8 +14,12 @@ export const SSM_SLACK_APP_SIGNING_SECRET = '/techpivot-streaming-slack-notify/s
 
 export const SSM_GITHUB_APP_CLIENT_SECRET = '/techpivot-streaming-slack-notify/github/client-secret';
 
+export const SSM_GITHUB_APP_PRIVATE_KEY = '/techpivot-streaming-slack-notify/github/private-key';
+
 export const SSM_GITHUB_APP_WEBHOOK_SECRET = '/techpivot-streaming-slack-notify/github/webhook-secret';
 
 export const GITHUB_APP_ID = 71405;
+
+export const GITHUB_CLIENT_ID = 'Iv1.2fcd2b1b73152e69';
 
 export const API_ENDPOINT = 'https://api.streaming-slack-notify.techpivot.com';

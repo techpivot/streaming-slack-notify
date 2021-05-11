@@ -23,6 +23,19 @@ resource "aws_ssm_parameter" "github_app_client_secret" {
   }
 }
 
+resource "aws_ssm_parameter" "github_app_private_key" {
+  name        = "${local.ssm_github_prefix}/private-key"
+  description = "GitHub application private key."
+  type        = "SecureString"
+  value       = "dummy"
+  tags        = module.ssm_parameter_github_app_label.tags
+  overwrite   = false
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
 resource "aws_ssm_parameter" "github_app_webhook_secret" {
   name        = "${local.ssm_github_prefix}/webhook-secret"
   description = "GitHub application webhook secret."

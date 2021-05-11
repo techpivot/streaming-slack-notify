@@ -15,7 +15,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> => {
   let statusCode = 200;
-  let responseBody: any = {};
+  const responseBody: { challenge?: string } = {};
 
   try {
     if (event.body === undefined) {

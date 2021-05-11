@@ -5,8 +5,8 @@ import { parseTemplate, sleep } from '../../common/lib/utils';
 import { sanitizeErrorForTemplates } from '../../common/lib/errors';
 
 export const getHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  let statusCode: number = 200;
-  let responseBody: string = '';
+  let statusCode = 200;
+  let responseBody = '';
 
   try {
     const { queryStringParameters } = event;
@@ -34,6 +34,7 @@ export const getHandler = async (event: APIGatewayProxyEventV2): Promise<APIGate
     let slackAppRecord;
     let count = 0;
 
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       count++;
 

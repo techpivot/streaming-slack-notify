@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { InstallationEvent, WorkflowRunEvent } from '@octokit/webhooks-definitions/schema';
+import { InstallationEvent, WorkflowRunEvent } from '@octokit/webhooks-types';
 import {
   deleteGitHubRecordById,
   getGithubRecordById,
@@ -21,7 +21,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
 ): Promise<APIGatewayProxyResultV2> => {
   let statusCode = 200;
   const responseBody = {
-    ok: true,
+    ok: false,
   };
 
   try {
@@ -82,22 +82,34 @@ export const handler: APIGatewayProxyHandlerV2 = async (
 
       case 'workflow_run':
         {
-          let body = JSON.parse(event.body) as WorkflowRunEvent;
+          const body = JSON.parse(event.body) as WorkflowRunEvent;
           switch (body.action) {
-            case 'requested': // WorkflowRunRequestedEvent
-              // Git the record by id
-              if (!body.installation || !body.installation.id) {
-                throw new Error('No installation ID associated with event. Ignoring');
-              }
-              console.log('Retrieving GitHub record by ID ...');
-              const record = await getGithubRecordById(body.installation.id);
-              if (!record.Item) {
-                throw new Error(`Unable to find linked Slack/GitHub using installation ID: ${body.installation.id}`);
+            // WorkflowRunRequestedEvent
+            case 'requested':
+              {
+                // Git the record by id
+                if (!body.installation || !body.installation.id) {
+                  throw new Error('No installation ID associated with event. Ignoring');
+                }
+                console.log('Retrieving GitHub record by ID ...');
+                const record = await getGithubRecordById(body.installation.id);
+                if (!record.Item) {
+                  throw new Error(`Unable to find linked Slack/GitHub using installation ID: ${body.installation.id}`);
+                }
+
+                // Get Token from Slack record
+
+                // Post to SQS
+
+                // may need to include the event
               }
               break;
 
-            case 'completed': // WorkflowRunCompletedEvent
-              break;
+            // WorkflowRunCompletedEvent
+            //case 'completed':
+            //  {
+            // }
+            //  break;
           }
         }
         break;

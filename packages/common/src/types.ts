@@ -64,42 +64,6 @@ export const GitHubWorkflowRunDataV = t.type({
 
 export type GitHubWorkflowRunData = t.TypeOf<typeof GitHubWorkflowRunDataV>;
 
-/*
-export const ApiGithubActionRequestDataV = t.intersection([
-  t.type({
-    // The Slack channel to stream GitHub actions logs to
-    channel: t.string,
-    // The GitHub workflow run data payload
-    github: GitHubWorkflowRunDataV,
-    // This is the TechPivot token ID we use to exchange for the secret slack_access_token stored securely. We
-    // purposely don't use the legacy style "SLACK_ACCESS_TOKEN" verbiage to help prevent confusion.
-    appToken: t.string,
-  }),
-  t.partial({
-    username: t.string,
-    iconUrl: t.string,
-    iconEmoji: t.string,
-  }),
-]);
-
-export type ApiGithubActionRequestData = t.TypeOf<typeof ApiGithubActionRequestDataV>;
-
-export type ApiGithubActionResponseData = {
-  ok: boolean;
-  error?: {
-    message: string;
-    name: string;
-  };
-};
-
-export type DynamoDbGetRecordItem = {
-  id: string;
-  teamName: string;
-  teamId: string;
-  accessToken: string;
-};
-*/
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Slack
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,32 +93,6 @@ export interface SlackApiOauthV2AccessResponseData extends WebAPICallResult {
   };
 }
 
-export const SlackTeamDataV = t.intersection([
-  t.type({
-    // The Slack channel for sending message
-    channel: t.string,
-    // The Slack access token
-    accessToken: t.string,
-    // The DynamoDB record ID. Resent in case this is needed for potentially updating the
-    // record on the server side.
-    id: t.string,
-    // The name of the slack team
-    teamName: t.string,
-    // The ID of the slack team
-    teamId: t.string,
-  }),
-  t.partial({
-    // Slack Message timestamp of the original message for the workflow.
-    ts: t.string,
-    // Optional fields for first chat postMessage
-    username: t.string,
-    iconUrl: t.string,
-    iconEmoji: t.string,
-  }),
-]);
-
-export type SlackTeamData = t.TypeOf<typeof SlackTeamDataV>;
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // SQS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,12 +100,34 @@ export type SlackTeamData = t.TypeOf<typeof SlackTeamDataV>;
 /**
  * Since the server never queries DynamoDB (the Lambda will ensure the record exists and pluck the
  * required data), it means we don't have to expose the tokenId again to the polling server.
+ *
  */
-export const SQSBodyV = t.type({
-  //github: GitHubWorkflowRunDataV,
-  githubInstallationId: t.number,
-  githubWorkflowRunId: t.number,
-  slackAccessToken: SlackTeamDataV,
-});
+export const SQSBodyV = t.intersection([
+  // Required fields
+  t.type({
+    // The GitHub streaming slack notify app installation ID associated with the workflow event
+    githubInstallationId: t.number,
+    // Specifies the GitHub organization associated with the workflow event
+    githubOrganization: t.string,
+    // Specifies the GitHub repo associated with the workflow event
+    githubRepository: t.string,
+    // Specifies the GitHub workflow run ID to lookup
+    githubWorkflowId: t.number,
+    slackAppId: t.string,
+    // The Slack channel for sending message
+    slackChannel: t.string,
+    // The Slack access token
+    slackAccessToken: t.string,
+  }),
+  // Optional fields
+  t.partial({
+    // The Slack bot name. If not specified, uses the GitHub apps default name.
+    slackBotUsername: t.string,
+    // Slack Message timestamp of the original message for the workflow. Once a GitHub poller picks this up and
+    // sends the first message, this will be added into the payload. Thus, if a spot instance needs to drain,
+    // the message can get put back into the queue.
+    slackTimestamp: t.string,
+  }),
+]);
 
 export type SQSBody = t.TypeOf<typeof SQSBodyV>;
