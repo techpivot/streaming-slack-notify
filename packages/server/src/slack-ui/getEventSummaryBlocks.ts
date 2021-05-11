@@ -56,6 +56,7 @@ const getPushEventDetailBlocks = (payload: PushEvent): KnownBlock[] => {
   return blocks;
 };
 
+/*
 const getPullRequestEventDetailBlocks = (payload: PullRequestEvent): KnownBlock[] => {
   const blocks: KnownBlock[] = [];
 
@@ -104,7 +105,7 @@ const getPullRequestEventDetailBlocks = (payload: PullRequestEvent): KnownBlock[
   });
 
   return blocks;
-};
+};*/
 
 const getEventDetailBlocks = (workflowData: GetWorkflowRunResponseData): KnownBlock[] => {
   const { event } = workflowData;
@@ -115,8 +116,8 @@ const getEventDetailBlocks = (workflowData: GetWorkflowRunResponseData): KnownBl
     case 'push':
       return getPushEventDetailBlocks(payload as PushEvent);
 
-    case 'pull_request':
-      return getPullRequestEventDetailBlocks(payload as PullRequestEvent);
+    //case 'pull_request':
+   //   return getPullRequestEventDetailBlocks(payload as PullRequestEvent);
 
     default:
       throw new Error('Unsupported event type');
