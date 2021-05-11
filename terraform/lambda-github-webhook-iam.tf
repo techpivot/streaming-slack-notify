@@ -28,14 +28,15 @@ data "aws_iam_policy_document" "iam_lambda_github_webhook_2" {
 
 data "aws_iam_policy_document" "iam_lambda_github_webhook_3" {
   statement {
-    sid    = "AllowLambdaManagegithubDynamodbTable"
+    sid    = "AllowLambdaManageGithubDynamodbTable"
     effect = "Allow"
     resources = [
       aws_dynamodb_table.github.arn,
     ]
     actions = [
-      "dynamodb:UpdateItem",
-      "dynamodb:DeleteItem",
+      "dynamodb:GetItem",    // For workflow run
+      "dynamodb:UpdateItem", // App installation/change
+      "dynamodb:DeleteItem", // App uninstall
     ]
   }
 }
