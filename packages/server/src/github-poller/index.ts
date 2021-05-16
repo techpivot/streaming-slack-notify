@@ -1,7 +1,8 @@
 import { createAppAuth } from '@octokit/auth-app';
 import { Octokit } from '@octokit/rest';
+import { components } from '@octokit/openapi-types';
 import { ChatPostMessageArguments, ChatUpdateArguments, WebClient } from '@slack/web-api';
-import { KnownBlock } from '@slack/types';
+import { KnownBlock, MessageAttachment } from '@slack/types';
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
 import Debug, { Debugger } from 'debug';
@@ -9,7 +10,12 @@ import { GITHUB_APP_ID, GITHUB_CLIENT_ID } from '../../../common/lib/const';
 import { SQSBody } from '../../../common/lib/types';
 import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../../common/lib/utils';
 import { ListJobsForWorkflowRunResponseData, GetWorkflowRunResponseData, SlackChatPostMessageResponse } from './types';
-import { getDividerBlock, getEventSummaryBlocks, getJobAttachments, getTitleBlocksAndFallbackText } from '../slack-ui';
+import {
+  getEventDetailBlocks,
+  getJobAttachments,
+  getHeaderBlocksAndFallbackText,
+  getSummaryAttachments,
+} from '../slack-ui';
 
 export default class Poller {
   startTime: Date;
@@ -29,6 +35,11 @@ export default class Poller {
   // Clients
   octokit: Octokit;
   slackClient: WebClient;
+
+  // Query Cache for additional data
+  commitCache: { [key: string]: components['schemas']['commit'] } = {};
+  pushBranchCache: { [key: string]: string } = {};
+  pullRequestCache: { [key: string]: components['schemas']['pull-request-simple'] } = {};
 
   constructor(
     githubAppClientSecret: string,
@@ -68,9 +79,12 @@ export default class Poller {
     this.debug(message);
   }
 
-  logError(message: string): void {
-    this.debug(`[ERROR] ${message}`);
-    console.error(`[ERROR] ${message}`);
+  logError(error: Error): void {
+    this.debug(`[ERROR] ${error}`);
+    console.error(`[ERROR] ${error}`);
+    if (error.stack) {
+      console.error(error.stack);
+    }
   }
 
   async run(ee: EventEmitter): Promise<void> {
@@ -91,9 +105,8 @@ export default class Poller {
       let i = 0;
       while (this.running) {
         this.debug(`Poll Loop #'${++i}`);
-        const { jobsData, workflowData } = await this.queryGitHub();
-
-        await this.postToSlack(jobsData, workflowData);
+        const { jobsData, workflowData, headCommit, pushBranchName, pullRequest } = await this.queryGitHub();
+        await this.postToSlack(jobsData, workflowData, headCommit, pushBranchName, pullRequest);
 
         /*
         // If the last job was successful, it takes about 200ms to mark workflow complete. So instead of waiting
@@ -127,6 +140,9 @@ export default class Poller {
   async queryGitHub(): Promise<{
     jobsData: ListJobsForWorkflowRunResponseData;
     workflowData: GetWorkflowRunResponseData;
+    headCommit?: components['schemas']['commit'];
+    pushBranchName?: string;
+    pullRequest?: components['schemas']['pull-request-simple'];
   }> {
     this.debug('Querying GitHub');
 
@@ -134,9 +150,66 @@ export default class Poller {
     const opts = { run_id: githubWorkflowId, owner: githubOrganization, repo: githubRepository };
 
     const [workflow, jobs] = await Promise.all([
+      // Required Permissions:  Actions/Read-only
       this.octokit.actions.getWorkflowRun(opts),
+      // Required Permissions:  Actions/Read-only
       this.octokit.actions.listJobsForWorkflowRun(opts),
     ]);
+
+    let queryTotal = 2;
+    const ci = workflow.data.head_commit?.id;
+    const event = workflow.data.event;
+    let headCommit;
+    let pushBranchName;
+    let pullRequest;
+
+    if (ci) {
+      // We cache the results of the branch lookup and the commit lookup as these shouldn't* ever change
+      // for all intensive purposes (at least during a single workflow run). This way the first
+      // GitHub query has 2 extra queries.
+      if (!this.commitCache[ci]) {
+        queryTotal += 2;
+        [headCommit, pushBranchName, pullRequest] = await Promise.all([
+          // Required Permissions:  Contents/Read-only
+          this.octokit.repos.getCommit({
+            owner: githubOrganization,
+            repo: githubRepository,
+            ref: ci,
+          }),
+
+          // Required Permissions:  Contents/Read-only
+          event === 'push'
+            ? this.octokit.repos.listBranchesForHeadCommit({
+                owner: githubOrganization,
+                repo: githubRepository,
+                commit_sha: ci,
+              })
+            : null,
+
+          // Required Permissions:  Pull Requests/Read-only
+          event === 'pull_request'
+            ? this.octokit.repos.listPullRequestsAssociatedWithCommit({
+                owner: githubOrganization,
+                repo: githubRepository,
+                commit_sha: ci,
+              })
+            : null,
+        ]);
+
+        this.commitCache[ci] = headCommit?.data;
+
+        if (pushBranchName) {
+          this.pushBranchCache[ci] = pushBranchName?.data.slice(-1)[0].name;
+        }
+        if (pullRequest && pullRequest.data) {
+          this.pullRequestCache[ci] = pullRequest.data[0];
+        }
+      }
+
+      headCommit = this.commitCache[ci];
+      pushBranchName = this.pushBranchCache[ci];
+      pullRequest = this.pullRequestCache[ci];
+    }
 
     // Rate Limits: Currently, we query 2 endpoints using REST API v3. Thus, take into account the
     // poll frequency based on the follwing data:
@@ -154,39 +227,46 @@ export default class Poller {
     const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
     const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
     this.debug(
-      `GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req/hour (Remaining: ${Math.min(remaining1, remaining2)})`
+      `GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req/hour (Remaining: ${Math.min(
+        remaining1,
+        remaining2
+      )}) (Queries: ${queryTotal})`
     );
 
     return {
       jobsData: jobs.data,
       workflowData: workflow.data,
+      headCommit,
+      pushBranchName,
+      pullRequest,
     };
   }
 
   async postToSlack(
     jobsData: ListJobsForWorkflowRunResponseData,
-    workflowData: GetWorkflowRunResponseData
+    workflowData: GetWorkflowRunResponseData,
+    headCommit?: components['schemas']['commit'],
+    pushBranchName?: string,
+    pullRequest?: components['schemas']['pull-request-simple']
   ): Promise<void> {
     const { slackChannel, slackBotUsername, slackTimestamp } = this.sqsMessageBody;
 
     // Build payload and send to Slack
     this.log('Building Slack payload');
 
-    const dividerBlock = getDividerBlock();
-    const eventSummaryBlocks = getEventSummaryBlocks(workflowData);
-    const { titleBlocks, fallbackText } = getTitleBlocksAndFallbackText(workflowData);
+    const { headerBlocks, fallbackText } = getHeaderBlocksAndFallbackText(workflowData);
 
     const payloadBase = {
       channel: slackChannel,
       text: fallbackText,
       blocks: ([] as KnownBlock[]).concat(
-        ...titleBlocks,
-        ...eventSummaryBlocks,
-        dividerBlock,
-        ...getEventDetailBlocks(summary),
-        dividerBlock
+        ...headerBlocks,
+        ...getEventDetailBlocks(workflowData, headCommit)
       ) as KnownBlock[],
-      attachments: getJobAttachments(jobsData),
+      attachments: ([] as MessageAttachment[]).concat(
+        ...getJobAttachments(jobsData),
+        ...getSummaryAttachments(workflowData, pushBranchName, pullRequest)
+      ) as MessageAttachment[],
     };
 
     let response;
@@ -199,7 +279,7 @@ export default class Poller {
       response = await this.slackClient.chat.update(payload);
     } else {
       const payload: ChatPostMessageArguments = Object.assign({}, payloadBase, {
-        username: !!slackBotUsername ? slackBotUsername : undefined,
+        username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
       });
 
       this.debug('Sending Slack [chat.postMessage] payload');

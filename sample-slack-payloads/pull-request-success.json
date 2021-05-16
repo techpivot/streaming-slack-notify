@@ -1,0 +1,144 @@
+{
+  "channel": "#builds",
+  "text": "Workflow Validate completed successfully.  (Duration: 1m 39s)",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": ":heavy_check_mark: Workflow Validate completed successfully.      :clock3: 1m 39s",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*<https://www.github.com/techpivot/infrastructure|techpivot/infrastructure>*"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "image",
+          "image_url": "https://avatars.githubusercontent.com/u/739719?v=4",
+          "alt_text": "virgofx"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*<https://github.com/virgofx|virgofx>*"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*<https://api.github.com/repos/techpivot/infrastructure/commits/e24e33c3a219147fe72bc2976974cc56c5676302|e24e33c>*: Cleaning up tf-state management for child accounts"
+        }
+      ]
+    }
+  ],
+  "attachments": [
+    {
+      "color": "#28a745",
+      "blocks": [
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": ":heavy_check_mark:"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Job*: *<https://github.com/techpivot/infrastructure/runs/2161177159|Root: okta>*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*12* steps completed *successfully*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": ":clock3:18s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "color": "#28a745",
+      "blocks": [
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": ":heavy_check_mark:"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Job*: *<https://github.com/techpivot/infrastructure/runs/2161177246|Root: aws>*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*12* steps completed *successfully*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": ":clock3:1m 10s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "color": "#28a745",
+      "blocks": [
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": ":heavy_check_mark:"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Job*: *<https://github.com/techpivot/infrastructure/runs/2161181016|Comment Pull Request>*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*4* steps completed *successfully*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": ":clock3:6s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "color": "#fff",
+      "blocks": [
+        {
+          "type": "divider"
+        },
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": "<https://github.com/techpivot/infrastructure/actions/runs/673886832|*Validate* #291>"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Event*: `pull_request` *#<https://github.com/techpivot/infrastructure/pull/29|29>*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Branch*: `mj/fix-tf-state-child-account`"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "channel": "#builds",
+  "text": "Workflow Main completed with errors.  (Duration: 43s)",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": ":x:  Workflow Main completed with errors.      :clock3: 43s",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*<https://www.github.com/techpivot/streaming-slack-notify|techpivot/streaming-slack-notify>*"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "image",
+          "image_url": "https://avatars.githubusercontent.com/u/739719?v=4",
+          "alt_text": "virgofx"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*<https://github.com/virgofx|virgofx>*"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*<https://api.github.com/repos/techpivot/streaming-slack-notify/commits/d3431cfdff9d43ceff72b4bda0120b288768e134|d3431cf>*: test 2"
+        }
+      ]
+    }
+  ],
+  "attachments": [
+    {
+      "color": "#ea3131",
+      "blocks": [
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": ":x:"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Job*: *<https://github.com/techpivot/streaming-slack-notify/runs/2551647526|Validate and Build>*"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Failed* on step *Formatting* (4 of 6)"
+            },
+            {
+              "type": "mrkdwn",
+              "text": ":clock3:30s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "color": "#fff",
+      "blocks": [
+        {
+          "type": "divider"
+        },
+        {
+          "type": "context",
+          "elements": [
+            {
+              "type": "mrkdwn",
+              "text": "<https://github.com/techpivot/streaming-slack-notify/actions/runs/830189863|*Main* #447>"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Event*: `push`"
+            },
+            {
+              "type": "mrkdwn",
+              "text": "*Branch*: `master`"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

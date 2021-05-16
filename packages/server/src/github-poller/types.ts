@@ -14,8 +14,7 @@ export interface SlackChatPostMessageResponse extends WebAPICallResult {
   };
 }
 
-export type GithubActionsWorkflowJobStepStatus = 'queued' | 'in_progress' | 'completed';
-
+// this one isn't defined in schema yet
 export type GithubActionsWorkflowJobConclusion =
   | null
   | 'skipped'

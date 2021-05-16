@@ -1,6 +1,13 @@
 import getDividerBlock from './getDividerBlock';
-import getEventSummaryBlocks from './getEventSummaryBlocks';
+import getEventDetailBlocks from './getEventDetailBlocks';
+import getHeaderBlocksAndFallbackText from './getHeaderBlocksAndFallbackText';
 import getJobAttachments from './getJobAttachments';
-import getTitleBlocksAndFallbackText from './getTitleBlocksAndFallbackText';
+import getSummaryAttachments from './getSummaryAttachments';
 
-export { getDividerBlock, getEventSummaryBlocks, getJobAttachments, getTitleBlocksAndFallbackText };
+export {
+  getDividerBlock,
+  getEventDetailBlocks,
+  getJobAttachments,
+  getHeaderBlocksAndFallbackText,
+  getSummaryAttachments,
+};

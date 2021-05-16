@@ -1,4 +1,4 @@
-import { AWSError, SQS } from 'aws-sdk';
+import { AWSError, Request, SQS } from 'aws-sdk';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import Debug from 'debug';
 import { EventEmitter } from 'events';
@@ -23,8 +23,7 @@ export class Consumer extends EventEmitter {
   private pollingWaitTimeMs: number;
   private terminateVisibilityTimeout: boolean;
   private sqs: SQS;
-
-  private activeReceiveMessage: any;
+  private activeReceiveMessage?: Request<SQS.Types.ReceiveMessageResult, AWSError>;
 
   constructor(options: ConsumerOptions) {
     super();

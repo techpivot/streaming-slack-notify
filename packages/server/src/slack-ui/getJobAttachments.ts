@@ -1,61 +1,72 @@
 import { ImageElement, PlainTextElement, MrkdwnElement, MessageAttachment } from '@slack/types';
+import { components } from '@octokit/openapi-types';
 import { ListJobsForWorkflowRunResponseData } from '../github-poller/types';
 import { getReadableDurationString } from '../../../common/lib/utils';
+
+/**
+ * Determine the current step index for a job. For now, we can iterate positively as it appears all the steps
+ * are ordered sequentially. There is a 'number' field; which appears to be increasing and some hidden steps
+ * as they aren't linear.
+ *
+ * Note: Zero-indexed
+ */
+const getCurrentStepIndexForJob = (job: components['schemas']['job']): number => {
+  const { name, steps } = job;
+
+  if (!steps) {
+    throw new Error(`Unable to determine current step for job: ${name}`);
+  }
+
+  // Sort steps by number as this allows for easier logic.
+  steps.sort((stepA, stepB) => (stepA.number > stepB.number ? 1 : -1));
+
+  let currentStepIndex = 0;
+
+  stepLoop: for (let i = 0; i < steps.length; i += 1) {
+    const step = steps[i];
+
+    switch (step.status) {
+      case 'completed':
+        switch (step.conclusion) {
+          case 'skipped':
+          case 'success':
+          case 'neutral':
+            break;
+
+          // The first failed action is the step index. Return immediately
+          case 'failure':
+          case 'cancelled':
+          case 'timed_out':
+          case 'action_required':
+            currentStepIndex = i;
+            break stepLoop;
+        }
+        break;
+
+      case 'queued':
+        break;
+
+      case 'in_progress':
+        currentStepIndex = i;
+        break;
+
+      default:
+        throw new Error(`Unable to determine current step for job ${name} with unknown status ${steps[i].status}`);
+    }
+  }
+
+  return currentStepIndex;
+};
 
 const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
 
-  jobsData.jobs.forEach((job: any) => {
-    const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
+  jobsData.jobs.forEach((job) => {
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
+    const currentStepIndex = getCurrentStepIndexForJob(job);
+    const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     let icon = '';
     let color;
-    let currentStep;
-    let currentStepIndex = 0; // Zero indexed
-
-    stepLoop: for (let i = 0; i < steps.length; i += 1) {
-      switch (steps[i].status) {
-        case 'completed':
-          switch (steps[i].conclusion) {
-            case 'skipped':
-              break stepLoop;
-
-            case 'failure':
-            case 'success':
-            case 'neutral':
-            case 'cancelled':
-            case 'timed_out':
-            case 'action_required':
-              if (!currentStep || steps[i].number > currentStep.number) {
-                currentStepIndex = i;
-                currentStep = steps[i];
-              }
-              break;
-          }
-          break;
-
-        case 'queued':
-          break;
-
-        case 'in_progress':
-          if (!currentStep || steps[i].number > currentStep.number) {
-            currentStepIndex = i;
-            currentStep = steps[i];
-          }
-          break;
-
-        // Assume we have 10 steps and we have a failure/cancel after step 4. That means steps 1-4 are filled out
-        // 5-9 are all "queued", but we've already populated the mock "Complete job" step as success. We don't
-        // want to move the active step to this position. Instead, break immediately.
-        default:
-          break stepLoop;
-      }
-    }
-
-    if (!currentStep) {
-      // This will never happen just type safety
-      throw new Error('Unable to determine current job step');
-    }
 
     switch (status) {
       case 'in_progress':

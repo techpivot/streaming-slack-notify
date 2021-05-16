@@ -56,7 +56,7 @@ yarn format
   docker exec -it streaming-slack-notify bash
   ```
 
-- [Slack Message Builder](https://api.slack.com/docs/messages/builder)
+- [Slack Block Kit Builder](https://api.slack.com/tools/block-kit-builder)
   > Use the Slack debug payload from existing actions to seed a message builder and then iterate as necessary.
 
 ## License
