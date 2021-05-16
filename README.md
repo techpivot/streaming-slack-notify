@@ -5,8 +5,7 @@
 <h1 align="center">Streaming Slack Notify</h1>
 
 <h4 align="center">
-  The definitive <a href="https://github.com/features/actions">Github Action</a>
-  for streaming workflow job status to Slack.
+  The definitive service for streaming GitHub action workflow jobs to Slack.
 </h4>
 <h6 align="center">
   Actively maintained by <a href="https://www.techpivot.net">TechPivot</a> and the community.
@@ -59,12 +58,12 @@ Default output if you've not set any attachment will look like this.
 ## Features
 
 - Ability to display job step status from beginning of workflow to end
-- Slack message that updates reflective of current job status
+- Single slack message that continuously updates the current job statuses
 - Support for **push**, **pull_request** events
 - Clean and consistent Slack UI
 - Lightweight, minimal dependencies, and pure TypeScript
-- Minimal configuration options
-- Fast: Using minified JavaScript the action injects very quickly compared to Docker actions
+- Lean AWS cloud footprint that utilizes free tier services and cost-optimized services
+- Fully open sourced
 
 ## Usage
 

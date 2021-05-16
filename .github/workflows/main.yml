@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Validate and Build
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -16,8 +16,8 @@ jobs:
       - name: Installing dependencies
         run: yarn install
 
-      - name: Building
-        run: yarn build
+      - name: Build and Packaging
+        run: yarn dist
 
       - name: Read .env File
         id: dotenv
@@ -31,6 +31,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init -no-color
+        working-directory: ./terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -38,6 +39,7 @@ jobs:
       - name: Terraform Apply
         id: apply
         run: terraform apply -auto-approve -no-color
+        working-directory: ./terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

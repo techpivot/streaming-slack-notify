@@ -3,8 +3,8 @@ name: Main
 on: pull_request
 
 jobs:
-  validate-and-build:
-    name: Validate and Build
+  lint-and-format:
+    name: Lint and Format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,15 +22,18 @@ jobs:
       - name: Building
         run: yarn build
 
-  terraform:
-    name: Terraform
+  build-and-terraform:
+    name: Build and Terraform
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./terraform
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Installing dependencies
+        run: yarn install
+
+      - name: Build and Packaging
+        run: yarn dist
 
       - name: Read .env File
         id: dotenv
@@ -39,10 +42,12 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check -recursive
+        working-directory: ./terraform
 
       - name: Terraform Init
         id: init
         run: terraform init -no-color
+        working-directory: ./terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -50,10 +55,12 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        working-directory: ./terraform
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
+        working-directory: ./terraform
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

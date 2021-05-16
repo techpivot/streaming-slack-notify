@@ -16,7 +16,3 @@ output "vpc_public_subnets" {
 output "api_gateway_endpoint" {
   value = "https://${aws_api_gateway_domain_name.api_streaming_slack_notify.domain_name}"
 }
-
-#output "github_app_post_install_setup_url" {
-#  value = "https://${aws_api_gateway_domain_name.api_streaming_slack_notify.domain_name}/"
-#}
