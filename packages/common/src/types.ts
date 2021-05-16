@@ -83,7 +83,7 @@ export const SQSBodyV = t.intersection([
     // Specifies the GitHub repo associated with the workflow event
     githubRepository: t.string,
     // Specifies the GitHub workflow run ID to lookup
-    githubWorkflowId: t.number,
+    githubWorkflowRunId: t.number,
     slackAppId: t.string,
     // The Slack channel for sending message
     slackChannel: t.string,

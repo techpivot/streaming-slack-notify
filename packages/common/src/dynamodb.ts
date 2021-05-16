@@ -147,30 +147,6 @@ export const updateGithubAppRecordFromPostInstallSettings = async (
 };
 
 /*
-export const getSlackRecordById = async (id: string): Promise<DynamoDbGetRecordItem> => {
-  const result: DocumentClient.GetItemOutput = await dynamodb
-    .get({
-      TableName: DYNAMODB_SLACK_TABLE_NAME,
-      Key: { api_app_id: id },
-      ProjectionExpression: 'api_app_id, access_token, team_name, team_id',
-    })
-    .promise();
-
-  const { Item } = result;
-  if (!Item) {
-    throw new NotFoundError(`Unable to retrieve Slack record for api app id: ${id}  (Non-existent)`);
-  }
-
-  return {
-    teamName: Item.team_name,
-    teamId: Item.team_id,
-    id,
-    accessToken: Item.access_token,
-  };
-};
-*/
-
-/*
 
 @todo new table `workflow-runs`   with `github_installation_id` | workflow_run_count | updated_at
 
@@ -185,33 +161,3 @@ export const incrementWorkflowRunCount = async (id: string, amount = 1): Promise
     .promise();
 };
 */
-/*
-export const getGitHubInstallationId = async (owner: string): Promise<number> => {
-  const result: DocumentClient.QueryOutput = await dynamodb
-    .query({
-      TableName: DYNAMODB_GITHUB_TABLE_NAME,
-      KeyConditionExpression: `#owner = :value`,
-      ExpressionAttributeNames: {
-        '#owner': 'owner',
-      },
-      ExpressionAttributeValues: {
-        ':value': owner,
-      },
-      ProjectionExpression: 'installation_id',
-      Limit: 1,
-      ScanIndexForward: false,
-      ConsistentRead: false,
-    })
-    .promise();
-
-  const { Items } = result;
-
-  if (Items === undefined || Items.length === 0) {
-    throw new NotFoundError(
-      `Unable to find a GitHub installation ID associated with account: ${owner}  Ensure the GitHub app is properly installed via GitHub`
-    );
-  }
-
-  return Items[0]['installation_id'];
-};
- */

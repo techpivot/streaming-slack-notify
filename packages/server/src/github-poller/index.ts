@@ -48,14 +48,14 @@ export default class Poller {
     sqsQueueUrl: string,
     sqsMessageBody: SQSBody
   ) {
-    const { slackAccessToken, githubInstallationId, githubOrganization, githubRepository, githubWorkflowId } =
+    const { slackAccessToken, githubInstallationId, githubOrganization, githubRepository, githubWorkflowRunId } =
       sqsMessageBody;
 
     this.startTime = new Date();
     this.sqs = sqs;
     this.sqsQueueUrl = sqsQueueUrl;
     this.sqsMessageBody = sqsMessageBody;
-    this.debug = Debug(`poller[${githubOrganization}/${githubRepository}/${githubWorkflowId}]`);
+    this.debug = Debug(`poller[${githubOrganization}/${githubRepository}/${githubWorkflowRunId}]`);
 
     this.log('Initializing new Octokit instance ...');
     this.octokit = new Octokit({
@@ -97,9 +97,9 @@ export default class Poller {
     try {
       ee.on('drain', drain);
 
-      const { githubOrganization, githubRepository, githubWorkflowId } = this.sqsMessageBody;
+      const { githubOrganization, githubRepository, githubWorkflowRunId } = this.sqsMessageBody;
 
-      this.log(`Starting GitHub workflow poller: ${githubOrganization}/${githubRepository}/${githubWorkflowId}`);
+      this.log(`Starting GitHub workflow poller: ${githubOrganization}/${githubRepository}/${githubWorkflowRunId}`);
       this.log(`Current Node Memory Usage: ${getMemoryUsageMb()} MB`);
 
       let i = 0;
@@ -146,8 +146,8 @@ export default class Poller {
   }> {
     this.debug('Querying GitHub');
 
-    const { githubOrganization, githubRepository, githubWorkflowId } = this.sqsMessageBody;
-    const opts = { run_id: githubWorkflowId, owner: githubOrganization, repo: githubRepository };
+    const { githubOrganization, githubRepository, githubWorkflowRunId } = this.sqsMessageBody;
+    const opts = { run_id: githubWorkflowRunId, owner: githubOrganization, repo: githubRepository };
 
     const [workflow, jobs] = await Promise.all([
       // Required Permissions:  Actions/Read-only
