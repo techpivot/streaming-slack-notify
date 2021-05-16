@@ -99,7 +99,14 @@ export const handler: APIGatewayProxyHandlerV2 = async (
                   throw new Error(`Unable to find linked GitHub record using installation ID: ${body.installation.id}`);
                 }
 
-                const { Item: { slack_app_id: slackAppId, slack_channel: slackChannel, installation_id: githubInstallationId, slack_bot_username: slackBotUsername }} = github;
+                const {
+                  Item: {
+                    slack_app_id: slackAppId,
+                    slack_channel: slackChannel,
+                    installation_id: githubInstallationId,
+                    slack_bot_username: slackBotUsername,
+                  },
+                } = github;
                 if (!slackAppId || !slackChannel) {
                   throw new Error('No Slack App ID reference. Organization never completed post-install');
                 }
@@ -107,7 +114,9 @@ export const handler: APIGatewayProxyHandlerV2 = async (
                 console.log('Retrieving Slack record by App ID ...');
                 const slack = await getSlackRecordById(slackAppId);
                 if (!slack.Item) {
-                  throw new Error(`Unable to find linked Slack record using GitHub ID: ${github.Item.slack_app_id} (Slack organization may have removed the app)`);
+                  throw new Error(
+                    `Unable to find linked Slack record using GitHub ID: ${github.Item.slack_app_id} (Slack organization may have removed the app)`
+                  );
                 }
 
                 // Post to SQS
@@ -121,7 +130,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (
                   slackAccessToken: slack.Item.access_token,
                   slackBotUsername: slackBotUsername,
                 });
-
               }
               break;
 

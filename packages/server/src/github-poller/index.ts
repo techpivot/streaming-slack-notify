@@ -17,6 +17,8 @@ import {
   getSummaryAttachments,
 } from '../slack-ui';
 
+const SHOW_SLACK_DEBUG_PAYLOAD = false;
+
 export default class Poller {
   startTime: Date;
   running = false;
@@ -255,7 +257,6 @@ export default class Poller {
     this.log('Building Slack payload');
 
     const { headerBlocks, fallbackText } = getHeaderBlocksAndFallbackText(workflowData);
-
     const payloadBase = {
       channel: slackChannel,
       text: fallbackText,
@@ -273,8 +274,11 @@ export default class Poller {
     if (slackTimestamp) {
       const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts: slackTimestamp });
 
-      this.debug('Sending Slack [chat.update] payload');
-      console.debug(JSON.stringify(payload, null, 2));
+      // Extra debug for Slack UI testing
+      if (SHOW_SLACK_DEBUG_PAYLOAD) {
+        this.debug('Sending Slack [chat.update] payload');
+        console.debug(JSON.stringify(payload, null, 2));
+      }
 
       response = await this.slackClient.chat.update(payload);
     } else {
@@ -282,8 +286,11 @@ export default class Poller {
         username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
       });
 
-      this.debug('Sending Slack [chat.postMessage] payload');
-      console.debug(JSON.stringify(payload, null, 2));
+      // Extra debug for Slack UI testing
+      if (SHOW_SLACK_DEBUG_PAYLOAD) {
+        this.debug('Sending Slack [chat.postMessage] payload');
+        console.debug(JSON.stringify(payload, null, 2));
+      }
 
       response = (await this.slackClient.chat.postMessage(payload)) as SlackChatPostMessageResponse;
 
