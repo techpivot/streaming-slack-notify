@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "iam_lambda_github_webhook_2" {
       aws_ssm_parameter.github_app_webhook_secret.arn,
     ]
     actions = [
-      "ssm:GetParameter"
+      "ssm:GetParameter" // Get GitHub web app secret
     ]
   }
 }
@@ -54,6 +54,19 @@ data "aws_iam_policy_document" "iam_lambda_github_webhook_4" {
   }
 }
 
+data "aws_iam_policy_document" "iam_lambda_github_webhook_5" {
+  statement {
+    sid    = "AllowLambdaPushToSqs"
+    effect = "Allow"
+    resources = [
+      aws_sqs_queue.default.arn,
+    ]
+    actions = [
+      "sqs:SendMessage", // For sending a message to the queue
+    ]
+  }
+}
+
 module "iam_lambda_github_webhook" {
   source  = "cloudposse/iam-role/aws"
   version = "0.9.3"
@@ -75,5 +88,6 @@ module "iam_lambda_github_webhook" {
     data.aws_iam_policy_document.iam_lambda_github_webhook_2.json,
     data.aws_iam_policy_document.iam_lambda_github_webhook_3.json,
     data.aws_iam_policy_document.iam_lambda_github_webhook_4.json,
+    data.aws_iam_policy_document.iam_lambda_github_webhook_5.json,
   ]
 }
