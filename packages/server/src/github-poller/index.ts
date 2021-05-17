@@ -8,7 +8,7 @@ import { EventEmitter } from 'events';
 import Debug, { Debugger } from 'debug';
 import { GITHUB_APP_ID, GITHUB_CLIENT_ID } from '../../../common/lib/const';
 import { SQSBody } from '../../../common/lib/types';
-import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../../common/lib/utils';
+import { getMemoryUsageMb, getReadableDurationString, getReadableDurationStringFromMs, sleep } from '../../../common/lib/utils';
 import { ListJobsForWorkflowRunResponseData, GetWorkflowRunResponseData, SlackChatPostMessageResponse } from './types';
 import {
   getEventDetailBlocks,
@@ -18,7 +18,7 @@ import {
 } from '../slack-ui';
 
 const SHOW_SLACK_DEBUG_PAYLOAD = false;
-const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 3600 * 1000;
+const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 20 * 1000;
 
 export default class Poller {
   startTime: Date;
@@ -136,7 +136,7 @@ export default class Poller {
         // we'll break, and also send a follow
         const now = new Date();
         if (now.getTime() - this.startTime.getTime() >= MAXIMUM_ALLOWABLE_POLLING_TIME_MS) {
-          const maxAllowedTime = getReadableDurationString(now, this.startTime);
+          const maxAllowedTime = getReadableDurationStringFromMs(MAXIMUM_ALLOWABLE_POLLING_TIME_MS);
           const { slackChannel, slackBotUsername } = this.sqsMessageBody;
           const { name, run_number: runNumber, html_url: htmlUrl } = workflowData;
 
