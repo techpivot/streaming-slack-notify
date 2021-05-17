@@ -260,19 +260,19 @@ export default class Poller {
     //  Rate limit for Personal Access token = 5000
     //  Rate limit for application = 5000
 
-    const elapsed = ((new Date()).getTime() - this.startTime.getTime()) / 1000;
-    if (elapsed < 30) {
+    const elapsed = (new Date().getTime() - this.startTime.getTime()) / 1000;
+    if (elapsed < 45) {
       this.nextIntervalTime = this.defaultIntervalTime;
-    } else if (elapsed < 60) {
+    } else if (elapsed < 90) {
       this.nextIntervalTime = this.defaultIntervalTime * 1.5;
-    } else if (elapsed < 120) {
+    } else if (elapsed < 180) {
       this.nextIntervalTime = this.defaultIntervalTime * 2;
     } else if (elapsed < 300) {
-      this.nextIntervalTime = this.defaultIntervalTime * 3;
+      this.nextIntervalTime = this.defaultIntervalTime * 2.5;
     } else if (elapsed < 450) {
       this.nextIntervalTime = this.defaultIntervalTime * 3.25;
     } else {
-      this.nextIntervalTime = this.defaultIntervalTime * 3.5;
+      this.nextIntervalTime = this.defaultIntervalTime * 3.75;
     }
 
     const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
