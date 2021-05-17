@@ -18,6 +18,7 @@ import {
 } from '../slack-ui';
 
 const SHOW_SLACK_DEBUG_PAYLOAD = false;
+const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 20 * 1000;
 
 export default class Poller {
   startTime: Date;
@@ -106,20 +107,44 @@ export default class Poller {
 
       let i = 0;
       while (this.running) {
-        this.debug(`Poll Loop #'${++i}`);
+        this.debug(`Poll Loop #${++i}`);
         const { jobsData, workflowData, headCommit, pushBranchName, pullRequest } = await this.queryGitHub();
         await this.postToSlack(jobsData, workflowData, headCommit, pushBranchName, pullRequest);
 
-        /*
-        // If the last job was successful, it takes about 200ms to mark workflow complete. So instead of waiting
-        // 1 to 2 seconds, decrease the interval time.
-        const lastJob = summary.jobsData.jobs[summary.jobsData.jobs.length];
-        if (lastJob !== undefined && lastJob.status === 'completed') {
-          debug('Decreasing interval time to 250ms');
-          this.nextIntervalTime = 250;
-        }
-        */
         if (workflowData.status === 'completed') {
+          break;
+        }
+
+        // If all jobs are successful and we have not completed the workflow, it takes about ~200ms for GitHub
+        // to update the workflow. Thus, let's reduce the nextIntervalTime to be quicker in the event that
+        // the interval time had somehow increased quite a bit.
+        let allJobsCompleted = true;
+        for (let i = 0; i < jobsData.jobs.length; i += 1) {
+          if (jobsData.jobs[i].status !== 'completed') {
+            allJobsCompleted = false;
+            break;
+          }
+        }
+        if (allJobsCompleted) {
+          this.log('Decreasing interval time to 500ms as all jobs are complete and workflow should be registered as completed on next pass');
+          this.nextIntervalTime = 500;
+        }
+
+        // If we exceeded a sane default limit (and to prevent runaway threads), let's ensure we have a maximum time
+        // we'll break, and also send a follow
+        const now = new Date();
+        if (now.getTime() - this.startTime.getTime() >= MAXIMUM_ALLOWABLE_POLLING_TIME_MS) {
+          const maxAllowedTime = getReadableDurationString(now, this.startTime);
+          this.log(`Polling job exceeded maximum allowable polling time of ${maxAllowedTime}`);
+          const { slackChannel, slackBotUsername, slackTimestamp } = this.sqsMessageBody;
+          const { name, run_number: runNumber, html_url: htmlUrl } = workflowData;
+          const response = (await this.slackClient.chat.postMessage({
+            channel: slackChannel,
+            username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
+            text: `information_source: Workflow <${htmlUrl}|*${name}* #${runNumber}> exceeded the maximum allowable polling time: ${maxAllowedTime}.\nPlease update your workflow to ensure all jobs complete within the required timeframe.`,
+            mkdwn: true,
+          })) as SlackChatPostMessageResponse;
+          console.log('>>', JSON.stringify(response, null, 2));
           break;
         }
 
@@ -213,6 +238,8 @@ export default class Poller {
       pullRequest = this.pullRequestCache[ci];
     }
 
+    this.debug(`GitHub API queries complete (Queries: ${queryTotal})`);
+
     // Rate Limits: Currently, we query 2 endpoints using REST API v3. Thus, take into account the
     // poll frequency based on the follwing data:
 
@@ -224,7 +251,11 @@ export default class Poller {
     //  Rate limit for public unauth requests = 60
     //  Rate limit for GitHub Actions token = 1000
     //  Rate limit for Personal Access token = 5000
-    //  Rate limit for application
+    //  Rate limit for application = 5000
+
+    const secondsSinceEpoch = Math.round((new Date()).getTime() / 1000);
+
+    // [RESET-AT-SECONDS] = 4000 remaining queries @ [current-ts]
 
     const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
     const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
