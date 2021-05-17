@@ -8,7 +8,12 @@ import { EventEmitter } from 'events';
 import Debug, { Debugger } from 'debug';
 import { GITHUB_APP_ID, GITHUB_CLIENT_ID } from '../../../common/lib/const';
 import { SQSBody } from '../../../common/lib/types';
-import { getMemoryUsageMb, getReadableDurationString, getReadableDurationStringFromMs, sleep } from '../../../common/lib/utils';
+import {
+  getMemoryUsageMb,
+  getReadableDurationString,
+  getReadableDurationStringFromMs,
+  sleep,
+} from '../../../common/lib/utils';
 import { ListJobsForWorkflowRunResponseData, GetWorkflowRunResponseData, SlackChatPostMessageResponse } from './types';
 import {
   getEventDetailBlocks,
@@ -18,7 +23,7 @@ import {
 } from '../slack-ui';
 
 const SHOW_SLACK_DEBUG_PAYLOAD = false;
-const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 20 * 1000;
+const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 3600 * 1000;
 
 export default class Poller {
   startTime: Date;
@@ -255,9 +260,20 @@ export default class Poller {
     //  Rate limit for Personal Access token = 5000
     //  Rate limit for application = 5000
 
-    const secondsSinceEpoch = Math.round(new Date().getTime() / 1000);
-
-    // [RESET-AT-SECONDS] = 4000 remaining queries @ [current-ts]
+    const elapsed = ((new Date()).getTime() - this.startTime.getTime()) / 1000;
+    if (elapsed < 30) {
+      this.nextIntervalTime = this.defaultIntervalTime;
+    } else if (elapsed < 60) {
+      this.nextIntervalTime = this.defaultIntervalTime * 1.5;
+    } else if (elapsed < 120) {
+      this.nextIntervalTime = this.defaultIntervalTime * 2;
+    } else if (elapsed < 300) {
+      this.nextIntervalTime = this.defaultIntervalTime * 3;
+    } else if (elapsed < 450) {
+      this.nextIntervalTime = this.defaultIntervalTime * 3.25;
+    } else {
+      this.nextIntervalTime = this.defaultIntervalTime * 3.5;
+    }
 
     const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
     const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
@@ -265,7 +281,7 @@ export default class Poller {
       `GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req/hour (Remaining: ${Math.min(
         remaining1,
         remaining2
-      )}) (Queries: ${queryTotal})`
+      )}) (Queries: ${queryTotal}) (Inverval Time: ${this.nextIntervalTime})`
     );
 
     return {
