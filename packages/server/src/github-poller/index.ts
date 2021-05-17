@@ -126,7 +126,9 @@ export default class Poller {
           }
         }
         if (allJobsCompleted) {
-          this.log('Decreasing interval time to 500ms as all jobs are complete and workflow should be registered as completed on next pass');
+          this.log(
+            'Decreasing interval time to 500ms as all jobs are complete and workflow should be registered as completed on next pass'
+          );
           this.nextIntervalTime = 500;
         }
 
@@ -135,16 +137,16 @@ export default class Poller {
         const now = new Date();
         if (now.getTime() - this.startTime.getTime() >= MAXIMUM_ALLOWABLE_POLLING_TIME_MS) {
           const maxAllowedTime = getReadableDurationString(now, this.startTime);
-          this.log(`Polling job exceeded maximum allowable polling time of ${maxAllowedTime}`);
           const { slackChannel, slackBotUsername, slackTimestamp } = this.sqsMessageBody;
           const { name, run_number: runNumber, html_url: htmlUrl } = workflowData;
-          const response = (await this.slackClient.chat.postMessage({
+
+          this.log(`Polling job exceeded maximum allowable polling time of ${maxAllowedTime}`);
+          await this.slackClient.chat.postMessage({
             channel: slackChannel,
             username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
-            text: `information_source: Workflow <${htmlUrl}|*${name}* #${runNumber}> exceeded the maximum allowable polling time: ${maxAllowedTime}.\nPlease update your workflow to ensure all jobs complete within the required timeframe.`,
+            text: `:information_source: Workflow <${htmlUrl}|*${name}* #${runNumber}> exceeded the maximum allowable polling time: *${maxAllowedTime}*.\nPlease update your workflow to ensure all jobs complete within the required timeframe.`,
             mkdwn: true,
-          })) as SlackChatPostMessageResponse;
-          console.log('>>', JSON.stringify(response, null, 2));
+          });
           break;
         }
 
@@ -253,7 +255,7 @@ export default class Poller {
     //  Rate limit for Personal Access token = 5000
     //  Rate limit for application = 5000
 
-    const secondsSinceEpoch = Math.round((new Date()).getTime() / 1000);
+    const secondsSinceEpoch = Math.round(new Date().getTime() / 1000);
 
     // [RESET-AT-SECONDS] = 4000 remaining queries @ [current-ts]
 
