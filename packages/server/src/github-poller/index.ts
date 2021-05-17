@@ -18,7 +18,7 @@ import {
 } from '../slack-ui';
 
 const SHOW_SLACK_DEBUG_PAYLOAD = false;
-const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 20 * 1000;
+const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 3600 * 1000;
 
 export default class Poller {
   startTime: Date;
@@ -137,7 +137,7 @@ export default class Poller {
         const now = new Date();
         if (now.getTime() - this.startTime.getTime() >= MAXIMUM_ALLOWABLE_POLLING_TIME_MS) {
           const maxAllowedTime = getReadableDurationString(now, this.startTime);
-          const { slackChannel, slackBotUsername, slackTimestamp } = this.sqsMessageBody;
+          const { slackChannel, slackBotUsername } = this.sqsMessageBody;
           const { name, run_number: runNumber, html_url: htmlUrl } = workflowData;
 
           this.log(`Polling job exceeded maximum allowable polling time of ${maxAllowedTime}`);
