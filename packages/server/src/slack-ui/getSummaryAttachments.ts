@@ -27,10 +27,12 @@ const getSummaryAttachments = (
     case 'schedule':
     case 'push':
       {
-        elements.push({
-          type: 'mrkdwn',
-          text: `*Branch*: \`${pushBranchName}\``,
-        });
+        if (pushBranchName !== undefined) {
+          elements.push({
+            type: 'mrkdwn',
+            text: `*Branch*: \`${pushBranchName}\``,
+          });
+        }
       }
       break;
 

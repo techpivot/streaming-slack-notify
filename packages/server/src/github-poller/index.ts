@@ -5,8 +5,14 @@ import { ChatPostMessageArguments, ChatUpdateArguments, WebClient } from '@slack
 import { KnownBlock, MessageAttachment } from '@slack/types';
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
+import { Client, Create, Collection, If, Update, Match, Exists, Index, Select, Get } from 'faunadb';
 import Debug, { Debugger } from 'debug';
-import { GITHUB_APP_ID, GITHUB_CLIENT_ID } from '../../../common/lib/const';
+import {
+  GITHUB_APP_ID,
+  GITHUB_CLIENT_ID,
+  FAUNADB_COLLECTION_STATS_NAME,
+  FAUNADB_OWNER_REPO_STATS_INDEX_NAME,
+} from '../../../common/lib/const';
 import { SQSBody } from '../../../common/lib/types';
 import {
   getMemoryUsageMb,
@@ -43,6 +49,7 @@ export default class Poller {
   // Clients
   octokit: Octokit;
   slackClient: WebClient;
+  faunadbClient: Client;
 
   // Query Cache for additional data
   commitCache: { [key: string]: components['schemas']['commit'] } = {};
@@ -52,6 +59,7 @@ export default class Poller {
   constructor(
     githubAppClientSecret: string,
     githubAppPrivateKey: string,
+    faunadbServerSecret: string,
     sqs: SQS,
     sqsQueueUrl: string,
     sqsMessageBody: SQSBody
@@ -65,7 +73,7 @@ export default class Poller {
     this.sqsMessageBody = sqsMessageBody;
     this.debug = Debug(`poller[${githubOrganization}/${githubRepository}/${githubWorkflowRunId}]`);
 
-    this.log('Initializing new Octokit instance ...');
+    this.log('Initializing new Octokit, Slack, Faunadb clients ...');
     this.octokit = new Octokit({
       authStrategy: createAppAuth,
       auth: {
@@ -76,11 +84,11 @@ export default class Poller {
         installationId: githubInstallationId,
       },
     });
-    this.log('✓ Octokit instance initialized');
-
-    this.log('Initializing new Slack web client...');
     this.slackClient = new WebClient(slackAccessToken);
-    this.log('✓ Slack web client initialized');
+    this.faunadbClient = new Client({
+      secret: faunadbServerSecret,
+    });
+    this.log('✓ Clients initialized');
   }
 
   log(message: string): void {
@@ -132,9 +140,9 @@ export default class Poller {
         }
         if (allJobsCompleted) {
           this.log(
-            'Decreasing interval time to 500ms as all jobs are complete and workflow should be registered as completed on next pass'
+            'Decreasing interval time to 350ms as all jobs are complete and workflow should be registered as completed on next pass'
           );
-          this.nextIntervalTime = 500;
+          this.nextIntervalTime = 350;
         }
 
         // If we exceeded a sane default limit (and to prevent runaway threads), let's ensure we have a maximum time
@@ -160,6 +168,7 @@ export default class Poller {
 
       if (this.running) {
         this.log('GitHub workflow complete');
+        await this.postStatsToFauna();
       }
     } catch (err) {
       // This error could potentially be streamed back into the MESSAGE
@@ -212,6 +221,9 @@ export default class Poller {
           }),
 
           // Required Permissions:  Contents/Read-only
+          // Note: Limitation this will be empty for non-head. It would be nice if we want to do this
+          // via GraphQL or GitHub exposed better capability instead of listing all branches, and then
+          // cross searching for intersection.
           event === 'push' || event === 'schedule'
             ? this.octokit.repos.listBranchesForHeadCommit({
                 owner: githubOrganization,
@@ -232,8 +244,8 @@ export default class Poller {
 
         this.commitCache[ci] = headCommit?.data;
 
-        if (pushBranchName) {
-          this.pushBranchCache[ci] = pushBranchName?.data.slice(-1)[0].name;
+        if (pushBranchName && pushBranchName.data && pushBranchName.data.length > 0) {
+          this.pushBranchCache[ci] = pushBranchName.data.slice(-1)[0].name;
         }
         if (pullRequest && pullRequest.data) {
           this.pullRequestCache[ci] = pullRequest.data[0];
@@ -361,6 +373,42 @@ export default class Poller {
     if (error !== undefined) {
       throw new Error(`Unable to post message to Slack${error !== null ? ': ' + error : ''}\n`);
     }
+  }
+
+  async postStatsToFauna(): Promise<void> {
+    const { githubOrganization, githubRepository } = this.sqsMessageBody;
+
+    this.log('Updating faunaDB stats ...');
+
+    const elapsedTime = Math.round((new Date().getTime() - this.startTime.getTime()) / 1000);
+
+    try {
+      const existingRecord: { ref: any; ts: number; data: { [key: string]: any } } = await this.faunadbClient.query(
+        Get(Match(Index(FAUNADB_OWNER_REPO_STATS_INDEX_NAME), githubOrganization, githubRepository))
+      );
+      await this.faunadbClient.query(
+        Update(existingRecord.ref, {
+          data: {
+            runs: parseInt(existingRecord.data.runs, 10) + 1,
+            totalRuntimeSec: parseInt(existingRecord.data.totalRuntime, 10) + elapsedTime,
+          },
+        })
+      );
+    } catch (error) {
+      // Not found
+      await this.faunadbClient.query(
+        Create(Collection(FAUNADB_COLLECTION_STATS_NAME), {
+          data: {
+            owner: githubOrganization,
+            repo: githubRepository,
+            runs: 1,
+            totalRuntimeSec: elapsedTime,
+          },
+        })
+      );
+    }
+
+    this.log('✓ Stats updated');
   }
 
   async drain(signal: string): Promise<void> {

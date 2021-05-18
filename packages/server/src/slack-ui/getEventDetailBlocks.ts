@@ -42,7 +42,7 @@ const getEventDetailBlocks = (
         },
         {
           type: 'mrkdwn',
-          text: `*<${headCommit.url}|${headCommit.sha.substring(0, 7)}>*: ${headCommit.commit.message.replace(
+          text: `*<${headCommit.html_url}|${headCommit.sha.substring(0, 7)}>*: ${headCommit.commit.message.replace(
             /\.?\n+/,
             '. '
           )}`,

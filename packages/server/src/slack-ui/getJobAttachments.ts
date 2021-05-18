@@ -71,7 +71,7 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
   jobsData.jobs.forEach((job) => {
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
     const currentStepIndex = getCurrentStepIndexForJob(job);
-    const currentStepIndexName: string|undefined = steps[currentStepIndex]?.name;
+    const currentStepIndexName: string | undefined = steps[currentStepIndex]?.name;
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     let icon = '';
     let color;
@@ -133,9 +133,10 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
             icon = ':no_entry_sign:';
             elements.push({
               type: 'mrkdwn',
-              text: currentStepIndexName === undefined
-                ? `*Cancelled*`
-                : `*Cancelled* on step *${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length})`,
+              text:
+                currentStepIndexName === undefined
+                  ? `*Cancelled*`
+                  : `*Cancelled* on step *${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length})`,
             });
             break;
 
@@ -144,9 +145,10 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: currentStepIndexName === undefined
-                ? `*Failed*`
-                : `*Failed* on step *${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length})`,
+              text:
+                currentStepIndexName === undefined
+                  ? `*Failed*`
+                  : `*Failed* on step *${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length})`,
             });
             break;
 
@@ -155,9 +157,12 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: currentStepIndexName === undefined
-                ? `*Timed out*`
-                : `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
+              text:
+                currentStepIndexName === undefined
+                  ? `*Timed out*`
+                  : `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
+                      steps.length
+                    })`,
             });
             break;
 

@@ -18,8 +18,16 @@ export const SSM_GITHUB_APP_PRIVATE_KEY = '/techpivot-streaming-slack-notify/git
 
 export const SSM_GITHUB_APP_WEBHOOK_SECRET = '/techpivot-streaming-slack-notify/github/webhook-secret';
 
+export const SSM_FAUNADB_SERVER_SECRET = '/techpivot-streaming-slack-notify/faunadb/server-secret';
+
 export const GITHUB_APP_ID = 71405;
 
 export const GITHUB_CLIENT_ID = 'Iv1.2fcd2b1b73152e69';
 
 export const API_ENDPOINT = 'https://api.streaming-slack-notify.techpivot.com';
+
+export const FAUNADB_DATABASE_NAME = 'streaming-slack-notify';
+
+export const FAUNADB_COLLECTION_STATS_NAME = 'stats';
+
+export const FAUNADB_OWNER_REPO_STATS_INDEX_NAME = 'stats_owner_repo';

@@ -7,7 +7,12 @@ import { isLeft } from 'fp-ts/lib/Either';
 import { Consumer } from './sqs-consumer';
 import Poller from './github-poller';
 import { REGION } from '../../common/lib/const';
-import { getSqsQueueUrl, getGitHubAppClientSecret, getGitHubAppPrivateKey } from '../../common/lib/ssm';
+import {
+  getSqsQueueUrl,
+  getGitHubAppClientSecret,
+  getGitHubAppPrivateKey,
+  getFaunadbServerSecret,
+} from '../../common/lib/ssm';
 import { SQSBody, SQSBodyV } from '../../common/lib/types';
 
 const debug = Debug('server');
@@ -29,6 +34,7 @@ async function run(): Promise<void> {
   let queueUrl: string;
   let githubAppClientSecret: string;
   let githubAppPrivateKey: string;
+  let faunadbServerSecret: string;
 
   try {
     debug('Retrieving SQS queue URL ...');
@@ -60,6 +66,16 @@ async function run(): Promise<void> {
     process.exit(1);
   }
 
+  try {
+    debug('\nRetrieving Faunadb server secret ...');
+    faunadbServerSecret = await getFaunadbServerSecret();
+    debug('✓ Successfully retrieved Faunadb server secret');
+  } catch (err) {
+    console.error('Error: Unable to connect to AWS Parameter Store to retrieve Faunadb server secret');
+    console.error(err);
+    process.exit(1);
+  }
+
   debug('\nStarting SQS consumer to long poll for messages ...');
 
   const consumer = new Consumer({
@@ -86,7 +102,14 @@ async function run(): Promise<void> {
         }
 
         debug('Received valid SQS message. Starting new GitHub poller ...');
-        const poller = new Poller(githubAppClientSecret, githubAppPrivateKey, sqs, queueUrl, body as SQSBody);
+        const poller = new Poller(
+          githubAppClientSecret,
+          githubAppPrivateKey,
+          faunadbServerSecret,
+          sqs,
+          queueUrl,
+          body as SQSBody
+        );
 
         // This is async. Intentionally, we do not wait 'await'. We want to run this
         // async in another thread. Additionally, we pass in the global event emitter
