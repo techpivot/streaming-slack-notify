@@ -8,7 +8,12 @@ import { EventEmitter } from 'events';
 import Debug, { Debugger } from 'debug';
 import { GITHUB_APP_ID, GITHUB_CLIENT_ID } from '../../../common/lib/const';
 import { SQSBody } from '../../../common/lib/types';
-import { getMemoryUsageMb, getReadableDurationString, sleep } from '../../../common/lib/utils';
+import {
+  getMemoryUsageMb,
+  getReadableDurationString,
+  getReadableDurationStringFromMs,
+  sleep,
+} from '../../../common/lib/utils';
 import { ListJobsForWorkflowRunResponseData, GetWorkflowRunResponseData, SlackChatPostMessageResponse } from './types';
 import {
   getEventDetailBlocks,
@@ -16,6 +21,9 @@ import {
   getHeaderBlocksAndFallbackText,
   getSummaryAttachments,
 } from '../slack-ui';
+
+const SHOW_SLACK_DEBUG_PAYLOAD = false;
+const MAXIMUM_ALLOWABLE_POLLING_TIME_MS = 3600 * 1000;
 
 export default class Poller {
   startTime: Date;
@@ -48,14 +56,14 @@ export default class Poller {
     sqsQueueUrl: string,
     sqsMessageBody: SQSBody
   ) {
-    const { slackAccessToken, githubInstallationId, githubOrganization, githubRepository, githubWorkflowId } =
+    const { slackAccessToken, githubInstallationId, githubOrganization, githubRepository, githubWorkflowRunId } =
       sqsMessageBody;
 
     this.startTime = new Date();
     this.sqs = sqs;
     this.sqsQueueUrl = sqsQueueUrl;
     this.sqsMessageBody = sqsMessageBody;
-    this.debug = Debug(`poller[${githubOrganization}/${githubRepository}/${githubWorkflowId}]`);
+    this.debug = Debug(`poller[${githubOrganization}/${githubRepository}/${githubWorkflowRunId}]`);
 
     this.log('Initializing new Octokit instance ...');
     this.octokit = new Octokit({
@@ -97,27 +105,53 @@ export default class Poller {
     try {
       ee.on('drain', drain);
 
-      const { githubOrganization, githubRepository, githubWorkflowId } = this.sqsMessageBody;
+      const { githubOrganization, githubRepository, githubWorkflowRunId } = this.sqsMessageBody;
 
-      this.log(`Starting GitHub workflow poller: ${githubOrganization}/${githubRepository}/${githubWorkflowId}`);
+      this.log(`Starting GitHub workflow poller: ${githubOrganization}/${githubRepository}/${githubWorkflowRunId}`);
       this.log(`Current Node Memory Usage: ${getMemoryUsageMb()} MB`);
 
       let i = 0;
       while (this.running) {
-        this.debug(`Poll Loop #'${++i}`);
+        this.debug(`Poll Loop #${++i}`);
         const { jobsData, workflowData, headCommit, pushBranchName, pullRequest } = await this.queryGitHub();
         await this.postToSlack(jobsData, workflowData, headCommit, pushBranchName, pullRequest);
 
-        /*
-        // If the last job was successful, it takes about 200ms to mark workflow complete. So instead of waiting
-        // 1 to 2 seconds, decrease the interval time.
-        const lastJob = summary.jobsData.jobs[summary.jobsData.jobs.length];
-        if (lastJob !== undefined && lastJob.status === 'completed') {
-          debug('Decreasing interval time to 250ms');
-          this.nextIntervalTime = 250;
-        }
-        */
         if (workflowData.status === 'completed') {
+          break;
+        }
+
+        // If all jobs are successful and we have not completed the workflow, it takes about ~200ms for GitHub
+        // to update the workflow. Thus, let's reduce the nextIntervalTime to be quicker in the event that
+        // the interval time had somehow increased quite a bit.
+        let allJobsCompleted = true;
+        for (let i = 0; i < jobsData.jobs.length; i += 1) {
+          if (jobsData.jobs[i].status !== 'completed') {
+            allJobsCompleted = false;
+            break;
+          }
+        }
+        if (allJobsCompleted) {
+          this.log(
+            'Decreasing interval time to 500ms as all jobs are complete and workflow should be registered as completed on next pass'
+          );
+          this.nextIntervalTime = 500;
+        }
+
+        // If we exceeded a sane default limit (and to prevent runaway threads), let's ensure we have a maximum time
+        // we'll break, and also send a follow
+        const now = new Date();
+        if (now.getTime() - this.startTime.getTime() >= MAXIMUM_ALLOWABLE_POLLING_TIME_MS) {
+          const maxAllowedTime = getReadableDurationStringFromMs(MAXIMUM_ALLOWABLE_POLLING_TIME_MS);
+          const { slackChannel, slackBotUsername } = this.sqsMessageBody;
+          const { name, run_number: runNumber, html_url: htmlUrl } = workflowData;
+
+          this.log(`Polling job exceeded maximum allowable polling time of ${maxAllowedTime}`);
+          await this.slackClient.chat.postMessage({
+            channel: slackChannel,
+            username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
+            text: `:information_source: Workflow <${htmlUrl}|*${name}* #${runNumber}> exceeded the maximum allowable polling time: *${maxAllowedTime}*.\nPlease update your workflow to ensure all jobs complete within the required timeframe.`,
+            mkdwn: true,
+          });
           break;
         }
 
@@ -146,8 +180,8 @@ export default class Poller {
   }> {
     this.debug('Querying GitHub');
 
-    const { githubOrganization, githubRepository, githubWorkflowId } = this.sqsMessageBody;
-    const opts = { run_id: githubWorkflowId, owner: githubOrganization, repo: githubRepository };
+    const { githubOrganization, githubRepository, githubWorkflowRunId } = this.sqsMessageBody;
+    const opts = { run_id: githubWorkflowRunId, owner: githubOrganization, repo: githubRepository };
 
     const [workflow, jobs] = await Promise.all([
       // Required Permissions:  Actions/Read-only
@@ -211,6 +245,8 @@ export default class Poller {
       pullRequest = this.pullRequestCache[ci];
     }
 
+    this.debug(`GitHub API queries complete (Queries: ${queryTotal})`);
+
     // Rate Limits: Currently, we query 2 endpoints using REST API v3. Thus, take into account the
     // poll frequency based on the follwing data:
 
@@ -222,7 +258,22 @@ export default class Poller {
     //  Rate limit for public unauth requests = 60
     //  Rate limit for GitHub Actions token = 1000
     //  Rate limit for Personal Access token = 5000
-    //  Rate limit for application
+    //  Rate limit for application = 5000
+
+    const elapsed = (new Date().getTime() - this.startTime.getTime()) / 1000;
+    if (elapsed < 45) {
+      this.nextIntervalTime = this.defaultIntervalTime;
+    } else if (elapsed < 90) {
+      this.nextIntervalTime = this.defaultIntervalTime * 1.5;
+    } else if (elapsed < 180) {
+      this.nextIntervalTime = this.defaultIntervalTime * 2;
+    } else if (elapsed < 300) {
+      this.nextIntervalTime = this.defaultIntervalTime * 2.5;
+    } else if (elapsed < 450) {
+      this.nextIntervalTime = this.defaultIntervalTime * 3.25;
+    } else {
+      this.nextIntervalTime = this.defaultIntervalTime * 3.75;
+    }
 
     const remaining1: number = parseInt(jobs.headers['x-ratelimit-remaining'] || '', 10);
     const remaining2: number = parseInt(workflow.headers['x-ratelimit-remaining'] || '', 10);
@@ -230,7 +281,7 @@ export default class Poller {
       `GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req/hour (Remaining: ${Math.min(
         remaining1,
         remaining2
-      )}) (Queries: ${queryTotal})`
+      )}) (Queries: ${queryTotal}) (Inverval Time: ${this.nextIntervalTime})`
     );
 
     return {
@@ -255,7 +306,6 @@ export default class Poller {
     this.log('Building Slack payload');
 
     const { headerBlocks, fallbackText } = getHeaderBlocksAndFallbackText(workflowData);
-
     const payloadBase = {
       channel: slackChannel,
       text: fallbackText,
@@ -273,8 +323,11 @@ export default class Poller {
     if (slackTimestamp) {
       const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts: slackTimestamp });
 
-      this.debug('Sending Slack [chat.update] payload');
-      console.debug(JSON.stringify(payload, null, 2));
+      // Extra debug for Slack UI testing
+      if (SHOW_SLACK_DEBUG_PAYLOAD) {
+        this.debug('Sending Slack [chat.update] payload');
+        console.debug(JSON.stringify(payload, null, 2));
+      }
 
       response = await this.slackClient.chat.update(payload);
     } else {
@@ -282,8 +335,11 @@ export default class Poller {
         username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
       });
 
-      this.debug('Sending Slack [chat.postMessage] payload');
-      console.debug(JSON.stringify(payload, null, 2));
+      // Extra debug for Slack UI testing
+      if (SHOW_SLACK_DEBUG_PAYLOAD) {
+        this.debug('Sending Slack [chat.postMessage] payload');
+        console.debug(JSON.stringify(payload, null, 2));
+      }
 
       response = (await this.slackClient.chat.postMessage(payload)) as SlackChatPostMessageResponse;
 

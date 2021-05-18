@@ -54,8 +54,8 @@ resource "aws_ssm_parameter" "slack_signing_secret" {
   type        = "SecureString"
   value       = "dummy"
   tags        = module.ssm_parameter_client_secret_label.tags
+  overwrite   = false
 
-  overwrite = false
   lifecycle {
     ignore_changes = [value]
   }

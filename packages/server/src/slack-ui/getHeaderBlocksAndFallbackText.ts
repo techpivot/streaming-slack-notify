@@ -16,10 +16,12 @@ const getHeaderBlocksAndFallbackText = (
 
   switch (status) {
     case 'queued':
+      icon = ':white_circle:';
       action = 'is queued';
       break;
 
     case 'in_progress':
+      icon = ':hourglass_flowing_sand:';
       action = 'is running';
       finishTime = new Date().toISOString();
       break;

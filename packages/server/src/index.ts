@@ -66,6 +66,7 @@ async function run(): Promise<void> {
     queueUrl,
     batchSize: 10,
     waitTimeSeconds: 20,
+    visibilityTimeout: 20,
     authenticationErrorTimeout: 10000,
     pollingWaitTimeMs: 0,
     sqs,

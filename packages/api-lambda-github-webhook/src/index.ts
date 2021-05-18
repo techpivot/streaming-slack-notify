@@ -4,10 +4,12 @@ import { InstallationEvent, WorkflowRunEvent } from '@octokit/webhooks-types';
 import {
   deleteGitHubRecordById,
   getGithubRecordById,
+  getSlackRecordById,
   updateGithubAppRecordFromWebhook,
 } from '../../common/lib/dynamodb';
 import { BaseError, ValidationError } from '../../common/lib/errors';
 import { getGitHubAppWebhookSecret } from '../../common/lib/ssm';
+import { addToQueue } from '../../common/lib/sqs';
 
 const init = async (): Promise<string> => {
   return new Promise((resolve) => {
@@ -87,21 +89,47 @@ export const handler: APIGatewayProxyHandlerV2 = async (
             // WorkflowRunRequestedEvent
             case 'requested':
               {
-                // Git the record by id
                 if (!body.installation || !body.installation.id) {
                   throw new Error('No installation ID associated with event. Ignoring');
                 }
+
                 console.log('Retrieving GitHub record by ID ...');
-                const record = await getGithubRecordById(body.installation.id);
-                if (!record.Item) {
-                  throw new Error(`Unable to find linked Slack/GitHub using installation ID: ${body.installation.id}`);
+                const github = await getGithubRecordById(body.installation.id);
+                if (!github.Item) {
+                  throw new Error(`Unable to find linked GitHub record using installation ID: ${body.installation.id}`);
                 }
 
-                // Get Token from Slack record
+                const {
+                  Item: {
+                    slack_app_id: slackAppId,
+                    slack_channel: slackChannel,
+                    installation_id: githubInstallationId,
+                    slack_bot_username: slackBotUsername,
+                  },
+                } = github;
+                if (!slackAppId || !slackChannel) {
+                  throw new Error('No Slack App ID reference. Organization never completed post-install');
+                }
+
+                console.log('Retrieving Slack record by App ID ...');
+                const slack = await getSlackRecordById(slackAppId);
+                if (!slack.Item) {
+                  throw new Error(
+                    `Unable to find linked Slack record using GitHub ID: ${github.Item.slack_app_id} (Slack organization may have removed the app)`
+                  );
+                }
 
                 // Post to SQS
-
-                // may need to include the event
+                await addToQueue({
+                  githubInstallationId,
+                  githubOrganization: body.organization?.login ?? '[no-org]',
+                  githubRepository: body.repository.name,
+                  githubWorkflowRunId: body.workflow_run.id,
+                  slackAppId: slackAppId,
+                  slackChannel: slackChannel,
+                  slackAccessToken: slack.Item.access_token,
+                  slackBotUsername: slackBotUsername,
+                });
               }
               break;
 

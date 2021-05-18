@@ -36,35 +36,6 @@ export interface DynamoDBSlackGetItemOutput extends Omit<DocumentClient.GetItemO
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GitHub
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// A transform of  { WebhookPayload } @actions/github/lib/interfaces
-const WebhookPayloadV = t.partial({});
-
-export const GitHubWorkflowRunDataV = t.type({
-  // GitHub Action payload. It's up to the caller to switch on the eventName and cast appropriately.
-  // Currently need to refacor this to use the io-ts optional partials
-  payload: WebhookPayloadV,
-  // The name of the GitHub trigger event. (e.g. "push", "pull_request")
-  eventName: t.string,
-  // The name of the current GitHub workflow (e.g. "main")
-  workflowName: t.string,
-  // The GitHub action run id. Internally, GitHub is storing this as a number.
-  runId: t.number,
-  // The GitHub repository owner + repo. Technically, this is included in the payload for
-  // most events; however, for some events it is not. Therefore, to better futureproof
-  // we pluck this out of the payload to ensure that the action can send this where these
-  // values are defined via environment variables.
-  repository: t.type({
-    owner: t.string,
-    repo: t.string,
-  }),
-});
-
-export type GitHubWorkflowRunData = t.TypeOf<typeof GitHubWorkflowRunDataV>;
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Slack
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -112,7 +83,7 @@ export const SQSBodyV = t.intersection([
     // Specifies the GitHub repo associated with the workflow event
     githubRepository: t.string,
     // Specifies the GitHub workflow run ID to lookup
-    githubWorkflowId: t.number,
+    githubWorkflowRunId: t.number,
     slackAppId: t.string,
     // The Slack channel for sending message
     slackChannel: t.string,
