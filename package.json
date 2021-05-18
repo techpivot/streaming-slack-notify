@@ -36,20 +36,6 @@
     "GitHub",
     "Actions"
   ],
-  "prettier": {
-    "trailingComma": "es5",
-    "semi": true,
-    "singleQuote": true,
-    "printWidth": 120,
-    "overrides": [
-      {
-        "files": "**/*.md",
-        "options": {
-          "proseWrap": "always"
-        }
-      }
-    ]
-  },
   "dependencies": {
     "@octokit/auth-app": "^3.4.0",
     "@octokit/rest": "^18.0.0",
