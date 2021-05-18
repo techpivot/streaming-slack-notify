@@ -38,6 +38,12 @@ To format all packages:
 yarn format
 ```
 
+To format all terraform:
+
+```shell
+terraform fmt
+```
+
 ## Developer Reference
 
 - Project setup is a Monorepo using Yarn workspaces. This works fairly well for shared dependencies,
