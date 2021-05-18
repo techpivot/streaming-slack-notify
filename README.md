@@ -26,11 +26,13 @@
 
 ## Motivation
 
-The existing GitHub actions that post to Slack were only displayed at the conclusion of workflow runs, which results in
-ambiguous job status for long-running workflows. Additionally, existing actions contained limited information and often
-prioritized the wrong data elements. This service attempts to solve those issues by registering the Streaming Slack
-Notify GitHub and Slack applications, linking them together, and polling workflow runs via a lightweight cloud-native
-and cost-optimized service.
+The existing GitHub actions that post to Slack were only displayed at the
+conclusion of workflow runs, which results in ambiguous job status for
+long-running workflows. Additionally, existing actions contained limited
+information and often prioritized the wrong data elements. This service attempts
+to solve those issues by registering the Streaming Slack Notify GitHub and Slack
+applications, linking them together, and polling workflow runs via a lightweight
+cloud-native and cost-optimized service.
 
 ## Sample Output
 
@@ -41,26 +43,30 @@ and cost-optimized service.
 - Support for **push**, **pull_request**, **schedule** events
 - Clean and consistent Slack UI
 - Lightweight, minimal dependencies, and pure TypeScript
-- Lean AWS cloud footprint that utilizes free tier services and cost-optimized services
+- Lean AWS cloud footprint that utilizes free tier services and cost-optimized
+  services
 - Fully open sourced
 
 ## Usage
 
 ## Cost Optimization
 
-The current infrastructure is deployed in a dedicated AWS account that is actively managed by TechPivot. In order to
-provide a public service such as this, various parts of the infrastrucure are cost-optimized including:
+The current infrastructure is deployed in a dedicated AWS account that is
+actively managed by TechPivot. In order to provide a public service such as
+this, various parts of the infrastrucure are cost-optimized including:
 
-- EC2 Spot Instances - Reducing cost by running on small instances that can be interrupted and easily resumed by other
-  instances from a large pool.
-- Minimizing the number of EC2 Metrics - Metrics are free for the first 10 and \$0.30/month thereafter.
-- Minimizing EBS volume size - Argueably the larger cost of these tiny instances is actually the size of the EBS
-  volumes.
+- EC2 Spot Instances - Reducing cost by running on small instances that can be
+  interrupted and easily resumed by other instances from a large pool.
+- Minimizing the number of EC2 Metrics - Metrics are free for the first 10 and
+  \$0.30/month thereafter.
+- Minimizing EBS volume size - Argueably the larger cost of these tiny instances
+  is actually the size of the EBS volumes.
 - Leveraging AWS free tier services including DynamoDB, Lambda, and API Gateway.
 
 ## Support
 
-Please help support this project and [donate](https://github.com/sponsors/techpivot).
+Please help support this project and
+[donate](https://github.com/sponsors/techpivot).
 
 ## License
 
@@ -68,7 +74,9 @@ Please help support this project and [donate](https://github.com/sponsors/techpi
 
 ---
 
-> **[TechPivot](https://www.techpivot.net)** &nbsp;&nbsp;&middot;&nbsp;&nbsp; GitHub
-> [@techpivot](https://github.com/techpivot) &nbsp;&nbsp;&middot;&nbsp;&nbsp; LinkedIn
-> [techpivot](https://www.linkedin.com/company/techpivot/) &nbsp;&nbsp;&middot;&nbsp;&nbsp; Twitter
+> **[TechPivot](https://www.techpivot.net)** &nbsp;&nbsp;&middot;&nbsp;&nbsp;
+> GitHub [@techpivot](https://github.com/techpivot) >
+> &nbsp;&nbsp;&middot;&nbsp;&nbsp; LinkedIn
+> [techpivot](https://www.linkedin.com/company/techpivot/) >
+> &nbsp;&nbsp;&middot;&nbsp;&nbsp; Twitter
 > [@techpivot](https://twitter.com/techpivot)
