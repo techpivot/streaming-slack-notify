@@ -61,6 +61,13 @@ const getCurrentStepIndexForJob = (job: components['schemas']['job']): number =>
 const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Array<MessageAttachment> => {
   const attachments: Array<MessageAttachment> = [];
 
+  // For consistency, let's sort the jobs by `started_at` as the entries are often mis-aligned and if we want
+  // to ensure these line up how they're ordered in the workflow files and how their also displayed on
+  // the  GitHub workflow run UI.
+  // jobsData.jobs.sort((a, b) => {
+  //   return (new Date(b.started_at)).getTime() - (new Date(a.started_at)).getTime();
+  // });
+
   jobsData.jobs.forEach((job) => {
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
     const currentStepIndex = getCurrentStepIndexForJob(job);
