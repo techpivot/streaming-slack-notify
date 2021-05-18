@@ -358,7 +358,7 @@ export default class Poller {
       }
     }
 
-    if (error != undefined) {
+    if (error !== undefined) {
       throw new Error(`Unable to post message to Slack${error !== null ? ': ' + error : ''}\n`);
     }
   }

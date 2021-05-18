@@ -116,7 +116,7 @@ async function run(): Promise<void> {
       debug('Manually deleting: ', MessageId, ReceiptHandle);
       const params = {
         QueueUrl: queueUrl,
-        ReceiptHandle: ReceiptHandle,
+        ReceiptHandle,
       };
       sqs.deleteMessage(params, () => {
         debug('Successfully deleted: ', MessageId, ReceiptHandle);
