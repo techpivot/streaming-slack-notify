@@ -39,6 +39,7 @@ export const getReadableDurationString = (date1: Date, date2: Date): string => {
 };
 
 export const getReadableDurationStringFromMs = (milliseconds: number): string => {
+  const result = [];
   let ms = milliseconds;
   let s = Math.floor(ms / 1000);
   ms = ms % 1000;
@@ -49,7 +50,6 @@ export const getReadableDurationStringFromMs = (milliseconds: number): string =>
   const d = Math.floor(h / 24);
   h = h % 24;
 
-  const result = [];
   if (d > 0) {
     result.push(`${d}d`);
   }
@@ -59,10 +59,9 @@ export const getReadableDurationStringFromMs = (milliseconds: number): string =>
   if (m > 0) {
     result.push(`${m}m`);
   }
-  if (s > 0) {
+  if (s > 0 || milliseconds === 0) {
     result.push(`${s}s`);
   }
-
   if (result.length === 0 && ms > 0) {
     result.push(`${ms}ms`);
   }

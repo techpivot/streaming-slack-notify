@@ -71,6 +71,7 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
   jobsData.jobs.forEach((job) => {
     const { completed_at, html_url, name, status, conclusion, started_at, steps } = job;
     const currentStepIndex = getCurrentStepIndexForJob(job);
+    const currentStepIndexName: string|undefined = steps[currentStepIndex]?.name;
     const elements: (ImageElement | PlainTextElement | MrkdwnElement)[] = [];
     let icon = '';
     let color;
@@ -90,7 +91,7 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
 
         elements.push({
           type: 'mrkdwn',
-          text: `*${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length + 1})`,
+          text: `*${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length + 1})`,
         });
 
         break;
@@ -124,14 +125,17 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
             });
             break;
 
+          // In the event of a failure or cancellation we need to be congnizent if we don't have a current
+          // step from the job.
+
           case 'cancelled':
             color = '#ea3131';
-            icon = ':x:';
+            icon = ':no_entry_sign:';
             elements.push({
               type: 'mrkdwn',
-              text: `*Cancelled* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
-                steps.length
-              })`,
+              text: currentStepIndexName === undefined
+                ? `*Cancelled*`
+                : `*Cancelled* on step *${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length})`,
             });
             break;
 
@@ -140,7 +144,9 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: `*Failed* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
+              text: currentStepIndexName === undefined
+                ? `*Failed*`
+                : `*Failed* on step *${currentStepIndexName}* (${currentStepIndex + 1} of ${steps.length})`,
             });
             break;
 
@@ -149,9 +155,9 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Messag
             icon = ':x:';
             elements.push({
               type: 'mrkdwn',
-              text: `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${
-                steps.length
-              })`,
+              text: currentStepIndexName === undefined
+                ? `*Timed out*`
+                : `*Timed out* on step *${steps[currentStepIndex].name}* (${currentStepIndex + 1} of ${steps.length})`,
             });
             break;
 
