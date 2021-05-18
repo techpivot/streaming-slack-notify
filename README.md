@@ -12,8 +12,8 @@
 </h4>
 
 <p align="center">
-  <a href="https://github.com/techpivot/streaming-slack-notify/actions">
-    <img src="https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master" /></a>
+  <a href="https://github.com/techpivot/streaming-slack-notify/actions/workflows/ci.yml">
+    <img src="https://github.com/techpivot/streaming-slack-notify/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability">
     <img src="https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/releases">
