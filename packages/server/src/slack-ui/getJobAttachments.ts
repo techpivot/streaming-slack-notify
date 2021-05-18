@@ -155,6 +155,15 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Array<
             });
             break;
 
+          case 'skipped':
+            color = '#d2d2d2';
+            icon = ':black_small_square:';
+            elements.push({
+              type: 'mrkdwn',
+              text: `_Skipped_`,
+            });
+            break;
+
           case 'action_required':
             color = '#ea3131';
             icon = ':x:';
@@ -184,7 +193,7 @@ const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Array<
     });
 
     // Get the duration
-    if (started_at) {
+    if (started_at && conclusion !== 'skipped') {
       elements.push({
         type: 'mrkdwn',
         // Note: Match the styling as close as possible to actual GitHub actions layout

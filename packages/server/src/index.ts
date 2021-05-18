@@ -95,7 +95,7 @@ async function run(): Promise<void> {
 
         // Upon returning immediately, the message is then immediately deleted by the Consumer.
       } catch (err) {
-        debug('Received an invalid SQSBody payload. Ignoring message:', Body);
+        debug(`[ERROR] ${err}`);
       }
     },
   });

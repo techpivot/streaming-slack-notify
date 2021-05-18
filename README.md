@@ -53,7 +53,7 @@ workflow runs, which results in ambiguous job status for long-running workflows.
 
 - Ability to display job step status from beginning of workflow to end
 - Single slack message that continuously updates the current job statuses
-- Support for **push**, **pull_request** events
+- Support for **push**, **pull_request**, **schedule** events
 - Clean and consistent Slack UI
 - Lightweight, minimal dependencies, and pure TypeScript
 - Lean AWS cloud footprint that utilizes free tier services and cost-optimized services
