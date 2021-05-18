@@ -49,7 +49,6 @@ workflow runs, which results in ambiguous job status for long-running workflows.
 
 ## Sample Output
 
-
 ## Features
 
 - Ability to display job step status from beginning of workflow to end
@@ -61,7 +60,6 @@ workflow runs, which results in ambiguous job status for long-running workflows.
 - Fully open sourced
 
 ## Usage
-
 
 ## How It Works
 
@@ -80,7 +78,7 @@ Please help support this project and [donate](https://github.com/sponsors/techpi
 
 ## License
 
-[MIT](LICENSE) © 2020 TechPivot
+[MIT](LICENSE) © 2021 TechPivot
 
 ---
 
