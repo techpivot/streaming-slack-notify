@@ -40,7 +40,15 @@
     "trailingComma": "es5",
     "semi": true,
     "singleQuote": true,
-    "printWidth": 120
+    "printWidth": 120,
+    "overrides": [
+      {
+        "files": "**/*.md",
+        "options": {
+          "proseWrap": "always"
+        }
+      }
+    ]
   },
   "dependencies": {
     "@octokit/auth-app": "^3.4.0",

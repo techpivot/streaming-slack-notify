@@ -7,10 +7,10 @@ const getSummaryAttachments = (
   workflowData: GetWorkflowRunResponseData,
   pushBranchName?: string,
   pullRequest?: components['schemas']['pull-request-simple']
-): Array<MessageAttachment> => {
+): MessageAttachment[] => {
   const { event, name, run_number: runNumber, html_url: htmlUrl } = workflowData;
   const elements: MrkdwnElement[] = [];
-  const attachments: Array<MessageAttachment> = [];
+  const attachments: MessageAttachment[] = [];
 
   elements.push({
     type: 'mrkdwn',
