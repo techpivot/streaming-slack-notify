@@ -10,8 +10,7 @@ checks:
     config:
       threshold: 400
   method-complexity:
-    config:
-      threshold: 8
+    enabled: false
   method-count:
     config:
       threshold: 20
@@ -23,6 +22,8 @@ checks:
   return-statements:
     config:
       threshold: 4
+  similar-code:
+    enabled: false
 exclude_patterns:
   - '**/node_modules/'
   - 'dist/'
