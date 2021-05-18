@@ -124,8 +124,8 @@ export default class Poller {
         // to update the workflow. Thus, let's reduce the nextIntervalTime to be quicker in the event that
         // the interval time had somehow increased quite a bit.
         let allJobsCompleted = true;
-        for (let i = 0; i < jobsData.jobs.length; i += 1) {
-          if (jobsData.jobs[i].status !== 'completed') {
+        for (const job of jobsData.jobs) {
+          if (job.status !== 'completed') {
             allJobsCompleted = false;
             break;
           }

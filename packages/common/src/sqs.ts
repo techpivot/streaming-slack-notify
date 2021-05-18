@@ -7,7 +7,7 @@ import { SQSBody } from './types';
 const sqs = new SQS({ region: REGION });
 
 export const addToQueue = async (body: SQSBody): Promise<SendMessageResult> => {
-  return await sqs
+  return sqs
     .sendMessage({
       MessageBody: JSON.stringify(body),
       QueueUrl: await getSqsQueueUrl(),

@@ -35,7 +35,7 @@ export const postHandler = async (event: APIGatewayProxyEventV2): Promise<APIGat
     console.log('Attempting to update GitHub record', body);
     const { installationId, slackAppId, slackChannel, slackBotUsername } = body;
     await updateGithubAppRecordFromPostInstallSettings(
-      parseInt(installationId),
+      parseInt(installationId, 10),
       slackAppId,
       slackChannel,
       slackBotUsername
