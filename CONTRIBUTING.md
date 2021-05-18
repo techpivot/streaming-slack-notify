@@ -71,7 +71,7 @@ By contributing, you agree that your contributions will be licensed under the [M
 
 ---
 
-> **[TechPivot](https://www.techpivot.net)** &nbsp;&nbsp;&middot;&nbsp;&nbsp; GitHub
-> [@techpivot](https://github.com/techpivot) > &nbsp;&nbsp;&middot;&nbsp;&nbsp; LinkedIn
-> [techpivot](https://www.linkedin.com/company/techpivot/) > &nbsp;&nbsp;&middot;&nbsp;&nbsp; Twitter
+> **[TechPivot](https://www.techpivot.net)**&nbsp;&nbsp;&middot;&nbsp;&nbsp;GitHub
+> [@techpivot](https://github.com/techpivot)&nbsp;&nbsp;&middot;&nbsp;&nbsp;LinkedIn
+> [techpivot](https://www.linkedin.com/company/techpivot/)&nbsp;&nbsp;&middot;&nbsp;&nbsp;Twitter
 > [@techpivot](https://twitter.com/techpivot)
