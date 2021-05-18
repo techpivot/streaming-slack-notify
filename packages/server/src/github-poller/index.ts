@@ -380,7 +380,7 @@ export default class Poller {
 
     this.log('Updating faunaDB stats ...');
 
-    const elapsedTime = Math.round((new Date().getTime() - this.startTime.getTime()) / 1000);
+    const elapsedTime = Math.round(((new Date()).getTime() - this.startTime.getTime()) / 1000);
 
     try {
       const existingRecord: { ref: any; ts: number; data: { [key: string]: any } } = await this.faunadbClient.query(
@@ -390,7 +390,7 @@ export default class Poller {
         Update(existingRecord.ref, {
           data: {
             runs: parseInt(existingRecord.data.runs, 10) + 1,
-            totalRuntimeSec: parseInt(existingRecord.data.totalRuntime, 10) + elapsedTime,
+            totalRuntimeSec: parseInt(existingRecord.data.totalRuntimeSec || 0, 10) + elapsedTime,
           },
         })
       );
