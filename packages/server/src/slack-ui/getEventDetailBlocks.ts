@@ -15,8 +15,8 @@ const getEventDetailBlocks = (
     return [];
   }
 
-  const committer = headCommit['committer'];
-  if (committer === null) {
+  const author = headCommit['author'];
+  if (author === null) {
     return [];
   }
 
@@ -33,16 +33,16 @@ const getEventDetailBlocks = (
       elements: [
         {
           type: 'image',
-          image_url: committer['avatar_url'],
-          alt_text: committer['login'],
+          image_url: author['avatar_url'],
+          alt_text: author['login'],
         },
         {
           type: 'mrkdwn',
-          text: `*<https://github.com/${committer['login']}|${committer['login']}>*`,
+          text: `*<https://github.com/${author['login']}|${author['login']}>*`,
         },
         {
           type: 'mrkdwn',
-          text: `*<${headCommit['url']}|${headCommit['sha'].substring(0, 7)}>*: ${headCommit['commit']['message']}`,
+          text: `*<${headCommit['url']}|${headCommit['sha'].substring(0, 7)}>*: ${headCommit['commit']['message'].replace(/\.?\n+/, '. ')}`,
         },
       ],
     }

@@ -24,6 +24,7 @@ const getSummaryAttachments = (
   });
 
   switch (event) {
+    case 'schedule':
     case 'push':
       {
         elements.push({

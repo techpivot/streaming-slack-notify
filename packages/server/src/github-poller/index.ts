@@ -212,7 +212,7 @@ export default class Poller {
           }),
 
           // Required Permissions:  Contents/Read-only
-          event === 'push'
+          event === 'push' || event === 'schedule'
             ? this.octokit.repos.listBranchesForHeadCommit({
                 owner: githubOrganization,
                 repo: githubRepository,
@@ -281,7 +281,7 @@ export default class Poller {
       `GitHub RateLimit: ${jobs.headers['x-ratelimit-limit']} req/hour (Remaining: ${Math.min(
         remaining1,
         remaining2
-      )}) (Queries: ${queryTotal}) (Inverval Time: ${this.nextIntervalTime})`
+      )}) (Queries: ${queryTotal}) (Interval: ${this.nextIntervalTime}ms)`
     );
 
     return {
