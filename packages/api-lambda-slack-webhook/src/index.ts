@@ -29,7 +29,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
       verifyRequestSignature({
         signingSecret: await initPromise,
         requestSignature: headers['x-slack-signature'] || '',
-        requestTimestamp: parseInt(headers['x-slack-request-timestamp'] || ''),
+        requestTimestamp: parseInt(headers['x-slack-request-timestamp'] || '', 10),
         body: event.body,
       });
     } catch (error) {

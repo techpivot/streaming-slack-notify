@@ -19,10 +19,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (
 ): Promise<APIGatewayProxyResultV2> => {
   switch (event.requestContext.http.method.toUpperCase()) {
     case 'GET':
-      return await getHandler(event);
+      return getHandler(event);
 
     case 'POST':
-      return await postHandler(event);
+      return postHandler(event);
 
     default:
       return {

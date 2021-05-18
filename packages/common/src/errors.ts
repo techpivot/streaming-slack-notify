@@ -120,12 +120,12 @@ export const generateReadableSlackError = (error: WebAPIPlatformError): SlackApp
       );
     case 'fatal_error':
       return new SlackApplicationAuthError(
-        "The server could not complete your operation(s) without encountering a catastrophic error. It's possible some aspect of the operation succeeded before the error was raised.",
+        'The server could not complete your operation(s) without encountering a catastrophic error. It\'s possible some aspect of the operation succeeded before the error was raised.',
         error.data.error
       );
     case 'internal_error':
       return new SlackApplicationAuthError(
-        "The server could not complete your operation(s) without encountering an error, likely due to a transient issue on our end. It's possible some aspect of the operation succeeded before the error was raised.",
+        'The server could not complete your operation(s) without encountering an error, likely due to a transient issue on our end. It\'s possible some aspect of the operation succeeded before the error was raised.',
         error.data.error
       );
   }

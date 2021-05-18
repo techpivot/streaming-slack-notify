@@ -45,7 +45,7 @@ export const getHandler = async (event: APIGatewayProxyEventV2): Promise<APIGate
         sleep(2500);
       }
 
-      slackAppRecord = await getGithubRecordById(parseInt(installationId), true);
+      slackAppRecord = await getGithubRecordById(parseInt(installationId, 10), true);
       if (slackAppRecord.Item) {
         break;
       }

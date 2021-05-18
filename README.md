@@ -70,7 +70,7 @@ Please help support this project and
 
 ## License
 
-[MIT](LICENSE) © 2021 TechPivot
+[MIT](./LICENSE) © 2021 TechPivot
 
 ---
 
