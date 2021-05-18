@@ -9,6 +9,7 @@ import {
   SSM_SLACK_APP_CLIENT_ID,
   SSM_SLACK_APP_CLIENT_SECRET,
   SSM_SLACK_APP_SIGNING_SECRET,
+  SSM_FAUNADB_SERVER_SECRET,
 } from './const';
 import { SlackSecrets } from './types';
 
@@ -18,6 +19,7 @@ let gitHubAppClientSecret = '';
 let gitHubAppWebhookSecret = '';
 let gitHubAppPrivateKey = '';
 let slackSigningSecret = '';
+let faunaDbServerSecret = '';
 
 /**
  * Queue URL is available in Lambda as environment variable (semi-secure) or parsed from
@@ -171,4 +173,29 @@ export const getGitHubAppWebhookSecret = async (): Promise<string> => {
   gitHubAppWebhookSecret = response.Parameter.Value;
 
   return gitHubAppWebhookSecret;
+};
+
+export const getFaunadbServerSecret = async (): Promise<string> => {
+  if (faunaDbServerSecret !== '') {
+    return faunaDbServerSecret;
+  }
+
+  const response: GetParameterResult = await ssm
+    .getParameter({
+      Name: SSM_FAUNADB_SERVER_SECRET,
+      WithDecryption: true,
+    })
+    .promise();
+
+  if (!response.Parameter) {
+    throw new Error('Successfully queried parameter store but no Parameter was received');
+  }
+
+  if (!response.Parameter.Value) {
+    throw new Error('Successfully queried parameter store but no Parameter value was received');
+  }
+
+  faunaDbServerSecret = response.Parameter.Value;
+
+  return faunaDbServerSecret;
 };

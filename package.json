@@ -1,7 +1,7 @@
 {
   "name": "@techpivot/streaming-slack-notify",
   "version": "0.0.0",
-  "description": "The definitive Github Action for streaming workflow job status to Slack.",
+  "description": "The definitive service for streaming GitHub action workflow jobs to Slack.",
   "author": "TechPivot",
   "license": "MIT",
   "homepage": "https://github.com/techpivot/streaming-slack-notify#readme",
@@ -43,6 +43,7 @@
     "@slack/web-api": "^6.1.0",
     "aws-sdk": "^2.888.0",
     "crypto": "^1.0.1",
+    "faunadb": "^4.2.0",
     "fp-ts": "^2.6.1",
     "io-ts": "^2.2.4"
   },
