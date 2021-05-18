@@ -1,8 +1,7 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda';
-import { BaseError, ValidationError } from '../../common/lib/errors';
+import { BaseError, sanitizeErrorForTemplates, ValidationError } from '../../common/lib/errors';
 import { getGithubRecordById } from '../../common/lib/dynamodb';
 import { parseTemplate, sleep } from '../../common/lib/utils';
-import { sanitizeErrorForTemplates } from '../../common/lib/errors';
 
 export const getHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
   let statusCode = 200;
