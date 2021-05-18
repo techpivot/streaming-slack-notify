@@ -134,10 +134,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (
               break;
 
             // WorkflowRunCompletedEvent
-            //case 'completed':
-            //  {
-            // }
-            //  break;
+            // case 'completed':
+            //   break;
           }
         }
         break;
