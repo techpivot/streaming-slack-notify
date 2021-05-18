@@ -13,23 +13,17 @@
 
 <p align="center">
   <a href="https://github.com/techpivot/streaming-slack-notify/actions">
-    <img src="https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master" />
-  </a>
+    <img src="https://github.com/techpivot/streaming-slack-notify/workflows/Main/badge.svg?branch=master" /></a>
   <a href="https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability" />
-  </a>
+    <img src="https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/releases">
-    <img src="https://img.shields.io/github/v/release/techpivot/streaming-slack-notify" />
-  </a>
+    <img src="https://img.shields.io/github/v/release/techpivot/streaming-slack-notify" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/issues">
-    <img src="https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg" />
-  </a>
+    <img src="https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/techpivot/streaming-slack-notify" />
-  </a>
+    <img src="https://img.shields.io/github/license/techpivot/streaming-slack-notify" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/stargazers">
-    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" />
-  </a>
+    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" /></a>
 </p>
 
 ## Overview
