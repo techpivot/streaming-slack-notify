@@ -125,10 +125,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (
                   githubOrganization: body.organization?.login ?? '[no-org]',
                   githubRepository: body.repository.name,
                   githubWorkflowRunId: body.workflow_run.id,
-                  slackAppId: slackAppId,
-                  slackChannel: slackChannel,
+                  slackAppId,
+                  slackChannel,
                   slackAccessToken: slack.Item.access_token,
-                  slackBotUsername: slackBotUsername,
+                  slackBotUsername,
                 });
               }
               break;

@@ -2,7 +2,8 @@
 
 ## Helping Out
 
-[Pull requests](https://github.com/techpivot/streaming-slack-notify/pulls) are the best way to propose changes to the codebase. We actively welcome your pull requests:
+[Pull requests](https://github.com/techpivot/streaming-slack-notify/pulls) are the best way to propose changes to the
+codebase. We actively welcome your pull requests:
 
 1. Fork the repo and create your branch from `master`.
 1. Add/update your code in the corresponding `./packages` directory as necessary.
@@ -46,14 +47,13 @@ terraform fmt
 
 ## Developer Reference
 
-- Project setup is a Monorepo using Yarn workspaces. This works fairly well for shared dependencies,
-  specifically, the `common` package. We resolve using relative paths and not aliases (e.g. `../../common`)
-  as this works 100% of the time cross platform. When using aliases/path resolves it works when
-  compiling but not currently in VSCode. _More investigation is needed to migrate to aliases._
+- Project setup is a Monorepo using Yarn workspaces. This works fairly well for shared dependencies, specifically, the
+  `common` package. We resolve using relative paths and not aliases (e.g. `../../common`) as this works 100% of the time
+  cross platform. When using aliases/path resolves it works when compiling but not currently in VSCode. _More
+  investigation is needed to migrate to aliases._
 
-- If you need to run any of the the NPM/Yarn commands on a system
-  that may not have anything installed, we provide a docker-compose
-  helper.
+- If you need to run any of the the NPM/Yarn commands on a system that may not have anything installed, we provide a
+  docker-compose helper.
 
   ```bash
   docker-compose up
@@ -71,7 +71,7 @@ By contributing, you agree that your contributions will be licensed under the [M
 
 ---
 
-> **[TechPivot](https://www.techpivot.net)** &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> GitHub [@techpivot](https://github.com/techpivot) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> LinkedIn [techpivot](https://www.linkedin.com/company/techpivot/) &nbsp;&nbsp;&middot;&nbsp;&nbsp;
-> Twitter [@techpivot](https://twitter.com/techpivot)
+> **[TechPivot](https://www.techpivot.net)** &nbsp;&nbsp;&middot;&nbsp;&nbsp; GitHub
+> [@techpivot](https://github.com/techpivot) &nbsp;&nbsp;&middot;&nbsp;&nbsp; LinkedIn
+> [techpivot](https://www.linkedin.com/company/techpivot/) &nbsp;&nbsp;&middot;&nbsp;&nbsp; Twitter
+> [@techpivot](https://twitter.com/techpivot)

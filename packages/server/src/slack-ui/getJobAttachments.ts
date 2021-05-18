@@ -58,8 +58,8 @@ const getCurrentStepIndexForJob = (job: components['schemas']['job']): number =>
   return currentStepIndex;
 };
 
-const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): Array<MessageAttachment> => {
-  const attachments: Array<MessageAttachment> = [];
+const getJobAttachments = (jobsData: ListJobsForWorkflowRunResponseData): MessageAttachment[] => {
+  const attachments: MessageAttachment[] = [];
 
   // For consistency, let's sort the jobs by `started_at` as the entries are often mis-aligned and if we want
   // to ensure these line up how they're ordered in the workflow files and how their also displayed on
