@@ -56,8 +56,7 @@ provide a public service such as this, various parts of the infrastrucure are co
 - EC2 Spot Instances - Reducing cost by running on small instances that can be interrupted and easily resumed by other
   instances from a large pool.
 - Minimizing the number of EC2 Metrics - Metrics are free for the first 10 and \$0.30/month thereafter.
-- Minimizing EBS volume size - Argueably the larger cost of these tiny instances is actually the size of the EBS
-  volumes.
+- Graviton instances with corresponding lower root sized
 - Leveraging AWS free tier services including DynamoDB, Lambda, and API Gateway.
 
 ## Support

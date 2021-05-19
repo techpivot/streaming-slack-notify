@@ -75,9 +75,9 @@ variable "ecs_instance_types_with_max_price" {
   # if it looks different in the UI from our specified prices below.
   default = {
     # need to create ami specifically for grav instances
-    #  "t4g.nano" = 0.0014
-    "t3a.nano" = 0.0017 #
-    "t3.nano"  = 0.0016
+    "t4g.nano" = 0.0014
+    # "t3a.nano" = 0.0017
+    # "t3.nano"  = 0.0016
   }
 }
 

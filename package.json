@@ -22,12 +22,14 @@
     "build:lambda:github-post-install": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-post-install build",
     "build:lambda:slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize build",
     "build:lambda:slack-webhook": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-webhook build",
-    "build": "npm-run-all --parallel build:lambda:*",
+    "build:server": "yarn workspace @techpivot/streaming-slack-notify-server build",
+    "build": "npm-run-all --parallel build:lambda:* build:*",
     "dist:lambda:github-webhook": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-webhook dist",
     "dist:lambda:github-post-install": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-github-post-install dist",
     "dist:lambda:slack-authorize": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-authorize dist",
     "dist:lambda:slack-webhook": "yarn workspace @techpivot/streaming-slack-notify-api-lambda-slack-webhook dist",
-    "dist": "npm-run-all --parallel dist:lambda:*"
+    "dist:server": "yarn workspace @techpivot/streaming-slack-notify-server dist",
+    "dist": "npm-run-all --parallel dist:lambda:* dist:server"
   },
   "keywords": [
     "Streaming",

@@ -1,17 +1,12 @@
-FROM node:12
+ARG DOCKER_REPO=node
+ARG NODE_VERSION=14
 
-ARG TERRAFORM_VERSION
-ARG DEBIAN_FRONTEND=noninteractive
+FROM ${DOCKER_REPO}:${NODE_VERSION}
 
-RUN apt-get update \
-  && apt-get upgrade -y \
-  && cd /tmp \
-  && wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-  && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/bin \
-  && yarn install \
-  && apt-get clean autoclean \
-  && apt-get autoremove --yes \
-  && rm -rf /var/lib/{apt,dpkg,cache,log}/
+COPY ./packages/server/dist /app
 
 WORKDIR /app
-VOLUME  /app
+
+ENV DEBUG=*
+
+CMD ["node", "/app/index.js"]

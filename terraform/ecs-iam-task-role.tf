@@ -4,6 +4,9 @@ data "aws_iam_policy_document" "ecs_iam_task_role_policy_1" {
     effect = "Allow"
     resources = [
       aws_ssm_parameter.queue_url.arn,
+      aws_ssm_parameter.github_app_client_secret.arn,
+      aws_ssm_parameter.github_app_private_key.arn,
+      aws_ssm_parameter.faunadb_server_secret.arn,
     ]
     actions = [
       "ssm:GetParameter"
@@ -13,15 +16,16 @@ data "aws_iam_policy_document" "ecs_iam_task_role_policy_1" {
 
 data "aws_iam_policy_document" "ecs_iam_task_role_policy_2" {
   statement {
-    sid    = "AllowLambdaWriteToSlackDynamodbTable"
+    sid    = "AllowLambdaSendReceiveFromSqs"
     effect = "Allow"
-
     resources = [
-      aws_dynamodb_table.slack.arn,
+      aws_sqs_queue.default.arn,
     ]
     actions = [
-      "dynamodb:GetItem",
-      "dynamodb:PutItem"
+      "sqs:ChangeMessageVisibility",
+      "sqs:DeleteMessage",
+      "sqs:SendMessage",
+      "sqs:ReceiveMessage",
     ]
   }
 }
@@ -35,7 +39,7 @@ module "ecs_iam_task_role" {
   name       = "ecs-task"
   attributes = ["role"]
 
-  policy_description = "Allow access to retrieve SSM Slack secrets and update DynamoDB"
+  policy_description = "Allow access to retrieve SSM secrets and query SQS"
   role_description   = "IAM service role that is assumed by the ECS container task runners"
 
   principals = {
@@ -46,4 +50,9 @@ module "ecs_iam_task_role" {
     data.aws_iam_policy_document.ecs_iam_task_role_policy_1.json,
     data.aws_iam_policy_document.ecs_iam_task_role_policy_2.json,
   ]
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_iam_task_role_policy_attachment_ecs" {
+  role       = module.ecs_iam_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }

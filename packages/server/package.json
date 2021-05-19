@@ -14,9 +14,9 @@
   "source": "src/index.ts",
   "scripts": {
     "build": "tsc --build --incremental",
-    "dist": "ncc build --no-source-map-register --out dist src/index.ts",
+    "dist": "tsc --build && ncc build --no-source-map-register --out dist src/index.ts",
     "start:dev": "yarn build && DEBUG=* node lib",
-    "start": "node dist"
+    "start": "DEBUG=* node dist"
   },
   "prettier": {
     "trailingComma": "es5",

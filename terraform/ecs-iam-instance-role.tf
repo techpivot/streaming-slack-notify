@@ -27,6 +27,7 @@ data "aws_iam_policy_document" "ecs_iam_instance_role_policy_2" {
   }
 }
 
+# Ref: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
 module "ecs_iam_instance_role" {
   source  = "cloudposse/iam-role/aws"
   version = "0.9.3"
@@ -40,7 +41,7 @@ module "ecs_iam_instance_role" {
   role_description   = "IAM service role that is assumed by the ECS host instance"
 
   principals = {
-    Service = ["ecs-tasks.amazonaws.com"]
+    Service = ["ec2.amazonaws.com"]
   }
 
   policy_documents = [
@@ -52,11 +53,6 @@ module "ecs_iam_instance_role" {
 resource "aws_iam_role_policy_attachment" "ecs_iam_role_policy_attachment_ecs" {
   role       = module.ecs_iam_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_iam_role_policy_attachment_ssm" {
-  role       = module.ecs_iam_instance_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_instance_profile" "ecs_iam_instance_profile" {

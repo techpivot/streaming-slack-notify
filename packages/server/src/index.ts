@@ -1,4 +1,4 @@
-import { SQS } from 'aws-sdk';
+import { SQS, ECSCredentials, config } from 'aws-sdk';
 import Debug from 'debug';
 import { EventEmitter } from 'events';
 import * as https from 'https';
@@ -16,25 +16,36 @@ import {
 import { SQSBody, SQSBodyV } from '../../common/lib/types';
 
 const debug = Debug('server');
-
 const globalEmitter = new EventEmitter({ captureRejections: true });
-
-const sqs = new SQS({
-  region: REGION,
-  httpOptions: {
-    timeout: 25000,
-    connectTimeout: 5000,
-    agent: new https.Agent({
-      keepAlive: true,
-    }),
-  },
-});
 
 async function run(): Promise<void> {
   let queueUrl: string;
   let githubAppClientSecret: string;
   let githubAppPrivateKey: string;
   let faunadbServerSecret: string;
+
+  debug(`Setting global AWS SDK region to: ${REGION}`);
+  config.update({ region: REGION });
+
+  if (process.env.AWS_EXECUTION_ENV === 'AWS_ECS_EC2') {
+    debug('Setting global AWS config credentials to use ECS Credentials');
+    config.update({
+      credentials: new ECSCredentials({
+        httpOptions: { timeout: 5000 },
+        maxRetries: 3,
+      }),
+    });
+  }
+
+  const sqs = new SQS({
+    httpOptions: {
+      timeout: 25000,
+      connectTimeout: 5000,
+      agent: new https.Agent({
+        keepAlive: true,
+      }),
+    },
+  });
 
   try {
     debug('Retrieving SQS queue URL ...');

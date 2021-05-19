@@ -1,4 +1,4 @@
-import { SSM } from 'aws-sdk';
+import { config, SSM, ECSCredentials } from 'aws-sdk';
 import { GetParameterResult, GetParametersRequest, GetParametersResult } from 'aws-sdk/clients/ssm';
 import {
   REGION,
@@ -13,7 +13,20 @@ import {
 } from './const';
 import { SlackSecrets } from './types';
 
-const ssm = new SSM({ region: REGION });
+const ssm = new SSM({
+  region: REGION,
+  credentials:
+    process.env.AWS_EXECUTION_ENV === 'AWS_ECS_EC2'
+      ? new ECSCredentials({
+          httpOptions: { timeout: 5000 },
+          maxRetries: 3,
+        })
+      : undefined,
+});
+
+console.log('TESTing AWS credentials', config.credentials);
+
+
 let queueUrl = '';
 let gitHubAppClientSecret = '';
 let gitHubAppWebhookSecret = '';
@@ -34,6 +47,7 @@ export const getSqsQueueUrl = async (): Promise<string> => {
   if (process.env.queue_url !== undefined) {
     queueUrl = process.env.queue_url;
   } else {
+    console.log('AA');
     // Lastly, pull from SSM
     const response: GetParameterResult = await ssm
       .getParameter({
@@ -42,14 +56,17 @@ export const getSqsQueueUrl = async (): Promise<string> => {
       })
       .promise();
 
+    console.log('BB');
     if (!response.Parameter) {
       throw new Error('Successfully queried parameter store but no Parameter was received');
     }
 
+    console.log('CC');
     if (!response.Parameter.Value) {
       throw new Error('Successfully queried parameter store but no Parameter value was received');
     }
 
+    console.log('DD');
     queueUrl = response.Parameter.Value;
   }
 

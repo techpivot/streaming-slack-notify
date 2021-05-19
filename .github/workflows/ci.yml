@@ -13,15 +13,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Installing dependencies
-        run: yarn install
-
-      - name: Build and Packaging
-        run: yarn dist
-
       - name: Read .env File
         id: dotenv
         uses: falti/dotenv-action@v0.2
+
+      - name: Installing dependencies
+        run: yarn install
+
+      - name: Package
+        run: yarn dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: ECR Login
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Docker Build & ECR Push
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: techpivot-streaming-slack-notify-ecr
+        run: |
+          docker build --platform linux/arm/v8 --build-arg DOCKER_REPO="arm64v8/node" --build-arg NODE_VERSION=${{steps.dotenv.outputs.node_version}} -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
+
+      - name: Build
+        run: |
+          docker build -t streaming-slack-notify:latest .
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1

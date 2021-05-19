@@ -20,8 +20,6 @@ resource "aws_acm_certificate" "api_gateway_custom_domain_cert" {
   }
 }
 
-
-
 resource "aws_route53_record" "cert_validation" {
   for_each = {
     for dvo in aws_acm_certificate.api_gateway_custom_domain_cert.domain_validation_options : dvo.domain_name => {

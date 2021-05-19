@@ -1,18 +1,10 @@
 [
   {
     "name": "server",
-    "image": "nginx",
-    "cpu": 0,
-    "memory": 458,
+    "image": "${repository}:latest",
     "networkMode": "awsvpc",
     "essential": true,
-    "portMappings": [
-      {
-        "containerPort": 80,
-        "hostPort": 80,
-        "protocol": "tcp"
-      }
-    ],
+    "portMappings": [],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
