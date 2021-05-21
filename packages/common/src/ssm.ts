@@ -1,4 +1,4 @@
-import { config, SSM, ECSCredentials } from 'aws-sdk';
+import { SSM } from 'aws-sdk';
 import { GetParameterResult, GetParametersRequest, GetParametersResult } from 'aws-sdk/clients/ssm';
 import {
   REGION,
@@ -13,26 +13,23 @@ import {
 } from './const';
 import { SlackSecrets } from './types';
 
-const ssm = new SSM({
-  region: REGION,
-  credentials:
-    process.env.AWS_EXECUTION_ENV === 'AWS_ECS_EC2'
-      ? new ECSCredentials({
-          httpOptions: { timeout: 5000 },
-          maxRetries: 3,
-        })
-      : undefined,
-});
-
-console.log('TESTing AWS credentials', config.credentials);
-
-
+let ssm: any = null;
 let queueUrl = '';
 let gitHubAppClientSecret = '';
 let gitHubAppWebhookSecret = '';
 let gitHubAppPrivateKey = '';
 let slackSigningSecret = '';
 let faunaDbServerSecret = '';
+
+const getSsm = (): SSM => {
+  if (ssm === null) {
+    ssm = new SSM({
+      region: REGION,
+    });
+  }
+
+  return ssm;
+};
 
 /**
  * Queue URL is available in Lambda as environment variable (semi-secure) or parsed from
@@ -47,26 +44,22 @@ export const getSqsQueueUrl = async (): Promise<string> => {
   if (process.env.queue_url !== undefined) {
     queueUrl = process.env.queue_url;
   } else {
-    console.log('AA');
     // Lastly, pull from SSM
-    const response: GetParameterResult = await ssm
+    const response: GetParameterResult = await getSsm()
       .getParameter({
         Name: SSM_PARAMETER_QUEUE_URL,
         WithDecryption: true,
       })
       .promise();
 
-    console.log('BB');
     if (!response.Parameter) {
       throw new Error('Successfully queried parameter store but no Parameter was received');
     }
 
-    console.log('CC');
     if (!response.Parameter.Value) {
       throw new Error('Successfully queried parameter store but no Parameter value was received');
     }
 
-    console.log('DD');
     queueUrl = response.Parameter.Value;
   }
 
@@ -79,7 +72,7 @@ export const getAllSlackAppSecrets = async (): Promise<SlackSecrets> => {
     WithDecryption: true,
   };
 
-  const response: GetParametersResult = await ssm.getParameters(params).promise();
+  const response: GetParametersResult = await getSsm().getParameters(params).promise();
   const result: { [key: string]: string } = {};
 
   (response.Parameters || []).forEach(({ Name, Value }) => {
@@ -97,7 +90,7 @@ export const getSlackSigningSecret = async (): Promise<string> => {
     return slackSigningSecret;
   }
 
-  const response: GetParameterResult = await ssm
+  const response: GetParameterResult = await getSsm()
     .getParameter({
       Name: SSM_SLACK_APP_SIGNING_SECRET,
       WithDecryption: true,
@@ -122,7 +115,7 @@ export const getGitHubAppClientSecret = async (): Promise<string> => {
     return gitHubAppClientSecret;
   }
 
-  const response: GetParameterResult = await ssm
+  const response: GetParameterResult = await getSsm()
     .getParameter({
       Name: SSM_GITHUB_APP_CLIENT_SECRET,
       WithDecryption: true,
@@ -147,7 +140,7 @@ export const getGitHubAppPrivateKey = async (): Promise<string> => {
     return gitHubAppPrivateKey;
   }
 
-  const response: GetParameterResult = await ssm
+  const response: GetParameterResult = await getSsm()
     .getParameter({
       Name: SSM_GITHUB_APP_PRIVATE_KEY,
       WithDecryption: true,
@@ -172,7 +165,7 @@ export const getGitHubAppWebhookSecret = async (): Promise<string> => {
     return gitHubAppWebhookSecret;
   }
 
-  const response: GetParameterResult = await ssm
+  const response: GetParameterResult = await getSsm()
     .getParameter({
       Name: SSM_GITHUB_APP_WEBHOOK_SECRET,
       WithDecryption: true,
@@ -197,7 +190,7 @@ export const getFaunadbServerSecret = async (): Promise<string> => {
     return faunaDbServerSecret;
   }
 
-  const response: GetParameterResult = await ssm
+  const response: GetParameterResult = await getSsm()
     .getParameter({
       Name: SSM_FAUNADB_SERVER_SECRET,
       WithDecryption: true,

@@ -1,5 +1,9 @@
 import { Endpoints } from '@octokit/types';
 import { WebAPICallResult } from '@slack/web-api';
+import { Expr } from 'faunadb';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ExprVal = Expr | string | number | boolean | { [key: string]: any };
 
 export type GetWorkflowRunResponseData =
   Endpoints['GET /repos/{owner}/{repo}/actions/runs/{run_id}']['response']['data'];

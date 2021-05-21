@@ -28,7 +28,6 @@ locals {
       subnet_id     = local.public_vpc_subnet_ids[index % local.public_vpc_subnet_ids_length]
       instance_type = local.ecs_instance_type_keys[floor(index / local.public_vpc_subnet_ids_length)]
       spot_price    = var.ecs_instance_types_with_max_price[local.ecs_instance_type_keys[floor(index / local.public_vpc_subnet_ids_length)]]
-
     }
   ]
 

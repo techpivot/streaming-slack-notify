@@ -1,20 +1,9 @@
-data "aws_iam_policy_document" "ecs_iam_instance_role_policy_1" {
-  statement {
-    sid    = "AllowLoggingToCloudWatch"
-    effect = "Allow"
-    resources = [
-      aws_cloudwatch_log_group.ecs_instance.arn
-    ]
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-      "logs:DescribeLogStreams",
-    ]
-  }
-}
+# The instance role we attach the AmazonEC2ContainerServiceforEC2Role which has core permissions. Only adding
+# additional permissions here.
+#
+# Ref: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
 
-data "aws_iam_policy_document" "ecs_iam_instance_role_policy_2" {
+data "aws_iam_policy_document" "ecs_iam_instance_role_policy_1" {
   statement {
     sid    = "AllowRecordingCloudwatchMetricData"
     effect = "Allow"
@@ -27,7 +16,7 @@ data "aws_iam_policy_document" "ecs_iam_instance_role_policy_2" {
   }
 }
 
-# Ref: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html
+
 module "ecs_iam_instance_role" {
   source  = "cloudposse/iam-role/aws"
   version = "0.9.3"
@@ -46,7 +35,6 @@ module "ecs_iam_instance_role" {
 
   policy_documents = [
     data.aws_iam_policy_document.ecs_iam_instance_role_policy_1.json,
-    data.aws_iam_policy_document.ecs_iam_instance_role_policy_2.json,
   ]
 }
 

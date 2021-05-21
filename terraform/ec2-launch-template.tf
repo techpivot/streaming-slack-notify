@@ -20,7 +20,8 @@ data "aws_ami" "ecs" {
   most_recent = true
 
   filter {
-    name   = "name"
+    name = "name"
+    # amzn2-ami-ecs-hvm-2.0.20210514-arm64-ebs
     values = ["amzn2-ami-ecs-hvm-*-arm64-ebs"]
   }
 
@@ -86,7 +87,7 @@ resource "aws_launch_template" "default" {
 
   # We include this in the base template; however, override as necessary when incorporating with
   # a spot fleet request.
-  instance_type = "t3a.nano"
+  instance_type = element(keys(var.ecs_instance_types_with_max_price), 0)
 
   # Note: We don't specify the subnet ID as we want to explicitly utilize the maximum pool to ensure
   # spot availability

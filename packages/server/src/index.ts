@@ -1,4 +1,4 @@
-import { SQS, ECSCredentials, config } from 'aws-sdk';
+import { S3, SQS, ECSCredentials, config } from 'aws-sdk';
 import Debug from 'debug';
 import { EventEmitter } from 'events';
 import * as https from 'https';
@@ -28,13 +28,10 @@ async function run(): Promise<void> {
   config.update({ region: REGION });
 
   if (process.env.AWS_EXECUTION_ENV === 'AWS_ECS_EC2') {
-    debug('Setting global AWS config credentials to use ECS Credentials');
-    config.update({
-      credentials: new ECSCredentials({
-        httpOptions: { timeout: 5000 },
-        maxRetries: 3,
-      }),
-    });
+    debug('Using ECSCredentials for AWS SDK');
+    const credentials = new ECSCredentials();
+    await credentials.getPromise();
+    config.credentials = credentials;
   }
 
   const sqs = new SQS({
@@ -58,7 +55,7 @@ async function run(): Promise<void> {
   }
 
   try {
-    debug('\nRetrieving GitHub app client secret ...');
+    debug('Retrieving GitHub app client secret ...');
     githubAppClientSecret = await getGitHubAppClientSecret();
     debug('✓ Successfully retrieved GitHub app client secret');
   } catch (err) {
@@ -68,7 +65,7 @@ async function run(): Promise<void> {
   }
 
   try {
-    debug('\nRetrieving GitHub app private key ...');
+    debug('Retrieving GitHub app private key ...');
     githubAppPrivateKey = await getGitHubAppPrivateKey();
     debug('✓ Successfully retrieved GitHub app private key');
   } catch (err) {
@@ -78,7 +75,7 @@ async function run(): Promise<void> {
   }
 
   try {
-    debug('\nRetrieving Faunadb server secret ...');
+    debug('Retrieving Faunadb server secret ...');
     faunadbServerSecret = await getFaunadbServerSecret();
     debug('✓ Successfully retrieved Faunadb server secret');
   } catch (err) {
@@ -87,7 +84,7 @@ async function run(): Promise<void> {
     process.exit(1);
   }
 
-  debug('\nStarting SQS consumer to long poll for messages ...');
+  debug('Starting SQS consumer to long poll for messages ...');
 
   const consumer = new Consumer({
     queueUrl,

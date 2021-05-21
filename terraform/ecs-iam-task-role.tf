@@ -52,7 +52,7 @@ module "ecs_iam_task_role" {
   ]
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_iam_task_role_policy_attachment_ecs" {
-  role       = module.ecs_iam_task_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
+//resource "aws_iam_role_policy_attachment" "ecs_iam_task_role_policy_attachment_ecs" {
+//  role       = module.ecs_iam_task_role.name
+//  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+//}

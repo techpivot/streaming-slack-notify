@@ -2,7 +2,15 @@ import { DynamoDB } from 'aws-sdk';
 import { REGION, DYNAMODB_SLACK_TABLE_NAME, DYNAMODB_GITHUB_TABLE_NAME } from './const';
 import { DynamoDBGitHubGetItemOutput, DynamoDBSlackGetItemOutput, SlackApiOauthV2AccessResponseData } from './types';
 
-const dynamodb = new DynamoDB.DocumentClient({ region: REGION });
+let dynamodb: any = new DynamoDB.DocumentClient({ region: REGION });
+
+const getDynamodb = (): DynamoDB.DocumentClient => {
+  if (dynamodb === null) {
+    dynamodb = new DynamoDB.DocumentClient({ region: REGION });
+  }
+
+  return dynamodb;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TABLE: SLACK
@@ -15,7 +23,7 @@ const dynamodb = new DynamoDB.DocumentClient({ region: REGION });
  * of the app.
  */
 export const insertSlackAccessResponseRecord = async (response: SlackApiOauthV2AccessResponseData): Promise<void> => {
-  await dynamodb
+  await getDynamodb()
     .put({
       TableName: DYNAMODB_SLACK_TABLE_NAME,
       Item: {
@@ -33,7 +41,7 @@ export const insertSlackAccessResponseRecord = async (response: SlackApiOauthV2A
 };
 
 export const getSlackRecordById = async (apiAppId: string): Promise<DynamoDBSlackGetItemOutput> => {
-  return (await dynamodb
+  return (await getDynamodb()
     .get({
       TableName: DYNAMODB_SLACK_TABLE_NAME,
       Key: { api_app_id: apiAppId },
@@ -42,7 +50,7 @@ export const getSlackRecordById = async (apiAppId: string): Promise<DynamoDBSlac
 };
 
 export const deleteSlackRecordById = async (apiAppId: string): Promise<void> => {
-  await dynamodb
+  await getDynamodb()
     .delete({
       TableName: DYNAMODB_SLACK_TABLE_NAME,
       Key: { api_app_id: apiAppId },
@@ -58,7 +66,7 @@ export const getGithubRecordById = async (
   installationId: number,
   stronglyConsistent = false
 ): Promise<DynamoDBGitHubGetItemOutput> => {
-  return (await dynamodb
+  return (await getDynamodb()
     .get({
       TableName: DYNAMODB_GITHUB_TABLE_NAME,
       Key: { installation_id: installationId },
@@ -68,7 +76,7 @@ export const getGithubRecordById = async (
 };
 
 export const deleteGitHubRecordById = async (installationId: number): Promise<void> => {
-  await dynamodb
+  await getDynamodb()
     .delete({
       TableName: DYNAMODB_GITHUB_TABLE_NAME,
       Key: { installation_id: installationId },
@@ -84,7 +92,7 @@ export const updateGithubAppRecordFromWebhook = async (
   senderLogin: string,
   senderId: number
 ): Promise<void> => {
-  await dynamodb
+  await getDynamodb()
     .update({
       TableName: DYNAMODB_GITHUB_TABLE_NAME,
       Key: { installation_id: installationId },
@@ -126,7 +134,7 @@ export const updateGithubAppRecordFromPostInstallSettings = async (
   slackChannel: string,
   slackBotUsername?: string
 ): Promise<void> => {
-  await dynamodb
+  await getDynamodb()
     .update({
       TableName: DYNAMODB_GITHUB_TABLE_NAME,
       Key: { installation_id: installationId },
@@ -145,19 +153,3 @@ export const updateGithubAppRecordFromPostInstallSettings = async (
     })
     .promise();
 };
-
-/*
-
-@todo new table `workflow-runs`   with `github_installation_id` | workflow_run_count | updated_at
-
-export const incrementWorkflowRunCount = async (id: string, amount = 1): Promise<void> => {
-  await dynamodb
-    .update({
-      TableName: DYNAMODB_TABLE_NAME,
-      Key: { id },
-      UpdateExpression: 'set workflow_run_count = workflow_run_count + :val',
-      ExpressionAttributeValues: { ':val': amount },
-    })
-    .promise();
-};
-*/

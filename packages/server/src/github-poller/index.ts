@@ -5,7 +5,7 @@ import { ChatPostMessageArguments, ChatUpdateArguments, WebClient } from '@slack
 import { KnownBlock, MessageAttachment } from '@slack/types';
 import { SQS } from 'aws-sdk';
 import { EventEmitter } from 'events';
-import { Client, Create, Collection, If, Update, Match, Exists, Index, Select, Get } from 'faunadb';
+import { Client, Create, Collection, Update, Match, Index, Get } from 'faunadb';
 import Debug, { Debugger } from 'debug';
 import {
   GITHUB_APP_ID,
@@ -20,7 +20,12 @@ import {
   getReadableDurationStringFromMs,
   sleep,
 } from '../../../common/lib/utils';
-import { ListJobsForWorkflowRunResponseData, GetWorkflowRunResponseData, SlackChatPostMessageResponse } from './types';
+import {
+  ListJobsForWorkflowRunResponseData,
+  GetWorkflowRunResponseData,
+  SlackChatPostMessageResponse,
+  ExprVal,
+} from './types';
 import {
   getEventDetailBlocks,
   getJobAttachments,
@@ -383,14 +388,15 @@ export default class Poller {
     const elapsedTime = Math.round((new Date().getTime() - this.startTime.getTime()) / 1000);
 
     try {
-      const existingRecord: { ref: any; ts: number; data: { [key: string]: any } } = await this.faunadbClient.query(
-        Get(Match(Index(FAUNADB_OWNER_REPO_STATS_INDEX_NAME), githubOrganization, githubRepository))
-      );
+      const existingRecord: { ref: ExprVal; ts: number; data: { runs?: number; totalRuntimeSec?: number } } =
+        await this.faunadbClient.query(
+          Get(Match(Index(FAUNADB_OWNER_REPO_STATS_INDEX_NAME), githubOrganization, githubRepository))
+        );
       await this.faunadbClient.query(
         Update(existingRecord.ref, {
           data: {
-            runs: parseInt(existingRecord.data.runs, 10) + 1,
-            totalRuntimeSec: parseInt(existingRecord.data.totalRuntimeSec || 0, 10) + elapsedTime,
+            runs: (existingRecord.data.runs || 0) + 1,
+            totalRuntimeSec: (existingRecord.data.totalRuntimeSec || 0) + elapsedTime,
           },
         })
       );

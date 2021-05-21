@@ -2,7 +2,6 @@
   {
     "name": "server",
     "image": "${repository}:latest",
-    "networkMode": "awsvpc",
     "essential": true,
     "portMappings": [],
     "logConfiguration": {
