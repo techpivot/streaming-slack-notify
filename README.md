@@ -11,15 +11,13 @@
   Actively maintained by <a href="https://www.techpivot.net">TechPivot</a> and the community.
 </h4>
 
-<p align="center">
+<p align="center" color="red">
   <a href="https://github.com/techpivot/streaming-slack-notify/actions/workflows/ci.yml">
     <img src="https://github.com/techpivot/streaming-slack-notify/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://codeclimate.com/repos/5eb1cb1c668cc4318e007908/maintainability">
     <img src="https://api.codeclimate.com/v1/badges/0ffe5bd35f9e43f827b9/maintainability" /></a>
-  <a href="https://github.com/techpivot/streaming-slack-notify/issues">
-    <img src="https://img.shields.io/github/issues/techpivot/streaming-slack-notify.svg" /></a>
-  <a href="https://github.com/techpivot/streaming-slack-notify/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/techpivot/streaming-slack-notify" /></a>
+  <a href="https://join.slack.com/t/techpivot/shared_invite/zt-qu89fikk-lagR4dXfwqODi7tbc8~cRg">
+    <img src="https://img.shields.io/badge/slack-techpivot-077ed3.svg?logo=slack" alt="slack" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/stargazers">
     <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" /></a>
 </p>

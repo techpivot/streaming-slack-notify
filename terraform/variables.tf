@@ -74,10 +74,8 @@ variable "ecs_instance_types_with_max_price" {
   # Note: When viewing the `Instance type(s)` in the AWS UI, it will round to 3 decimals so don't be alarmed
   # if it looks different in the UI from our specified prices below.
   default = {
-    # need to create ami specifically for grav instances
-    "t4g.nano" = 0.0014
-    # "t3a.nano" = 0.0017
-    # "t3.nano"  = 0.0016
+    # Keep instances in same suite - e.g. AWS Graviton Instances as our launch config is using arm64 builds
+    "t4g.nano" = 0.0013
   }
 }
 

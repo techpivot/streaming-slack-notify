@@ -19,13 +19,13 @@ data "template_file" "task_definition" {
 }
 
 resource "aws_ecs_task_definition" "default" {
-  family        = module.ecs_task_label.id
-  tags          = module.ecs_task_label.tags
+  family = module.ecs_task_label.id
+  tags   = module.ecs_task_label.tags
 
   # We use the host mode to allow public access as we launch the instances in the public subnet. Currently,
   # all security groups restrict inbound access. Only external outbound access is currently allowed. This
   # allows our container task to utilize the public IP.
-  network_mode  = "host"
+  network_mode = "host"
 
   task_role_arn = module.ecs_iam_task_role.arn
 
