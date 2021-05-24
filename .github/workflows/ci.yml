@@ -13,15 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Read .env File
-        id: dotenv
-        uses: falti/dotenv-action@v0.2
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Installing dependencies
         run: yarn install
 
       - name: Package
         run: yarn dist
+
+      - name: Read .env File
+        id: dotenv
+        uses: falti/dotenv-action@v0.2
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
