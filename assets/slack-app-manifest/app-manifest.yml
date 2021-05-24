@@ -1,0 +1,32 @@
+_metadata:
+  major_version: 1
+  minor_version: 1
+display_information:
+  name: Streaming Slack Notify
+  description: Used by the `techpivot/streaming-slack-notify` Github service to
+    send real-time streaming updates to Slack for your Github workflows.
+  background_color: '#0b6fe0'
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: false
+    messages_tab_read_only_enabled: true
+  bot_user:
+    display_name: GitHub Actions
+    always_online: false
+oauth_config:
+  redirect_urls:
+    - https://api.streaming-slack-notify.techpivot.com/slack/authorize
+  scopes:
+    bot:
+      - chat:write
+      - chat:write.customize
+      - chat:write.public
+settings:
+  event_subscriptions:
+    request_url: https://api.streaming-slack-notify.techpivot.com/slack/webhook
+    user_events:
+      - app_uninstalled
+  org_deploy_enabled: true
+  socket_mode_enabled: false
+  is_hosted: false

@@ -22,6 +22,18 @@
     <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" /></a>
 </p>
 
+## Sample Output
+
+### Live Slack Workflow
+
+![](./assets/screenshots/live-workflow.gif)
+
+### Screenshots
+
+| Workflow Queued                                                                                   | Workflow Running                                                                                  | Workflow Complete                                                                                     |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [![](./assets/screenshots/workflow-run-queued.png)](./assets/screenshots/workflow-run-queued.png) | [![](./assets/screenshots/workflow-run-active.png)](./assets/screenshots/workflow-run-active.png) | [![](./assets/screenshots/workflow-run-complete.png)](./assets/screenshots/workflow-run-complete.png) |
+
 ## Motivation
 
 The existing GitHub actions that post to Slack were only displayed at the conclusion of workflow runs, which results in
@@ -30,21 +42,47 @@ prioritized the wrong data elements. This service attempts to solve those issues
 Notify GitHub and Slack applications, linking them together, and polling workflow runs via a lightweight cloud-native
 and cost-optimized service.
 
-## Sample Output
-
-coming soon
-
 ## Features
 
+- Fully open sourced including entire AWS infrastructure, API endpoints, and server poller
 - Ability to display job step status from beginning of workflow to end
 - Single slack message that continuously updates the current job statuses
 - Support for **push**, **pull_request**, **schedule** events
 - Clean and consistent Slack UI
 - Lightweight, minimal dependencies, and pure TypeScript
 - Lean AWS cloud footprint that utilizes free tier services and cost-optimized services
-- Fully open sourced
 
-## Usage
+## Installation
+
+> **Note**: You must register your Slack workspace first prior to installing this application as your Slack app ID token
+> is required in the GitHub App Post-Install Configuration.
+
+### 1. [Slack App](https://slack.com/oauth/v2/authorize?client_id=3012618307.1089892585986&scope=chat:write,chat:write.customize,chat:write.public&user_scope=)
+
+1. First, install the Streaming Slack Notify application in your Slack workspace using the **Add to Slack** button.
+   <a href="https://slack.com/oauth/v2/authorize?client_id=3012618307.1089892585986&scope=chat:write,chat:write.customize,chat:write.public&user_scope="><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+
+1. Copy the **Streaming Slack App ID** displayed in the green box _(Required in GitHub Post-Install Configuration)_
+
+### 2. [GitHub App](https://github.com/apps/streaming-slack-notify)
+
+1. Navigate to the [Streaming Slack Notify GitHub application](https://github.com/apps/streaming-slack-notify)
+1. Click **Install** in the upper right corner
+1. Select the organization or user account to install the app
+1. Select which repositories you want to configure streaming Slack notifications for - Either all or a defined list
+1. Click **Install**
+
+#### Post-Install Configuration
+
+1. On the GitHub post-install configuration page, paste the token generated in the Slack app registration into the
+   **Streaming Slack App ID**
+
+   ![](./assets/screenshots/github-post-install-configuration.png)
+
+1. Specify the **Slack Channel** for which live workflow notifiations should be displayed
+1. Optionally, you can override the default Slack Bot Username that posts the messages in the channel. _(Default =
+   GitHub Actions)_
+1. Click **Update** to save and link your settings
 
 ## Cost Optimization
 
@@ -54,12 +92,18 @@ provide a public service such as this, various parts of the infrastrucure are co
 - EC2 Spot Instances - Reducing cost by running on small instances that can be interrupted and easily resumed by other
   instances from a large pool.
 - Minimizing the number of EC2 Metrics - Metrics are free for the first 10 and \$0.30/month thereafter.
-- Graviton instances with corresponding lower root sized
+- Graviton instances with corresponding reduced sized EBS root volume to account for the $0.10/GB cost and default 30GB
+  EBS ECS images.
 - Leveraging AWS free tier services including DynamoDB, Lambda, and API Gateway.
 
 ## Support
 
-Please help support this project and [donate](https://github.com/sponsors/techpivot).
+We greatly appreciate donations to help fund our AWS infrastructure costs. Additionally, we ♥ GitHub stargazers and
+members in our Slack community.
+
+- [Star our GitHub Project](https://github.com/techpivot/streaming-slack-notify/stargazers)
+- [Donate](https://github.com/sponsors/techpivot)
+- [Slack Community](https://join.slack.com/t/techpivot/shared_invite/zt-qu89fikk-lagR4dXfwqODi7tbc8~cRg)
 
 ## License
 
