@@ -22,13 +22,11 @@
     <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" /></a>
 </p>
 
-## Sample Output
-
-### Live Slack Workflow
+## Live Slack Workflow
 
 ![](./assets/screenshots/live-workflow.gif)
 
-### Screenshots
+## Screenshots
 
 | Workflow Queued                                                                                   | Workflow Running                                                                                  | Workflow Complete                                                                                     |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
@@ -101,9 +99,9 @@ provide a public service such as this, various parts of the infrastrucure are co
 We greatly appreciate donations to help fund our AWS infrastructure costs. Additionally, we ♥ GitHub stargazers and
 members in our Slack community.
 
-- [Star our GitHub Project](https://github.com/techpivot/streaming-slack-notify/stargazers)
+- [Star our GitHub Project](https://github.com/techpivot/streaming-slack-notify/stargazers) :star:
 - [Donate](https://github.com/sponsors/techpivot)
-- [Slack Community](https://join.slack.com/t/techpivot/shared_invite/zt-qu89fikk-lagR4dXfwqODi7tbc8~cRg)
+- [TechPivot Slack Community](https://join.slack.com/t/techpivot/shared_invite/zt-qu89fikk-lagR4dXfwqODi7tbc8~cRg)
 
 ## License
 
