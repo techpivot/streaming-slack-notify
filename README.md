@@ -19,7 +19,7 @@
   <a href="https://join.slack.com/t/techpivot/shared_invite/zt-qu89fikk-lagR4dXfwqODi7tbc8~cRg">
     <img src="https://img.shields.io/badge/slack-techpivot-077ed3.svg?logo=slack" alt="slack" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/stargazers">
-    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" /></a>
+    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&cacheSeconds=900" /></a>
 </p>
 
 ## Live Slack Workflow

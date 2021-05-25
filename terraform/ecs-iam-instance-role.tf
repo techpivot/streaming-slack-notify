@@ -16,7 +16,6 @@ data "aws_iam_policy_document" "ecs_iam_instance_role_policy_1" {
   }
 }
 
-
 module "ecs_iam_instance_role" {
   source  = "cloudposse/iam-role/aws"
   version = "0.9.3"

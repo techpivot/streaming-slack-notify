@@ -1,3 +1,6 @@
+# Note: For all values, we stub out the actual parameter with a dummy value as this is updated just once
+# manually post-apply.
+
 module "ssm_parameter_client_id_label" {
   source     = "cloudposse/label/null"
   version    = "0.24.1"
