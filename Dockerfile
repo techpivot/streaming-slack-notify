@@ -7,6 +7,4 @@ COPY ./packages/server/dist /app
 
 WORKDIR /app
 
-ENV DEBUG=*
-
 CMD ["node", "/app/index.js"]

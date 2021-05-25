@@ -4,6 +4,9 @@
     "image": "${repository}:latest",
     "essential": true,
     "portMappings": [],
+    "environment": [
+      {"name": "DEBUG", "value": "*" }
+    ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
