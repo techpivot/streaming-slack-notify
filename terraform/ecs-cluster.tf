@@ -29,8 +29,12 @@ resource "aws_ecs_service" "default" {
   name            = module.ecs_service_label.id
   cluster         = aws_ecs_cluster.default.id
   task_definition = aws_ecs_task_definition.default.arn
-  desired_count   = 1
-  launch_type     = "EC2"
+
+  launch_type                        = "EC2"
+  desired_count                      = 1
+  deployment_minimum_healthy_percent = 50
+  deployment_maximum_percent         = 200
+  force_new_deployment               = true
 
   # iam_role - By default the service will use the Amazon ECS service-linked role.
 

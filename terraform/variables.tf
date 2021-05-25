@@ -79,21 +79,6 @@ variable "ecs_instance_types_with_max_price" {
   }
 }
 
-variable "ecs_asg_max_size" {
-  type    = number
-  default = 1
-}
-
-variable "ecs_asg_min_size" {
-  type    = number
-  default = 0
-}
-
-variable "ecs_asg_desired_capacity" {
-  type    = number
-  default = 0
-}
-
 variable "lambda_runtime" {
   type        = string
   description = "The runtime to use for all Node lambda functions"

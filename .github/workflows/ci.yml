@@ -73,5 +73,7 @@ jobs:
           ECR_REPOSITORY: techpivot-streaming-slack-notify-ecr
           NODE_VERSION: ${{steps.dotenv.outputs.node_version }}
         run: |
-          docker build --platform linux/arm/v8 --build-arg DOCKER_REPO="arm64v8/node" --build-arg NODE_VERSION=$NODE_VERSION -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker build --platform linux/arm64 --build-arg DOCKER_REPO="arm64v8/node" --build-arg NODE_VERSION=$NODE_VERSION -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }} -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
+          # Technically this won't work since we don't expose excess capacity from spot fleet + task def
+          aws ecs update-service --cluster techpivot-streaming-slack-notify-ecs-cluster --service techpivot-streaming-slack-notify-ecs-service --force-new-deployment
