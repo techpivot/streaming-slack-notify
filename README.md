@@ -19,7 +19,7 @@
   <a href="https://join.slack.com/t/techpivot/shared_invite/zt-qu89fikk-lagR4dXfwqODi7tbc8~cRg">
     <img src="https://img.shields.io/badge/slack-techpivot-077ed3.svg?logo=slack" alt="slack" /></a>
   <a href="https://github.com/techpivot/streaming-slack-notify/stargazers">
-    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&maxAge=2592000" /></a>
+    <img src="https://img.shields.io/github/stars/techpivot/streaming-slack-notify.svg?style=social&label=Stars&cacheSeconds=900" /></a>
 </p>
 
 ## Live Slack Workflow
@@ -82,17 +82,16 @@ and cost-optimized service.
    GitHub Actions)_
 1. Click **Update** to save and link your settings
 
-## Cost Optimization
+## Infrastructure Notes
 
 The current infrastructure is deployed in a dedicated AWS account that is actively managed by TechPivot. In order to
 provide a public service such as this, various parts of the infrastrucure are cost-optimized including:
 
-- EC2 Spot Instances - Reducing cost by running on small instances that can be interrupted and easily resumed by other
-  instances from a large pool.
-- Minimizing the number of EC2 Metrics - Metrics are free for the first 10 and \$0.30/month thereafter.
-- Graviton instances with corresponding reduced sized EBS root volume to account for the $0.10/GB cost and default 30GB
-  EBS ECS images.
-- Leveraging AWS free tier services including DynamoDB, Lambda, and API Gateway.
+- Utilizing EC2 Spot instances in a fleet with capability to handle interruption
+- Minimizing the number of EC2 metrics
+- Graviton arm64 instances yielding further cost savings
+- Custom reduced EBS root volume sizes (4GB instead of 30GB)
+- Utilizing various AWS free tier services including DynamoDB, Lambda, and API Gateway
 
 ## Support
 

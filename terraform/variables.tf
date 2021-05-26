@@ -68,6 +68,13 @@ variable "spot_fleet_target_capacity" {
   default     = 1
 }
 
+# AMI: techpivot-amzn2-ami-ecs-hvm-2.0.20210514-arm64-ebs
+variable "ecs_launch_template_ami_image_id" {
+  description = "An explicit AMI image ID to be used. Typically, image is generated manually to reduce the 30GB default size volumes. If not specified, the latest 30GB image will be used"
+  type        = string
+  default     = "ami-0911760d5478462d3"
+}
+
 variable "ecs_instance_types_with_max_price" {
   description = "A map of allowed ECS instance types with corresponding max price"
   type        = map(any)

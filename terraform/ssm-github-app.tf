@@ -1,3 +1,6 @@
+# Note: For all values, we stub out the actual parameter with a dummy value as this is updated just once
+# manually post-apply.
+
 module "ssm_parameter_github_app_label" {
   source     = "cloudposse/label/null"
   version    = "0.24.1"
@@ -6,10 +9,6 @@ module "ssm_parameter_github_app_label" {
   tags       = local.tags
 }
 
-#
-# We stub out the actual parameter with a dummy value such that we can potentially reference
-# paths from a consistent location.
-#
 resource "aws_ssm_parameter" "github_app_client_secret" {
   name        = "${local.ssm_github_prefix}/client-secret"
   description = "GitHub application client secret."

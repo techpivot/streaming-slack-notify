@@ -1,21 +1,3 @@
-#
-# In order to reduce cost, we reduce the size of the 30GB ECS instances. In order to do this:
-#
-#  1) Create a new t4g nano instance.
-#      - Select the latest AMI for ECS/HVM/arm64. This can be found on the AMIs section.
-#  2) Login to the instance. Currently, the base image takes around 1.7GB
-#      > df -H
-#      >  /dev/nvme0n1p1     32G  1.7G   30G   6% /
-#  3) Create new 4GB Volume
-#  4) Attach volume to the instance. Confirm via `fdisk -l`
-#  5) sudo mkfs -t ext4 /dev/nvme1n1
-#  6) sudo mkdir /mnt/new-volume
-#  7) sudo mount /dev/nvme1n1 /mnt/new-volume
-#  8) sudo yum install -y rsync grub-install
-#  9) sudo rsync -axv / /mnt/new-volume/
-# 10) sudo grub-install --root-directory=/mnt/new-volume/ --force /dev/nvme1n1
-# Ref Guide: https://medium.com/@m.yunan.helmy/decrease-the-size-of-ebs-volume-in-your-ec2-instance-ea326e951bce
-
 data "aws_ami" "ecs" {
   most_recent = true
 
@@ -80,7 +62,7 @@ resource "aws_launch_template" "default" {
   disable_api_termination              = true
   ebs_optimized                        = true
   instance_initiated_shutdown_behavior = "terminate"
-  image_id                             = data.aws_ami.ecs.id
+  image_id                             = var.ecs_launch_template_ami_image_id != "" ? var.ecs_launch_template_ami_image_id : data.aws_ami.ecs.id
   vpc_security_group_ids               = [aws_security_group.ecs_instance.id]
   user_data                            = base64encode(data.template_file.user_data.rendered)
   key_name                             = aws_key_pair.default.key_name

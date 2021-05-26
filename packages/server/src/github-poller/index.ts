@@ -326,19 +326,19 @@ export default class Poller {
     const payloadBase = {
       channel: slackChannel,
       text: fallbackText,
-      blocks: ([] as KnownBlock[]).concat(
-        ...headerBlocks,
-        ...getEventDetailBlocks(workflowData, headCommit)
-      ) as KnownBlock[],
+      blocks: ([] as KnownBlock[]).concat(...headerBlocks, ...getEventDetailBlocks(workflowData, headCommit)),
       attachments: ([] as MessageAttachment[]).concat(
         ...getJobAttachments(jobsData),
         ...getSummaryAttachments(workflowData, pushBranchName, pullRequest)
-      ) as MessageAttachment[],
+      ),
     };
 
     let response;
     if (slackTimestamp) {
-      const payload: ChatUpdateArguments = Object.assign({}, payloadBase, { ts: slackTimestamp });
+      const payload: ChatUpdateArguments = {
+        ...payloadBase,
+        ts: slackTimestamp,
+      };
 
       // Extra debug for Slack UI testing
       if (SHOW_SLACK_DEBUG_PAYLOAD) {
@@ -348,9 +348,10 @@ export default class Poller {
 
       response = await this.slackClient.chat.update(payload);
     } else {
-      const payload: ChatPostMessageArguments = Object.assign({}, payloadBase, {
+      const payload: ChatPostMessageArguments = {
+        ...payloadBase,
         username: slackBotUsername !== undefined && slackBotUsername.length > 0 ? slackBotUsername : undefined,
-      });
+      };
 
       // Extra debug for Slack UI testing
       if (SHOW_SLACK_DEBUG_PAYLOAD) {

@@ -5,16 +5,16 @@
 [Pull requests](https://github.com/techpivot/streaming-slack-notify/pulls) are the best way to propose changes to the
 codebase. We actively welcome your pull requests:
 
-1. Fork the repo and create your branch from `master`.
+1. Fork the repo and create your branch from `main`.
 1. Add/update your code in the corresponding `./packages` directory as necessary.
-1. If you've changed APIs, update the documentation.
-1. Ensure to `format`, `lint`, and `build` _(See `package.json` scripts for more info)_
-1. Make sure your code lints. (`yarn format`)
+1. Ensure documentation is up-to-date.
+1. Make sure your code formats and lints. (`yarn format` and `yarn lint`)
 1. Submit the pull request!
 
 ## Issues / Feature Requests
 
-We use GitHub issues to track public bugs and feature requests. Report a bug by [opening a new issue](); it's that easy!
+We use GitHub issues to track public bugs and feature requests. Report a bug by
+[opening a new issue](https://github.com/techpivot/streaming-slack-notify/issues); it's that easy!
 
 **Great Bug Reports** tend to have:
 
@@ -28,10 +28,10 @@ We use GitHub issues to track public bugs and feature requests. Report a bug by 
 
 ## Coding Style
 
-We use [Prettier](https://prettier.io/) for consistent formatting of most code files and Terraform `fmt` for Terraform
-specific infrastructure files.
+We use [Prettier](https://prettier.io/) for consistent formatting of most files and Terraform built in `fmt` for
+Terraform specific infrastructure files.
 
-Formatting settings for prettier are located in `./package.json`.
+Formatting settings for prettier are located in `.prettierrc`.
 
 To format all packages:
 
@@ -39,18 +39,10 @@ To format all packages:
 yarn format
 ```
 
-To format all terraform:
-
-```shell
-terraform fmt
-```
-
 ## Developer Reference
 
-- Project setup is a Monorepo using Yarn workspaces. This works fairly well for shared dependencies, specifically, the
-  `common` package. We resolve using relative paths and not aliases (e.g. `../../common`) as this works 100% of the time
-  cross platform. When using aliases/path resolves it works when compiling but not currently in VSCode. _More
-  investigation is needed to migrate to aliases._
+- Project setup is a Monorepo using Yarn workspaces. There are several API endpoint packages which are NodeJS lambda
+  functions as well as the core `server` poller package. Shared/re-used code is located in the `common` package.
 
 - If you need to run any of the the NPM/Yarn commands on a system that may not have anything installed, we provide a
   docker-compose helper.
