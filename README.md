@@ -42,7 +42,7 @@ and cost-optimized service.
 
 ## Features
 
-- Fully open sourced including entire AWS infrastructure, API endpoints, and server poller
+- Fully open-source including entire AWS infrastructure, API endpoints, and server poller
 - Ability to display job step status from beginning of workflow to end
 - Single slack message that continuously updates the current job statuses
 - Support for **push**, **pull_request**, **schedule** events
